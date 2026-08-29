@@ -1,22 +1,9 @@
 <!DOCTYPE html>
-<!--
- @license
- Copyright 2019 Google LLC. All Rights Reserved.
- SPDX-License-Identifier: Apache-2.0
--->
 <html>
   <head>
     <title>Quito Tracker - Pichincha Edition</title>
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-
     <script>
-      // CONFIGURACIÓN DE API KEY
-      const CONFIG = {
-        GOOGLE_MAPS_API_KEY: "AIzaSyD7yh3TteD4adDL8pAVXIEGr6RXksDKGLo"
-      };
-
       let map;
       let lugaresPuntos = []; 
       let markersMap = [];    
@@ -26,7 +13,6 @@
       let directionsService;
       let directionsDisplay;
       let destinoSeleccionado = null;
-      let timerOcultarPanel = null;
 
       const quitoCentro = { lat: -0.1807, lng: -78.4678 };
       const LIMITES_PICHINCHA = {
@@ -83,36 +69,7 @@
         });
       }
 
-      function getNombreModo(modo) {
-        switch(modo) {
-          case 'DRIVING': return 'EN CARRO';
-          case 'WALKING': return 'A PIE';
-          case 'BICYCLING': return 'EN BICICLETA';
-          case 'TWO_WHEELER': return 'EN MOTOCICLETA';
-          default: return modo;
-        }
-      }
-
-      function iniciarTemporizadorOcultado() {
-        if (timerOcultarPanel) clearTimeout(timerOcultarPanel);
-
-        timerOcultarPanel = setTimeout(() => {
-          ocultarControlesTransporte();
-        }, 5000);
-      }
-
-      function ocultarControlesTransporte() {
-        const extraBlueSpace = document.getElementById("extraBlueSpace");
-        if (extraBlueSpace) {
-          extraBlueSpace.classList.add("hidden");
-        }
-        destinoSeleccionado = null;
-        if (timerOcultarPanel) clearTimeout(timerOcultarPanel);
-      }
-
       window.trazarRuta = function(modo) {
-        iniciarTemporizadorOcultado();
-
         if (!destinoSeleccionado) {
           alert("Por favor selecciona primero un marcador en el mapa.");
           return;
@@ -122,8 +79,7 @@
         const destLng = destinoSeleccionado.lng;
 
         if (!navigator.geolocation) {
-          const travelParam = modo.toLowerCase();
-          window.open(`https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}&travelmode=${travelParam}`, '_blank');
+          window.open(`https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}&travelmode=${modo === 'WALKING' ? 'walking' : 'driving'}`, '_blank');
           return;
         }
 
@@ -138,7 +94,7 @@
             const request = {
               origin: origen,
               destination: destino,
-              travelMode: google.maps.TravelMode[modo] || google.maps.TravelMode.DRIVING
+              travelMode: google.maps.TravelMode[modo]
             };
 
             directionsService.route(request, (result, status) => {
@@ -146,16 +102,17 @@
                 directionsDisplay.setDirections(result);
                 if (infoWindow) infoWindow.close();
                 if (typeof showGalloSpeech === "function") {
-                  showGalloSpeech(`¡TRAZANDO RUTA ${getNombreModo(modo)}!`);
+                  const textoModo = modo === 'DRIVING' ? 'EN CARRO' : 'A PIE';
+                  showGalloSpeech(`¡TRAZANDO RUTA ${textoModo}!`);
                 }
               } else {
-                const travelParam = modo.toLowerCase();
+                const travelParam = modo === 'WALKING' ? 'walking' : 'driving';
                 window.open(`https://www.google.com/maps/dir/?api=1&origin=${origen.lat},${origen.lng}&destination=${destLat},${destLng}&travelmode=${travelParam}`, '_blank');
               }
             });
           },
           () => {
-            const travelParam = modo.toLowerCase();
+            const travelParam = modo === 'WALKING' ? 'walking' : 'driving';
             window.open(`https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}&travelmode=${travelParam}`, '_blank');
           }
         );
@@ -163,8 +120,6 @@
 
       window.limpiarRuta = function() {
         directionsDisplay.set('directions', null);
-        ocultarControlesTransporte();
-
         if (typeof showGalloSpeech === "function") {
           showGalloSpeech("¡RUTA LIMPIADA!");
         }
@@ -197,10 +152,6 @@
           updateMarkersSize();
         });
 
-        map.addListener("click", () => {
-          ocultarControlesTransporte();
-        });
-
         infoWindow = new google.maps.InfoWindow();
 
         try {
@@ -225,29 +176,8 @@
 
             markersMap.push({ marker: marker, lugar: lugar });
 
-            marker.addListener("click", (e) => {
-              if (e && e.stop) e.stop();
-
+            marker.addListener("click", () => {
               destinoSeleccionado = lugar;
-
-              // Determinar texto del costo de la entrada
-              let costoTexto = "CONSULTAR PRECIO";
-              if (lugar.precio !== undefined && lugar.precio !== null) {
-                if (lugar.precio === 0 || lugar.precio === "0" || lugar.precio.toString().toUpperCase() === "GRATIS") {
-                  costoTexto = "GRATIS";
-                } else {
-                  costoTexto = `$${lugar.precio}`;
-                }
-              } else if (esGratis) {
-                costoTexto = "GRATIS";
-              }
-
-              // Mostrar barra flotante de transporte y activar temporizador
-              const extraBlueSpace = document.getElementById("extraBlueSpace");
-              if (extraBlueSpace) {
-                extraBlueSpace.classList.remove("hidden");
-                iniciarTemporizadorOcultado();
-              }
 
               const rutaImagen = lugar.imagen 
                 ? lugar.imagen 
@@ -273,20 +203,18 @@
                   <h3 style="font-size:10px; margin: 0 0 6px 0; line-height: 1.3; color: #000;">
                     ${lugar.sticker ? lugar.sticker : ''} ${lugar.nombre}
                   </h3>
-                  <p style="font-size:8px; font-family: sans-serif; line-height: 1.3; color: #333; margin: 0 0 6px 0;">
+                  <p style="font-size:8px; font-family: sans-serif; line-height: 1.3; color: #333; margin: 0;">
                     ${lugar.info}
                   </p>
-                  <div style="font-size:8px; background:#fef08a; padding:4px; border:1px solid #000; font-weight:bold; text-align:center; color:#000;">
-                    💵 ENTRADA: ${costoTexto}
-                  </div>
                 </div>
               `;
               infoWindow.setContent(contentString);
               infoWindow.open(map, marker);
 
-              // El gallo anuncia el destino y el precio de la entrada
+              // Mensaje con el precio en el diálogo del gallo
               if (typeof showGalloSpeech === "function") {
-                showGalloSpeech(`${lugar.nombre.toUpperCase()} - ENTRADA: ${costoTexto}`);
+                const precioTexto = esGratis ? "¡ENTRADA GRATIS!" : `PRECIOS: ${lugar.info}`;
+                showGalloSpeech(`${lugar.nombre.toUpperCase()} - ${precioTexto}`);
               }
             });
           });
@@ -295,18 +223,8 @@
         }
       }
 
-      function loadGoogleMapsScript() {
-        const script = document.createElement("script");
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${CONFIG.GOOGLE_MAPS_API_KEY}&callback=initMap&v=weekly&loading=async`;
-        script.async = true;
-        script.defer = true;
-        document.head.appendChild(script);
-      }
-
       window.initMap = initMap;
-      window.onload = loadGoogleMapsScript;
     </script>
-
     <style>
       * { box-sizing: border-box; }
       html, body {
@@ -316,10 +234,6 @@
         background-color: #111827;
         font-family: 'Press Start 2P', monospace;
         overflow: hidden;
-      }
-
-      .hidden {
-        display: none !important;
       }
 
       .app-frame img, 
@@ -336,7 +250,7 @@
         height: 100vh;
         width: 100vw;
         background-color: #2b6cb0;
-        border: 12px solid #1c4b72;
+        border: 16px solid #1c4b72;
         padding: 6px;
         position: relative;
         box-shadow: inset 0 0 0 4px #000000;
@@ -439,21 +353,21 @@
         background-color: #0f2b48;
         color: #facc15;
         border: 4px solid #000000;
-        padding: 10px 20px;
-        font-size: 16px;
+        padding: 12px 26px;
+        font-size: 20px;
         letter-spacing: 2px;
         display: flex;
         align-items: center;
-        gap: 12px;
-        box-shadow: 4px 4px 0px #000000, 0 0 15px rgba(250, 204, 21, 0.4);
-        text-shadow: 2px 2px 0px #000000, 0 0 8px #facc15;
+        gap: 16px;
+        box-shadow: 5px 5px 0px #000000, 0 0 15px rgba(250, 204, 21, 0.4);
+        text-shadow: 3px 3px 0px #000000, 0 0 8px #facc15;
       }
 
       .top-shield-img {
-        width: 60px;
-        height: 60px;
+        width: 70px;
+        height: 70px;
         object-fit: contain;
-        filter: drop-shadow(3px 3px 0px #000000);
+        filter: drop-shadow(4px 4px 0px #000000);
       }
 
       .map-wrapper {
@@ -462,7 +376,6 @@
         border: 4px solid #000000;
         background-color: #0d1b2a;
         box-shadow: 4px 4px 0px #000000;
-        overflow: hidden;
       }
 
       .map-wrapper::before {
@@ -494,10 +407,10 @@
         position: absolute;
         bottom: 10px;
         left: 10px;
-        width: 80px;
-        height: 80px;
+        width: 90px;
+        height: 90px;
         background-color: #1e3a8a;
-        border: 4px solid #dc2626;
+        border: 5px solid #dc2626;
         border-radius: 50%;
         box-shadow: 4px 4px 0px #000000;
         display: flex;
@@ -517,12 +430,12 @@
       .speech-bubble-container {
         position: absolute;
         bottom: 10px;
-        left: 100px;
+        left: 110px;
         z-index: 30;
         opacity: 0;
         visibility: hidden;
         transition: opacity 0.3s ease, visibility 0.3s ease;
-        max-width: 220px;
+        max-width: 260px;
         pointer-events: none;
       }
 
@@ -536,10 +449,10 @@
         background: #ffffff;
         border: 4px solid #000000;
         border-radius: 8px;
-        padding: 8px 10px;
+        padding: 10px 12px;
         color: #000000;
         font-size: 8px;
-        line-height: 1.4;
+        line-height: 1.5;
         box-shadow: 4px 4px 0px #000000;
       }
 
@@ -547,30 +460,32 @@
         content: '';
         position: absolute;
         left: -14px;
-        bottom: 18px;
+        bottom: 20px;
         width: 0; height: 0;
         border: 8px solid transparent;
         border-right-color: #ffffff;
         border-left: 0;
+        margin-top: -8px;
       }
 
       .speech-bubble::before {
         content: '';
         position: absolute;
         left: -19px;
-        bottom: 16px;
+        bottom: 18px;
         width: 0; height: 0;
         border: 10px solid transparent;
         border-right-color: #000000;
         border-left: 0;
+        margin-top: -10px;
       }
 
       .radar-wrapper-outer {
         position: absolute;
-        bottom: 10px;
-        right: 10px;
-        width: 95px;
-        height: 95px;
+        bottom: 12px;
+        right: 12px;
+        width: 110px;
+        height: 110px;
         z-index: 20;
       }
 
@@ -580,15 +495,17 @@
         background: #06111e;
         border: 4px solid #38bdf8;
         border-radius: 50%;
-        box-shadow: 0 0 0 3px #000000, 4px 4px 0px #000000;
+        box-shadow: 0 0 0 4px #000000, 4px 4px 0px #000000;
         overflow: hidden;
         position: relative;
       }
 
-      .radar-btn-far, .radar-btn-near {
+      .radar-btn-far {
         position: absolute;
-        width: 32px;
-        height: 32px;
+        top: -2px;
+        right: -2px;
+        width: 38px;
+        height: 38px;
         background-color: #0d253f;
         border: 3px solid #38bdf8;
         border-radius: 50%;
@@ -601,17 +518,36 @@
         transition: transform 0.1s ease, background-color 0.2s ease;
       }
 
-      .radar-btn-far { top: -2px; right: -2px; }
-      .radar-btn-near { bottom: -2px; left: -2px; }
+      .radar-btn-near {
+        position: absolute;
+        bottom: -2px;
+        left: -2px;
+        width: 38px;
+        height: 38px;
+        background-color: #0d253f;
+        border: 3px solid #38bdf8;
+        border-radius: 50%;
+        box-shadow: 2px 2px 0px #000000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 22;
+        transition: transform 0.1s ease, background-color 0.2s ease;
+      }
 
       .radar-btn-far:hover, .radar-btn-near:hover {
         background-color: #1e4976;
         transform: scale(1.1);
       }
 
+      .radar-btn-far:active, .radar-btn-near:active {
+        transform: scale(0.95);
+      }
+
       .radar-icon-svg {
-        width: 18px;
-        height: 18px;
+        width: 22px;
+        height: 22px;
         fill: none;
         stroke: #38bdf8;
         stroke-width: 2.5;
@@ -621,84 +557,46 @@
 
       .spider-badges-left {
         position: absolute;
-        top: 15px;
+        top: 20px;
         left: 0px;
         z-index: 20;
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 10px;
       }
 
       .spider-badge {
-        width: 38px;
-        height: 34px;
-        border: 3px solid #000000;
+        width: 42px;
+        height: 38px;
+        border: 4px solid #000000;
         border-left: none;
-        border-radius: 0 8px 8px 0;
+        border-radius: 0 10px 10px 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 16px;
-        box-shadow: 3px 3px 0px #000000;
+        font-size: 18px;
+        box-shadow: 4px 4px 0px #000000;
         cursor: pointer;
         user-select: none;
         transition: transform 0.15s ease, background-color 0.15s ease;
       }
 
+      .spider-badge:hover {
+        transform: scale(1.1);
+      }
+
       .badge-green { background-color: #22c55e; }
       .badge-orange { background-color: #f97316; }
 
-      .badge-green.active { box-shadow: 0 0 10px #22c55e; border-color: #ffffff; }
-      .badge-orange.active { box-shadow: 0 0 10px #f97316; border-color: #ffffff; }
-
-      /* PANEL FLOTANTE SOBRE EL MAPA */
-      .extra-blue-space-overlay {
-        position: absolute;
-        top: 15px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 40;
-        background-color: #1c4b72;
-        background-image: url('bandera quito.jpg');
-        background-size: cover;
-        background-position: center;
-        border: 4px solid #000000;
-        box-shadow: 4px 4px 0px #000000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        padding: 8px;
-        max-width: 90%;
-        flex-wrap: wrap;
+      .badge-green.active {
+        box-shadow: 0 0 12px #22c55e;
+        border-color: #ffffff;
       }
 
-      .nav-btn {
-        font-family: 'Press Start 2P', monospace;
-        font-size: 8px;
-        padding: 8px 10px;
-        color: #ffffff;
-        border: 3px solid #000000;
-        box-shadow: 3px 3px 0px #000000;
-        cursor: pointer;
-        transition: transform 0.1s ease, filter 0.2s ease;
-        text-shadow: 1px 1px 0px #000000;
+      .badge-orange.active {
+        box-shadow: 0 0 12px #f97316;
+        border-color: #ffffff;
       }
-
-      .nav-btn:hover {
-        transform: scale(1.05);
-        filter: brightness(1.2);
-      }
-
-      .nav-btn:active {
-        transform: scale(0.95);
-      }
-
-      .btn-carro { background-color: #2563eb; }
-      .btn-pie { background-color: #10b981; }
-      .btn-bici { background-color: #06b6d4; }
-      .btn-moto { background-color: #8b5cf6; }
-      .btn-limpiar { background-color: #ef4444; }
 
       .footer-bar {
         display: flex;
@@ -713,67 +611,55 @@
         background-color: #0b192e;
         color: #ffffff;
         border: 4px solid #000000;
-        padding: 6px 12px;
-        font-size: 8px;
+        padding: 8px 16px;
+        font-size: 10px;
         text-align: center;
         box-shadow: 4px 4px 0px #000000;
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: 32px;
-        text-shadow: 1px 1px 0px #000000;
+        min-height: 36px;
+        text-shadow: 2px 2px 0px #000000;
       }
 
-      /* ADAPTABILIDAD A PANTALLAS MÓVILES */
-      @media (max-width: 600px) {
-        .app-frame {
-          border-width: 6px;
-          padding: 2px;
-        }
-
-        .header-bar {
-          padding: 4px 8px;
-        }
-
-        .logo-badge {
-          font-size: 10px;
-          padding: 6px 10px;
-          gap: 6px;
-        }
-
-        .top-shield-img {
-          width: 38px;
-          height: 38px;
-        }
-
-        .extra-blue-space-overlay {
-          top: 10px;
-          width: 95%;
-          padding: 6px;
-          gap: 4px;
-        }
-
-        .nav-btn {
-          font-size: 7px;
-          padding: 6px 6px;
-          border-width: 2px;
-        }
-
-        .rooster-avatar-container {
-          width: 60px;
-          height: 60px;
-        }
-
-        .speech-bubble-container {
-          left: 75px;
-          max-width: 160px;
-        }
-
-        .radar-wrapper-outer {
-          width: 75px;
-          height: 75px;
-        }
+      /* CUADRO AZUL INFERIOR CON COLOR SOLIDO Y DE CONTRASTE */
+      .extra-blue-space {
+        height: 110px;
+        background-color: #0f2b48;
+        border: 4px solid #000000;
+        margin-top: 6px;
+        width: 100%;
+        box-shadow: 4px 4px 0px #000000;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        padding: 0 20px;
       }
+
+      .nav-btn {
+        font-family: 'Press Start 2P', monospace;
+        font-size: 11px;
+        padding: 12px 20px;
+        color: #ffffff;
+        border: 4px solid #000000;
+        box-shadow: 4px 4px 0px #000000;
+        cursor: pointer;
+        transition: transform 0.1s ease, filter 0.2s ease;
+        text-shadow: 2px 2px 0px #000000;
+      }
+
+      .nav-btn:hover {
+        transform: scale(1.05);
+        filter: brightness(1.2);
+      }
+
+      .nav-btn:active {
+        transform: scale(0.95);
+      }
+
+      .btn-carro { background-color: #2563eb; }
+      .btn-pie { background-color: #10b981; }
+      .btn-limpiar { background-color: #ef4444; }
     </style>
   </head>
   <body>
@@ -795,7 +681,7 @@
         
         <div class="logo-badge">
           <span>QUITO</span>
-          <canvas id="topMaskCanvas" width="16" height="16" style="width: 24px; height: 24px;"></canvas>
+          <canvas id="topMaskCanvas" width="16" height="16" style="width: 32px; height: 32px;"></canvas>
           <span>TRACKER</span>
         </div>
 
@@ -804,15 +690,6 @@
 
       <div class="map-wrapper">
         <div id="map"></div>
-
-        <!-- PANEL DE TRANSPORTE FLOTANTE SOBRE EL MAPA -->
-        <div id="extraBlueSpace" class="extra-blue-space-overlay hidden">
-          <button class="nav-btn btn-carro" onclick="trazarRuta('DRIVING')">🚗 EN CARRO</button>
-          <button class="nav-btn btn-pie" onclick="trazarRuta('WALKING')">🚶 A PIE</button>
-          <button class="nav-btn btn-bici" onclick="trazarRuta('BICYCLING')">🚲 EN BICICLETA</button>
-          <button class="nav-btn btn-moto" onclick="trazarRuta('TWO_WHEELER')">🏍️ EN MOTOCICLETA</button>
-          <button class="nav-btn btn-limpiar" onclick="limpiarRuta()">❌ LIMPIAR</button>
-        </div>
 
         <div class="spider-badges-left">
           <div id="btnGreenBadge" class="spider-badge badge-green" title="Agrandar Espacios Gratuitos">🕷️</div>
@@ -863,6 +740,12 @@
           <span>¡EXPLORA Y DESCUBRE LOS RINCONES MÁGICOS DE QUITO!</span>
         </div>
       </div>
+
+      <div class="extra-blue-space">
+        <button class="nav-btn btn-carro" onclick="trazarRuta('DRIVING')">🚗 EN CARRO</button>
+        <button class="nav-btn btn-pie" onclick="trazarRuta('WALKING')">🚶 A PIE</button>
+        <button class="nav-btn btn-limpiar" onclick="limpiarRuta()">❌ LIMPIAR</button>
+      </div>
     </div>
 
     <script>
@@ -880,7 +763,7 @@
 
         speechBubbleTimeout = setTimeout(() => {
           speechBubbleContainer.classList.remove("active");
-        }, 3500);
+        }, 4000);
       }
 
       const lines = document.querySelectorAll(".log-line");
@@ -1020,5 +903,10 @@
       }
       drawSpiderWebRadar();
     </script>
+
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD7yh3TteD4adDL8pAVXIEGr6RXksDKGLo&callback=initMap&v=weekly&loading=async"
+      async
+    ></script>
   </body>
 </html>
