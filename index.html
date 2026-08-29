@@ -126,6 +126,9 @@
 
       window.limpiarRuta = function() {
         directionsDisplay.set('directions', null);
+        const floatNav = document.getElementById("topFloatingNav");
+        if (floatNav) floatNav.style.display = "none";
+        destinoSeleccionado = null;
         if (typeof showGalloSpeech === "function") {
           showGalloSpeech("¡RUTA LIMPIADA!");
         }
@@ -185,6 +188,10 @@
             marker.addListener("click", () => {
               destinoSeleccionado = lugar;
 
+              // HACE APARECER EL PANEL DE BOTONES ÚNICAMENTE AL HACER CLIC EN UN LUGAR
+              const floatNav = document.getElementById("topFloatingNav");
+              if (floatNav) floatNav.style.display = "flex";
+
               const rutaImagen = lugar.imagen 
                 ? lugar.imagen 
                 : 'https://via.placeholder.com/200x100?text=Sin+Imagen';
@@ -217,7 +224,6 @@
               infoWindow.setContent(contentString);
               infoWindow.open(map, marker);
 
-              // EL POLLO INDICA EL PRECIO DE ENTRADA EXTRAÍDO DEL JSON
               if (typeof showGalloSpeech === "function") {
                 const valorPrecio = lugar.precio ? lugar.precio : (esGratis ? "GRATIS" : lugar.info);
                 showGalloSpeech(`${lugar.nombre.toUpperCase()} - ENTRADA: ${valorPrecio.toUpperCase()}`);
@@ -239,7 +245,6 @@
         padding: 0;
         background-color: #111827;
         font-family: 'Press Start 2P', monospace;
-        overflow-x: hidden;
       }
 
       .app-frame img, 
@@ -253,7 +258,7 @@
       .app-frame {
         display: flex;
         flex-direction: column;
-        min-height: 100vh;
+        height: 100vh;
         width: 100vw;
         background-color: #2b6cb0;
         border: 16px solid #1c4b72;
@@ -378,11 +383,11 @@
 
       .map-wrapper {
         flex: 1;
-        min-height: 400px;
         position: relative;
         border: 4px solid #000000;
         background-color: #0d1b2a;
         box-shadow: 4px 4px 0px #000000;
+        overflow: hidden;
       }
 
       .map-wrapper::before {
@@ -410,14 +415,14 @@
         width: 100%; 
       }
 
-      /* CUADRO FLOTANTE SOBRE EL MAPA (TAL COMO TU IMAGEN DE REFERENCIA) */
+      /* PANEL OCULTO AL INICIO (display: none) */
       .top-floating-nav {
         position: absolute;
         top: 15px;
         left: 50%;
         transform: translateX(-50%);
         z-index: 35;
-        display: flex;
+        display: none; /* Se activa al hacer clic en un marcador */
         align-items: center;
         background: linear-gradient(to right, #1d4ed8 0%, #dc2626 50%, #1d4ed8 100%);
         border: 4px solid #000000;
@@ -659,7 +664,6 @@
         width: 100%;
       }
 
-      /* PRIMER CUADRO NEGRO CON VEHICULOS */
       .ticker-box {
         width: 100%;
         background-color: #0b192e;
@@ -692,7 +696,7 @@
         gap: 4px;
       }
 
-      /* SEGUNDO CUADRO AZUL VACÍO DE CONTRASTE ABAJO DEL MAPA (Aprox. 6 cm) */
+      /* SEGUNDO CUADRO AZUL VACÍO (6 CM DE CONTRASTE ABAJO) */
       .empty-blue-box {
         height: 220px;
         background-color: #1e3a8a;
@@ -730,8 +734,8 @@
       </div>
 
       <div class="map-wrapper">
-        <!-- CUADRO FLOTANTE CON BOTONES DENTRO DEL MAPA (CONSERVADO DE LA IMAGEN) -->
-        <div class="top-floating-nav">
+        <!-- CUADRO DE NAVEGACIÓN (SE MUESTRA ÚNICAMENTE TRAS HACER CLIC EN UN LUGAR) -->
+        <div id="topFloatingNav" class="top-floating-nav">
           <button class="nav-btn btn-carro" onclick="trazarRuta('DRIVING')">🚗 EN CARRO</button>
           <button class="nav-btn btn-pie" onclick="trazarRuta('WALKING')">🚶 A PIE</button>
           <button class="nav-btn btn-bici" onclick="trazarRuta('BICYCLING')">🚲 EN BICICLETA</button>
@@ -785,7 +789,7 @@
         </div>
       </div>
 
-      <!-- PRIMER CUADRO NEGRO CON VEHICULOS CONSERVADO -->
+      <!-- PRIMER CUADRO NEGRO (TICKER VEHICULOS) -->
       <div class="footer-bar">
         <div class="ticker-box">
           <div>¡EXPLORA Y DESCUBRE LOS RINCONES MÁGICOS DE QUITO!</div>
@@ -798,7 +802,7 @@
         </div>
       </div>
 
-      <!-- SEGUNDO CUADRO AZUL TOTALMENTE VACÍO (6 CM / CONTRASTE) -->
+      <!-- SEGUNDO CUADRO AZUL TOTALMENTE VACÍO (6 CM) -->
       <div class="empty-blue-box"></div>
     </div>
 
