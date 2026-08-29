@@ -1,9 +1,4 @@
 <!DOCTYPE html>
-<!--
- @license
- Copyright 2019 Google LLC. All Rights Reserved.
- SPDX-License-Identifier: Apache-2.0
--->
 <html>
   <head>
     <title>Quito Tracker - Pichincha Edition</title>
@@ -17,7 +12,7 @@
       let infoWindow;
       let directionsService;
       let directionsDisplay;
-      let destinoSeleccionado = null; // Guardará el lugar seleccionado
+      let destinoSeleccionado = null;
 
       const quitoCentro = { lat: -0.1807, lng: -78.4678 };
       const LIMITES_PICHINCHA = {
@@ -74,7 +69,6 @@
         });
       }
 
-      // Función para trazar ruta o redirigir a Google Maps externamente si falla la API
       window.trazarRuta = function(modo) {
         if (!destinoSeleccionado) {
           alert("Por favor selecciona primero un marcador en el mapa.");
@@ -85,8 +79,6 @@
         const destLng = destinoSeleccionado.lng;
 
         if (!navigator.geolocation) {
-          // Abrir directamente Google Maps si no hay geolocalización
-          const travelParam = modo === 'WALKING' ? 'w' : 'd';
           window.open(`https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}&travelmode=${modo === 'WALKING' ? 'walking' : 'driving'}`, '_blank');
           return;
         }
@@ -114,14 +106,12 @@
                   showGalloSpeech(`¡TRAZANDO RUTA ${textoModo}!`);
                 }
               } else {
-                // Si la API interna da REQUEST_DENIED, redirigir a Google Maps App/Web
                 const travelParam = modo === 'WALKING' ? 'walking' : 'driving';
                 window.open(`https://www.google.com/maps/dir/?api=1&origin=${origen.lat},${origen.lng}&destination=${destLat},${destLng}&travelmode=${travelParam}`, '_blank');
               }
             });
           },
           () => {
-            // Abrir Google Maps directamente si no da permisos de ubicación
             const travelParam = modo === 'WALKING' ? 'walking' : 'driving';
             window.open(`https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}&travelmode=${travelParam}`, '_blank');
           }
@@ -187,7 +177,6 @@
             markersMap.push({ marker: marker, lugar: lugar });
 
             marker.addListener("click", () => {
-              // Guardar el destino seleccionado
               destinoSeleccionado = lugar;
 
               const rutaImagen = lugar.imagen 
@@ -222,8 +211,10 @@
               infoWindow.setContent(contentString);
               infoWindow.open(map, marker);
 
+              // Mensaje con el precio en el diálogo del gallo
               if (typeof showGalloSpeech === "function") {
-                showGalloSpeech(`DESTINO: ${lugar.nombre.toUpperCase()}`);
+                const precioTexto = esGratis ? "¡ENTRADA GRATIS!" : `PRECIOS: ${lugar.info}`;
+                showGalloSpeech(`${lugar.nombre.toUpperCase()} - ${precioTexto}`);
               }
             });
           });
@@ -444,7 +435,7 @@
         opacity: 0;
         visibility: hidden;
         transition: opacity 0.3s ease, visibility 0.3s ease;
-        max-width: 240px;
+        max-width: 260px;
         pointer-events: none;
       }
 
@@ -631,13 +622,10 @@
         text-shadow: 2px 2px 0px #000000;
       }
 
-      /* BANDERA DE QUITO Y BOTONES DE RUTAS UBICADOS AQUÍ */
+      /* CUADRO AZUL INFERIOR CON COLOR SOLIDO Y DE CONTRASTE */
       .extra-blue-space {
         height: 110px;
-        background-color: #1c4b72;
-        background-image: url('bandera quito.jpg');
-        background-size: cover;
-        background-position: center;
+        background-color: #0f2b48;
         border: 4px solid #000000;
         margin-top: 6px;
         width: 100%;
@@ -753,7 +741,6 @@
         </div>
       </div>
 
-      <!-- BOTONES UBICADOS EN LA FRANJA INFERIOR -->
       <div class="extra-blue-space">
         <button class="nav-btn btn-carro" onclick="trazarRuta('DRIVING')">🚗 EN CARRO</button>
         <button class="nav-btn btn-pie" onclick="trazarRuta('WALKING')">🚶 A PIE</button>
@@ -776,7 +763,7 @@
 
         speechBubbleTimeout = setTimeout(() => {
           speechBubbleContainer.classList.remove("active");
-        }, 3000);
+        }, 4000);
       }
 
       const lines = document.querySelectorAll(".log-line");
