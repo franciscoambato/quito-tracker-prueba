@@ -1,182 +1,92 @@
 [
   {
-    "nombre": "El Gallo de la Catedral",
-    "categoria": "GRATIS",
-    "lat": -0.2201,
-    "lng": -78.5122,
-    "sticker": "🐓",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Plaza_Grande_Quito_Ecuador.jpg/640px-Plaza_Grande_Quito_Ecuador.jpg",
-    "info": "Famoso gallo de la veleta en la Catedral Metropolitana, ícono de las tradiciones y leyendas del Quito colonial."
+    "nombre": "Basílica del Voto Nacional",
+    "lat": -0.2146,
+    "lng": -78.5074,
+    "categoria": "PAGO",
+    "sticker": "🏰",
+    "info": "Templo neogótico en el centro histórico de Quito.",
+    "imagen": "https://images.unsplash.com/photo-1589308078059-be1415eab4c3?w=400"
   },
   {
     "nombre": "Parque La Carolina",
+    "lat": -0.1807,
+    "lng": -78.4678,
     "categoria": "GRATIS",
-    "lat": -0.1823,
-    "lng": -78.4845,
     "sticker": "🌳",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Parque_La_Carolina_Quito.jpg/640px-Parque_La_Carolina_Quito.jpg",
-    "info": "Áreas verdes amplias, pistas de atletismo, ciclovías, laguna con botes y áreas de deportes urbanos."
+    "info": "Parque urbano principal con áreas verdes, laguna y espacios deportivos.",
+    "imagen": "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=400"
   },
   {
-    "nombre": "Basílica del Voto Nacional",
-    "categoria": "HASTA $5 USD",
-    "lat": -0.2147,
-    "lng": -78.5073,
-    "sticker": "⛪",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Bas%C3%ADlica_del_Voto_Nacional_Quito.jpg/640px-Bas%C3%ADlica_del_Voto_Nacional_Quito.jpg",
-    "info": "Templo neogótico representativo. Subir a sus torres y miradores cuesta entre $2 y $4 USD."
-  },
-  {
-    "nombre": "Virgen del Panecillo",
-    "categoria": "HASTA $5 USD",
-    "lat": -0.2303,
+    "nombre": "El Panecillo",
+    "lat": -0.2301,
     "lng": -78.5186,
+    "categoria": "PAGO",
     "sticker": "🗽",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/El_Panecillo_Quito.jpg/640px-El_Panecillo_Quito.jpg",
-    "info": "Estatua de aluminio gigante con vista panorámica de 360° de toda la ciudad de Quito."
+    "info": "Mirador natural coronado por la gigantesca Virgen de Aluminio.",
+    "imagen": "https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=400"
   },
   {
-    "nombre": "Iglesia de la Compañía",
-    "categoria": "HASTA $5 USD",
+    "nombre": "Plaza de la Independencia (Grande)",
+    "lat": -0.2201,
+    "lng": -78.5121,
+    "categoria": "GRATIS",
+    "sticker": "🏛️",
+    "info": "Corazón político e histórico de Quito, rodeado por el Palacio de Carondelet.",
+    "imagen": "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?w=400"
+  },
+  {
+    "nombre": "Iglesia de la Compañía de Jesús",
     "lat": -0.2212,
     "lng": -78.5133,
-    "sticker": "✨",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/La_Compa%C3%B1ia_de_Jes%C3%Bas_Church_Quito.jpg/640px-La_Compa%C3%B1ia_de_Jes%C3%Bas_Church_Quito.jpg",
-    "info": "Joya Barroca del continente sudamericano cubierta casi en su totalidad con láminas de pan de oro."
+    "categoria": "PAGO",
+    "sticker": "⛪",
+    "info": "Joya del barroco latinoamericano decorada con láminas de oro.",
+    "imagen": "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=400"
   },
   {
-    "nombre": "Plaza y Convento de San Francisco",
-    "categoria": "GRATIS",
-    "lat": -0.2211,
-    "lng": -78.5158,
-    "sticker": "🏰",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/San_Francisco_Church_Quito.jpg/640px-San_Francisco_Church_Quito.jpg",
-    "info": "El complejo arquitectónico de mayor extensión dentro del Centro Histórico de Quito."
-  },
-  {
-    "nombre": "Ciudad Mitad del Mundo",
-    "categoria": "HASTA $5 USD",
-    "lat": -0.0022,
-    "lng": -78.4558,
-    "sticker": "🌐",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Ciudad_Mitad_del_Mundo.jpg/640px-Ciudad_Mitad_del_Mundo.jpg",
-    "info": "Monumento ecuatorial emblemático donde puedes pararte en ambos hemisferios del planeta a la vez."
-  },
-  {
-    "nombre": "Teleférico de Quito",
-    "categoria": "HASTA $10 USD",
-    "lat": -0.1917,
-    "lng": -78.5219,
+    "nombre": "TelefériQo Quito",
+    "lat": -0.1906,
+    "lng": -78.5203,
+    "categoria": "PAGO",
     "sticker": "🪂",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Teleferico_Quito.jpg/640px-Teleferico_Quito.jpg",
-    "info": "Sube a las laderas del volcán Pichincha a más de 4,000 metros sobre el nivel del mar."
-  },
-  {
-    "nombre": "Calle La Ronda",
-    "categoria": "GRATIS",
-    "lat": -0.2241,
-    "lng": -78.5136,
-    "sticker": "🎨",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Calle_La_Ronda_Quito.jpg/640px-Calle_La_Ronda_Quito.jpg",
-    "info": "Calle colonial tradicional donde puedes disfrutar de artesanías, empanadas de viento y canelazos."
-  },
-  {
-    "nombre": "Plaza Grande (Independencia)",
-    "categoria": "GRATIS",
-    "lat": -0.2198,
-    "lng": -78.5126,
-    "sticker": "👑",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Plaza_Grande_Quito_Ecuador.jpg/640px-Plaza_Grande_Quito_Ecuador.jpg",
-    "info": "Corazón político y social de Quito, rodeado por el Palacio de Carondelet y la Catedral."
+    "info": "Asciende a las faldas del volcán Pichincha a más de 4.000 msnm.",
+    "imagen": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400"
   },
   {
     "nombre": "Parque Metropolitano Guangüiltagua",
+    "lat": -0.1601,
+    "lng": -78.4612,
     "categoria": "GRATIS",
-    "lat": -0.1638,
-    "lng": -78.4636,
     "sticker": "🌲",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Parque_La_Carolina_Quito.jpg/640px-Parque_La_Carolina_Quito.jpg",
-    "info": "El bosque urbano más extenso de Quito con rutas de senderismo y miradores orientales."
+    "info": "Extenso bosque urbano con rutas de senderismo y ciclismo de montaña.",
+    "imagen": "https://images.unsplash.com/photo-1448375240586-882707db888b?w=400"
   },
   {
-    "nombre": "Jardín Botánico de Quito",
-    "categoria": "HASTA $5 USD",
-    "lat": -0.1839,
-    "lng": -78.4862,
-    "sticker": "🌺",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Parque_La_Carolina_Quito.jpg/640px-Parque_La_Carolina_Quito.jpg",
-    "info": "Ubicado dentro del Parque La Carolina, exhibe una amplia colección de orquídeas y flora andina."
-  },
-  {
-    "nombre": "Parque El Ejido",
-    "categoria": "GRATIS",
-    "lat": -0.2081,
-    "lng": -78.4988,
-    "sticker": "🖼️",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Parque_La_Carolina_Quito.jpg/640px-Parque_La_Carolina_Quito.jpg",
-    "info": "Parque tradicional conocido por sus arbolados centenarios y galerías de arte al aire libre los fines de semana."
-  },
-  {
-    "nombre": "Mercado Artesanal La Mariscal",
-    "categoria": "GRATIS",
-    "lat": -0.2023,
+    "nombre": "Plaza Foch (La Mariscal)",
+    "lat": -0.2026,
     "lng": -78.4912,
-    "sticker": "🛍️",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Calle_La_Ronda_Quito.jpg/640px-Calle_La_Ronda_Quito.jpg",
-    "info": "Punto de encuentro para adquirir artesanías, textiles, otavaleños y recuerdos típicos del Ecuador."
-  },
-  {
-    "nombre": "Capilla del Hombre (Guayasamín)",
-    "categoria": "HASTA $10 USD",
-    "lat": -0.1772,
-    "lng": -78.4688,
-    "sticker": "🏛️",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Plaza_Grande_Quito_Ecuador.jpg/640px-Plaza_Grande_Quito_Ecuador.jpg",
-    "info": "Museo emblemático dedicado a la obra del maestro Oswaldo Guayasamín y la historia humana de América."
-  },
-  {
-    "nombre": "Mirador de Guápulo",
     "categoria": "GRATIS",
-    "lat": -0.2016,
-    "lng": -78.4792,
-    "sticker": "🌄",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Plaza_Grande_Quito_Ecuador.jpg/640px-Plaza_Grande_Quito_Ecuador.jpg",
-    "info": "Vista panorámica hacia el pintoresco barrio bohemio de Guápulo y los valles orientales de Quito."
+    "sticker": "🍹",
+    "info": "Epicentro de entretenimiento, restaurantes y vida nocturna en la ciudad.",
+    "imagen": "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400"
   },
   {
-    "nombre": "Reserva Geobotánica Pululahua",
+    "nombre": "Plaza de San Francisco",
+    "lat": -0.2218,
+    "lng": -78.5156,
     "categoria": "GRATIS",
-    "lat": -0.0381,
-    "lng": -78.5028,
-    "sticker": "🌋",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Ciudad_Mitad_del_Mundo.jpg/640px-Ciudad_Mitad_del_Mundo.jpg",
-    "info": "Impresionante cráter volcánico habitado y cultivado debido a sus fértiles tierras agrícolas."
+    "sticker": "🕊️",
+    "info": "Emblemática plaza empedrada flanqueada por la monumental Iglesia de San Francisco.",
+    "imagen": "https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=400"
   },
   {
-    "nombre": "Reserva Ecológica Antisana",
-    "categoria": "HASTA $5 USD",
-    "lat": -0.4819,
-    "lng": -78.1436,
-    "sticker": "🦅",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Teleferico_Quito.jpg/640px-Teleferico_Quito.jpg",
-    "info": "Hogar del Cóndor Andino, lagunas de altura y hermosos paisajes del páramo ecuatoriano."
-  },
-  {
-    "nombre": "Iglesia de Santo Domingo",
-    "categoria": "GRATIS",
-    "lat": -0.2248,
-    "lng": -78.5129,
-    "sticker": "⛪",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/San_Francisco_Church_Quito.jpg/640px-San_Francisco_Church_Quito.jpg",
-    "info": "Templo colonial célebre por la Capilla del Rosario y su plaza histórica rodeada de arquitectura colonial."
-  },
-  {
-    "nombre": "Catedral Metropolitana de Quito",
-    "categoria": "HASTA $5 USD",
-    "lat": -0.2205,
-    "lng": -78.5118,
-    "sticker": "🏛️",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Plaza_Grande_Quito_Ecuador.jpg/640px-Plaza_Grande_Quito_Ecuador.jpg",
-    "info": "Ubicada en la Plaza Grande, alberga obras maestras de la Escuela Quiteña y tumbas de héroes nacionales."
+    "nombre": "Ciudad Mitad del Mundo",
+    "lat": -0.0022,
+    "lng": -78.4558,
+    "categoria": "PAGO",
+    "sticker": "🌍",
+    "info": "Monumento y complejo turístico ubicado sobre la línea ecuatorial.",
+    "imagen": "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=400"
   }
 ]
