@@ -9,6 +9,9 @@
       let markersMap = [];    
       let currentFilter = 'ALL'; 
       let currentZoomLevel = 'NEAR'; 
+      let infoWindow;
+      let directionsService;
+      let directionsDisplay;
 
       const quitoCentro = { lat: -0.1807, lng: -78.4678 };
       const LIMITES_PICHINCHA = {
@@ -65,6 +68,45 @@
         });
       }
 
+      window.trazarRuta = function(destLat, destLng, modo) {
+        if (!navigator.geolocation) {
+          alert("Tu navegador no soporta geolocalización.");
+          return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const origen = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            const destino = { lat: destLat, lng: destLng };
+
+            const request = {
+              origin: origen,
+              destination: destino,
+              travelMode: google.maps.TravelMode[modo]
+            };
+
+            directionsService.route(request, (result, status) => {
+              if (status === 'OK') {
+                directionsDisplay.setDirections(result);
+                if (infoWindow) infoWindow.close();
+                if (typeof showGalloSpeech === "function") {
+                  const textoModo = modo === 'DRIVING' ? 'EN CARRO' : 'A PIE';
+                  showGalloSpeech(`¡TRAZANDO RUTA ${textoModo}!`);
+                }
+              } else {
+                alert("No se pudo calcular la ruta: " + status);
+              }
+            });
+          },
+          () => {
+            alert("Por favor habilita los permisos de ubicación en tu navegador.");
+          }
+        );
+      };
+
       async function initMap() {
         map = new google.maps.Map(document.getElementById("map"), {
           zoom: 12,
@@ -75,13 +117,24 @@
           restriction: { latLngBounds: LIMITES_PICHINCHA, strictBounds: true },
         });
 
+        directionsService = new google.maps.DirectionsService();
+        directionsDisplay = new google.maps.DirectionsRenderer({
+          map: map,
+          suppressMarkers: false,
+          polylineOptions: {
+            strokeColor: "#38bdf8",
+            strokeWeight: 5,
+            strokeOpacity: 0.8
+          }
+        });
+
         map.addListener("zoom_changed", () => {
           const z = map.getZoom();
           currentZoomLevel = (z <= 10) ? 'FAR' : 'NEAR';
           updateMarkersSize();
         });
 
-        const infoWindow = new google.maps.InfoWindow();
+        infoWindow = new google.maps.InfoWindow();
 
         try {
           const response = await fetch('./lugares.json');
@@ -106,21 +159,45 @@
             markersMap.push({ marker: marker, lugar: lugar });
 
             marker.addListener("click", () => {
-              // Verifica si el objeto tiene una propiedad de imagen
-              const imagenHTML = lugar.imagen 
-                ? `<div style="text-align:center; margin-bottom: 8px;">
-                     <img src="${lugar.imagen}" alt="${lugar.nombre}" style="width: 100%; max-height: 100px; object-fit: cover; border: 2px solid #000; box-shadow: 2px 2px 0px #000;" />
-                   </div>`
-                : '';
+              const rutaImagen = lugar.imagen 
+                ? lugar.imagen 
+                : 'https://picsum.photos/400/200';
+
+              const imagenHTML = `
+                <div style="width: 100%; text-align: center; margin-bottom: 8px;">
+                  <img src="${rutaImagen}" 
+                       alt="${lugar.nombre}" 
+                       crossorigin="anonymous"
+                       onerror="this.onerror=null; this.src='https://picsum.photos/400/200';"
+                       style="width: 100%; height: 90px; object-fit: cover; border: 2px solid #000; box-shadow: 2px 2px 0px #000; display: block;" />
+                </div>
+              `;
 
               const contentString = `
-                <div style="font-family: 'Press Start 2P', monospace; padding: 6px; max-width: 230px; color: #000;">
-                  <div style="display:inline-block; background:${badgeColor}; color:#fff; font-size:8px; padding:4px 6px; margin-bottom:8px; border:2px solid #000;">
+                <div style="font-family: 'Press Start 2P', monospace; padding: 4px; max-width: 220px; color: #000;">
+                  <div style="display:inline-block; background:${badgeColor}; color:#fff; font-size:8px; padding:3px 5px; margin-bottom:8px; border:2px solid #000;">
                     ${lugar.categoria}
                   </div>
+                  
                   ${imagenHTML}
-                  <h3 style="font-size:11px; margin:0 0 8px 0; line-height:1.4;">${lugar.sticker} ${lugar.nombre}</h3>
-                  <p style="font-size:8px; font-family: sans-serif; line-height:1.4; color:#333; margin:0;">${lugar.info}</p>
+
+                  <h3 style="font-size:10px; margin: 0 0 6px 0; line-height: 1.3; color: #000;">
+                    ${lugar.sticker ? lugar.sticker : ''} ${lugar.nombre}
+                  </h3>
+                  <p style="font-size:8px; font-family: sans-serif; line-height: 1.3; color: #333; margin-bottom: 8px;">
+                    ${lugar.info}
+                  </p>
+
+                  <div style="display: flex; gap: 4px; border-top: 1px solid #ccc; padding-top: 6px;">
+                    <button onclick="trazarRuta(${lugar.lat}, ${lugar.lng}, 'DRIVING')" 
+                            style="flex: 1; font-family: 'Press Start 2P'; font-size: 7px; padding: 5px 2px; background: #3b82f6; color: white; border: 2px solid #000; cursor: pointer;">
+                      🚗 Carro
+                    </button>
+                    <button onclick="trazarRuta(${lugar.lat}, ${lugar.lng}, 'WALKING')" 
+                            style="flex: 1; font-family: 'Press Start 2P'; font-size: 7px; padding: 5px 2px; background: #10b981; color: white; border: 2px solid #000; cursor: pointer;">
+                      🚶 A pie
+                    </button>
+                  </div>
                 </div>
               `;
               infoWindow.setContent(contentString);
