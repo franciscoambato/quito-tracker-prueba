@@ -1,113 +1,65 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Quito Tracker - Pichincha Edition</title>
+    <title>Quito Tracker</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-
     <div class="app-frame">
-      <!-- PANTALLA DE INTRODUCCIÓN -->
       <div id="intro-screen">
         <img class="intro-bg-image" src="quito renace.jpg" alt="Quito Renace">
-        <div class="log-line" id="line1">INICIALIZANDO QUITO TRACKER v4.2.0...</div>
-        <div class="log-line" id="line2">INICIANDO SERVICIOS PRINCIPALES [OK]</div>
-        <div class="log-line" id="line3">INICIALIZANDO MOTOR DE RENDERIZADO DEL MAPA QUITO...</div>
-        <div class="log-line" id="line4">CARGANDO RECURSOS BASE: INTERFAZ [OK]</div>
-        <div class="log-line" id="line5">CARGANDO RECURSOS BASE: MÓDULO DE TICKER [OK]</div>
-        <div class="log-line" id="line6">INICIANDO BUS DE EVENTOS [OK]</div>
-        <div class="log-line" id="line7">CALIBRANDO MOTOR DE SPRITES [OK]</div>
+        <div class="log-line visible">INICIALIZANDO QUITO TRACKER v4.2.0...</div>
       </div>
 
-      <!-- BARRA SUPERIOR -->
       <div class="header-bar">
-        <img class="top-shield-img" src="escudo2.jpg" alt="Escudo Izquierdo">
-        <div class="logo-badge">
-          <span>QUITO</span>
-          <canvas id="topMaskCanvas" width="16" height="16" style="width: 32px; height: 32px;"></canvas>
-          <span>TRACKER</span>
-        </div>
-        <img class="top-shield-img" src="image_a6631f.jpg" alt="Escudo Derecho">
+        <img class="top-shield-img" src="escudo2.jpg">
+        <div class="logo-badge">QUITO <canvas id="topMaskCanvas" width="16" height="16"></canvas> TRACKER</div>
+        <img class="top-shield-img" src="image_a6631f.jpg">
       </div>
 
-      <!-- CONTENEDOR DEL MAPA Y ELEMENTOS FLOTANTES -->
       <div class="map-wrapper">
         <div id="topFloatingNav" class="top-floating-nav">
-          <button class="nav-btn btn-carro" onclick="trazarRuta('DRIVING')">🚗 EN CARRO</button>
-          <button class="nav-btn btn-pie" onclick="trazarRuta('WALKING')">🚶 A PIE</button>
-          <button class="nav-btn btn-bici" onclick="trazarRuta('BICYCLING')">🚲 EN BICICLETA</button>
-          <button class="nav-btn btn-moto" onclick="trazarRuta('DRIVING')">🏍️ EN MOTOCICLETA</button>
+          <button class="nav-btn btn-carro" onclick="trazarRuta('DRIVING')">🚗 CARRO</button>
+          <button class="nav-btn btn-pie" onclick="trazarRuta('WALKING')">🚶 PIE</button>
+          <button class="nav-btn btn-bici" onclick="trazarRuta('BICYCLING')">🚲 BICI</button>
+          <button class="nav-btn btn-moto" onclick="trazarRuta('DRIVING')">🏍️ MOTO</button>
           <button class="nav-btn btn-limpiar" onclick="limpiarRuta()">❌ LIMPIAR</button>
         </div>
 
         <div id="map"></div>
 
         <div class="spider-badges-left">
-          <div id="btnGreenBadge" class="spider-badge badge-green" title="Agrandar Espacios Gratuitos">🕷️</div>
-          <div id="btnOrangeBadge" class="spider-badge badge-orange" title="Agrandar Espacios de Pago">🕷️</div>
+          <div id="btnGreenBadge" class="spider-badge badge-green">🕷️</div>
+          <div id="btnOrangeBadge" class="spider-badge badge-orange">🕷️</div>
         </div>
 
         <div class="rooster-avatar-container">
-          <video class="rooster-video-left" autoplay loop muted playsinline>
-            <source src="gallo.mp4" type="video/mp4">
-          </video>
+          <video class="rooster-video-left" autoplay loop muted playsinline><source src="gallo.mp4" type="video/mp4"></video>
         </div>
 
         <div id="speechBubbleContainer" class="speech-bubble-container">
-          <div class="speech-bubble">
-            <span id="speechBubbleText">¡HOLA!</span>
-          </div>
+          <div class="speech-bubble"><span id="speechBubbleText">¡HOLA!</span></div>
         </div>
 
         <div class="radar-wrapper-outer">
-          <div id="btnFarZoom" class="radar-btn-far" title="Vista Lejana">
-            <svg class="radar-icon-svg" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="9"></circle>
-              <line x1="3.6" y1="9" x2="20.4" y2="9"></line>
-              <line x1="3.6" y1="15" x2="20.4" y2="15"></line>
-              <path d="M11.5 3a13 13 0 0 0 0 18M12.5 3a13 13 0 0 1 0 18"></path>
-            </svg>
-          </div>
-
-          <div id="btnNearZoom" class="radar-btn-near" title="Quito Cercano">
-            <svg class="radar-icon-svg" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="8"></circle>
-              <circle cx="12" cy="12" r="3" fill="#38bdf8"></circle>
-              <line x1="12" y1="1" x2="12" y2="5"></line>
-              <line x1="12" y1="19" x2="12" y2="23"></line>
-              <line x1="1" y1="12" x2="5" y2="12"></line>
-              <line x1="19" y1="12" x2="23" y2="12"></line>
-            </svg>
-          </div>
-
-          <div class="radar-container">
-            <canvas id="radarCanvas" width="70" height="70" style="width: 100%; height: 100%;"></canvas>
-          </div>
+          <div id="btnFarZoom" class="radar-btn-far">🌐</div>
+          <div id="btnNearZoom" class="radar-btn-near">🎯</div>
+          <div class="radar-container"><canvas id="radarCanvas" width="70" height="70"></canvas></div>
         </div>
       </div>
 
-      <!-- PIE DE PÁGINA Y CUADROS -->
       <div class="footer-bar">
         <div class="ticker-box">
           <div>¡EXPLORA Y DESCUBRE LOS RINCONES MÁGICOS DE QUITO!</div>
-          <div class="transport-modes-row">
-            <span class="transport-item">🏍️ moto</span>
-            <span class="transport-item">🚲 bici</span>
-            <span class="transport-item">🚗 carro</span>
-            <span class="transport-item">🚶 persona a pie</span>
-          </div>
+          <div class="transport-modes-row">🏍️ moto | 🚲 bici | 🚗 carro | 🚶 persona a pie</div>
         </div>
       </div>
 
       <div class="empty-blue-box"></div>
     </div>
 
-    <!-- CARGA DE SCRIPTS -->
     <script src="script.js"></script>
-    <script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD7yh3TteD4adDL8pAVXIEGr6RXksDKGLo&callback=initMap&v=weekly&loading=async"
-      async
-    ></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD7yh3TteD4adDL8pAVXIEGr6RXksDKGLo&callback=initMap&v=weekly&loading=async" async></script>
   </body>
 </html>
