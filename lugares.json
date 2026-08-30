@@ -5,8 +5,7 @@
     "lng": -78.5203,
     "categoria": "HASTA $10 USD",
     "sticker": "🪂",
-    "info": "Adulto: $5.25 (Nacional) / $9.00 (Extranjero). Niño: $3.25 (Nacional) / $7.00 (Extranjero).",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Teleferico_Quito.jpg/800px-Teleferico_Quito.jpg"
+    "info": "Adulto: $5.25 (Nacional) / $9.00 (Extranjero). Niño: $3.25 (Nacional) / $7.00 (Extranjero)."
   },
   {
     "nombre": "Ciudad Mitad del Mundo",
@@ -14,8 +13,7 @@
     "lng": -78.4558,
     "categoria": "HASTA $10 USD",
     "sticker": "📍",
-    "info": "Adulto: $5.00. Niño (6 a 12 años): $2.50. Menores de 6 años gratis.",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Mitad_del_Mundo_Monument.jpg/800px-Mitad_del_Mundo_Monument.jpg"
+    "info": "Adulto: $5.00. Niño (6 a 12 años): $2.50. Menores de 6 años gratis."
   },
   {
     "nombre": "Basílica del Voto Nacional",
@@ -23,17 +21,15 @@
     "lng": -78.5074,
     "categoria": "HASTA $10 USD",
     "sticker": "⛪",
-    "info": "Adulto: $2.00 (Nacional) / $3.00 (Extranjero). Niño: $1.00 (Nacional) / $1.50 (Extranjero).",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Bas%C3%ADlica_del_Voto_Nacional%2C_Quito%2C_Ecuador%2C_2015-07-22%2C_DD_16.JPG/800px-Bas%C3%ADlica_del_Voto_Nacional%2C_Quito%2C_Ecuador%2C_2015-07-22%2C_DD_16.JPG"
+    "info": "Adulto: $2.00 (Nacional) / $3.00 (Extranjero). Niño: $1.00 (Nacional) / $1.50 (Extranjero)."
   },
   {
     "nombre": "Iglesia de la Compañía de Jesús",
     "lat": -0.2212,
-    "lng": -78.5140,
+    "lng": -78.514,
     "categoria": "HASTA $10 USD",
     "sticker": "✨",
-    "info": "Adulto: $2.50 (Nacional) / $6.00 (Extranjero). Niño/Estudiante: $0.60 - $2.50.",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Iglesia_de_la_Compa%C3%B1%C3%ADa%2C_Quito%2C_Ecuador%2C_2015-07-22%2C_DD_38.JPG/800px-Iglesia_de_la_Compa%C3%B1%C3%ADa%2C_Quito%2C_Ecuador%2C_2015-07-22%2C_DD_38.JPG"
+    "info": "Adulto: $2.50 (Nacional) / $6.00 (Extranjero). Niño/Estudiante: $0.60 - $2.50."
   },
   {
     "nombre": "El Panecillo",
@@ -41,8 +37,7 @@
     "lng": -78.5186,
     "categoria": "GRATIS",
     "sticker": "🗽",
-    "info": "Entrada libre al mirador. (Subida a la Virgen: Adultos $2.00 / Niños $1.00).",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Virgin_of_El_Panecillo_Quito_Ecuador.jpg/800px-Virgin_of_El_Panecillo_Quito_Ecuador.jpg"
+    "info": "Entrada libre al mirador. (Subida a la Virgen: Adultos $2.00 / Niños $1.00)."
   },
   {
     "nombre": "Plaza de la Independencia (Grande)",
@@ -50,8 +45,7 @@
     "lng": -78.5122,
     "categoria": "GRATIS",
     "sticker": "🏛️",
-    "info": "Acceso libre para todo público.",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Plaza_Grande_Quito.jpg/800px-Plaza_Grande_Quito.jpg"
+    "info": "Acceso libre para todo público."
   },
   {
     "nombre": "Parque La Carolina",
@@ -59,8 +53,7 @@
     "lng": -78.4845,
     "categoria": "GRATIS",
     "sticker": "🌳",
-    "info": "Acceso libre para todo público.",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Parque_La_Carolina_Quito.jpg/800px-Parque_La_Carolina_Quito.jpg"
+    "info": "Acceso libre para todo público."
   },
   {
     "nombre": "Calle La Ronda",
@@ -68,7 +61,6 @@
     "lng": -78.5148,
     "categoria": "GRATIS",
     "sticker": "🎨",
-    "info": "Acceso libre para todo público.",
-    "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/La_Ronda%2C_Quito.jpg/800px-La_Ronda%2C_Quito.jpg"
+    "info": "Acceso libre para todo público."
   }
 ]
