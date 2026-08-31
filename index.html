@@ -166,7 +166,7 @@
     ----------------------------------------------------------- */
     #galloContainer {
       position: absolute;
-      bottom: 60px;
+      bottom: 70px;
       left: 15px;
       display: flex;
       align-items: flex-end;
@@ -202,7 +202,7 @@
     ----------------------------------------------------------- */
     #radarContainer {
       position: absolute;
-      bottom: 60px;
+      bottom: 70px;
       right: 15px;
       width: 90px;
       height: 90px;
@@ -220,18 +220,34 @@
     }
 
     /* -----------------------------------------------------------
-       5. PANEL DE BOTONES INFERIOR (RUTAS)
+       5. PANEL DE BOTONES INFERIOR DESLIZABLE (RUTAS)
     ----------------------------------------------------------- */
     #extraBlueSpace {
       background-color: #0f172a;
       border-top: 4px solid #38bdf8;
-      padding: 10px;
+      padding: 10px 15px;
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
+      flex-wrap: nowrap;
+      gap: 12px;
       align-items: center;
       z-index: 10;
+      overflow-x: auto;
+      overflow-y: hidden;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+      max-width: 100vw;
+    }
+
+    /* Personalización de la barra de desplazamiento */
+    #extraBlueSpace::-webkit-scrollbar {
+      height: 6px;
+    }
+    #extraBlueSpace::-webkit-scrollbar-track {
+      background: #020617;
+    }
+    #extraBlueSpace::-webkit-scrollbar-thumb {
+      background: #38bdf8;
+      border-radius: 3px;
     }
 
     #extraBlueSpace.hidden {
@@ -242,12 +258,13 @@
       background-color: #1e293b;
       color: #38bdf8;
       border: 2px solid #38bdf8;
-      padding: 8px 12px;
+      padding: 10px 14px;
       font-family: 'Press Start 2P', monospace;
       font-size: 10px;
       cursor: pointer;
       box-shadow: 2px 2px 0px #000000;
       transition: all 0.1s ease-in-out;
+      flex-shrink: 0;
     }
 
     .btn-retro:hover {
@@ -337,12 +354,13 @@
       <canvas id="radarCanvas" width="90" height="90"></canvas>
     </div>
 
-    <!-- Panel de Control de Rutas -->
+    <!-- Panel Deslizable de Botones (Rutas / Cómo Llegar) -->
     <div id="extraBlueSpace" class="hidden">
       <button class="btn-retro" onclick="trazarRuta('driving')">🚗 CARRO</button>
       <button class="btn-retro" onclick="trazarRuta('walking')">🚶 PIE</button>
       <button class="btn-retro" onclick="trazarRuta('bicycling')">🚴 BICI</button>
       <button class="btn-retro" onclick="trazarRuta('two-wheeler')">🛵 MOTO</button>
+      <button class="btn-retro" onclick="trazarRuta('transit')">🚌 BUS</button>
       <button class="btn-retro danger" onclick="limpiarRuta()">❌ LIMPIAR</button>
     </div>
   </div>
@@ -378,7 +396,7 @@
           terminal.innerHTML += hackerCommands[lineIndex] + "<br>";
           lineIndex++;
         }
-      }, 600); // Imprime comandos progresivamente
+      }, 600);
 
       setTimeout(() => {
         clearInterval(interval);
@@ -387,17 +405,21 @@
         setTimeout(() => {
           intro.style.display = "none";
         }, 500);
-      }, 5000); // 5 Segundos totales
+      }, 5000);
     }
 
     function initMap() {
       const quitoCentro = { lat: -0.1807, lng: -78.4678 };
 
+      /* Se desactivan todos los controles de la interfaz por defecto de Google Maps */
       map = new google.maps.Map(document.getElementById("map"), {
         zoom: 13,
         center: quitoCentro,
-        disableDefaultUI: false,
-        zoomControl: true,
+        disableDefaultUI: true, // Quita +, -, pantalla completa y flechas
+        zoomControl: false,
+        fullscreenControl: false,
+        streetViewControl: false,
+        mapTypeControl: false,
         styles: [
           { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
           { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
@@ -444,7 +466,10 @@
           destinoSeleccionado = lugar;
           
           const panelRutas = document.getElementById("extraBlueSpace");
-          if (panelRutas) panelRutas.classList.remove("hidden");
+          if (panelRutas) {
+            panelRutas.classList.remove("hidden");
+            panelRutas.scrollLeft = 0; // Reinicia el scroll al seleccionar
+          }
 
           let listaActividadesHtml = '';
           if (lugar.actividades && Array.isArray(lugar.actividades) && lugar.actividades.length > 0) {
