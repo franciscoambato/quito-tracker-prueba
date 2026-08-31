@@ -22,7 +22,7 @@
       padding: 0;
       width: 100%;
       height: 100%;
-      background-color: #0d1527;
+      background-color: #0b0719;
       font-family: 'Press Start 2P', monospace;
       color: #ffffff;
       overflow: hidden;
@@ -45,13 +45,13 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background-color: #0a0d1a;
+      background-color: #0b0719;
       z-index: 9999;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       padding: 30px;
-      color: #e2b714;
+      color: #00f0ff;
       font-family: 'Press Start 2P', monospace;
       font-size: 11px;
       overflow: hidden;
@@ -70,8 +70,8 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), 
-                  linear-gradient(90deg, rgba(184, 59, 62, 0.08), rgba(29, 42, 68, 0.08), rgba(226, 183, 20, 0.05));
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%), 
+                  linear-gradient(90deg, rgba(255, 0, 127, 0.1), rgba(0, 240, 255, 0.1), rgba(226, 183, 20, 0.05));
       background-size: 100% 4px, 6px 100%;
       pointer-events: none;
       z-index: 10000;
@@ -79,7 +79,7 @@
 
     #hackerTerminal {
       line-height: 1.8;
-      text-shadow: 0 0 5px #e2b714;
+      text-shadow: 0 0 5px #00f0ff;
       white-space: pre-wrap;
     }
 
@@ -87,7 +87,7 @@
       display: inline-block;
       width: 8px;
       height: 12px;
-      background-color: #e2b714;
+      background-color: #ff007f;
       animation: blink 0.6s infinite;
       vertical-align: middle;
     }
@@ -98,33 +98,33 @@
     }
 
     .glitch-header {
-      color: #b83b3e;
+      color: #ff007f;
       margin-bottom: 20px;
       font-size: 14px;
-      text-shadow: 2px 2px #e2b714, -2px -2px #1d2a44;
+      text-shadow: 2px 2px #00f0ff, -2px -2px #241442;
     }
 
     /* Cabecera / Banner Superior */
     #topHeader {
-      background-color: #111a2e;
-      border-bottom: 3px solid #e2b714;
+      background-color: #160d33;
+      border-bottom: 3px solid #ff007f;
       padding: 10px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       z-index: 10;
-      box-shadow: 0 4px 0 #080d18;
+      box-shadow: 0 4px 0 #070410;
     }
 
     .header-title {
       font-size: 12px;
-      color: #ffffff;
+      color: #00f0ff;
       text-shadow: 2px 2px #000000;
     }
 
     .header-subtitle {
       font-size: 10px;
-      color: #e2b714;
+      color: #ff007f;
     }
 
     /* Contenedor Principal del Mapa */
@@ -148,7 +148,7 @@
     }
 
     .btn-filter {
-      background-color: #111a2e;
+      background-color: #160d33;
       border: 3px solid #000000;
       padding: 8px 12px;
       cursor: pointer;
@@ -164,8 +164,8 @@
       box-shadow: 1px 1px 0px #000000;
     }
 
-    .btn-filter.gratis { border-color: #4ade80; }
-    .btn-filter.pago { border-color: #e2b714; }
+    .btn-filter.gratis { border-color: #00f0ff; }
+    .btn-filter.pago { border-color: #ff007f; }
 
     /* -----------------------------------------------------------
        3. AVATAR GALLO VIDEO (ESQUINA INFERIOR IZQUIERDA)
@@ -185,15 +185,15 @@
       width: 70px;
       height: 70px;
       border-radius: 50%;
-      border: 3px solid #e2b714;
-      background-color: #111a2e;
+      border: 3px solid #00f0ff;
+      background-color: #160d33;
       box-shadow: 3px 3px 0px #000000;
       object-fit: cover;
     }
 
     #galloSpeech {
-      background-color: #111a2e;
-      border: 3px solid #b83b3e;
+      background-color: #160d33;
+      border: 3px solid #ff007f;
       border-radius: 6px;
       padding: 8px 12px;
       font-size: 9px;
@@ -212,8 +212,8 @@
       right: 15px;
       width: 90px;
       height: 90px;
-      background-color: rgba(17, 26, 46, 0.9);
-      border: 3px solid #e2b714;
+      background-color: rgba(22, 13, 51, 0.9);
+      border: 3px solid #00f0ff;
       border-radius: 50%;
       box-shadow: 3px 3px 0px #000000;
       z-index: 5;
@@ -229,8 +229,8 @@
        5. PANEL DE BOTONES INFERIOR DESLIZABLE (RUTAS)
     ----------------------------------------------------------- */
     #extraBlueSpace {
-      background-color: #111a2e;
-      border-top: 4px solid #b83b3e;
+      background-color: #160d33;
+      border-top: 4px solid #00f0ff;
       padding: 10px 15px;
       display: flex;
       flex-wrap: nowrap;
@@ -248,10 +248,10 @@
       height: 6px;
     }
     #extraBlueSpace::-webkit-scrollbar-track {
-      background: #0d1527;
+      background: #0b0719;
     }
     #extraBlueSpace::-webkit-scrollbar-thumb {
-      background: #e2b714;
+      background: #ff007f;
       border-radius: 3px;
     }
 
@@ -260,9 +260,9 @@
     }
 
     .btn-retro {
-      background-color: #0d1527;
-      color: #e2b714;
-      border: 2px solid #e2b714;
+      background-color: #0b0719;
+      color: #00f0ff;
+      border: 2px solid #00f0ff;
       padding: 10px 14px;
       font-family: 'Press Start 2P', monospace;
       font-size: 10px;
@@ -273,18 +273,18 @@
     }
 
     .btn-retro:hover {
-      background-color: #e2b714;
-      color: #0d1527;
+      background-color: #00f0ff;
+      color: #0b0719;
     }
 
     .btn-retro.danger {
       color: #ffffff;
-      background-color: #b83b3e;
+      background-color: #ff007f;
       border-color: #ffffff;
     }
 
     .btn-retro.danger:hover {
-      background-color: #8c2a2d;
+      background-color: #b30059;
       color: #ffffff;
     }
 
@@ -295,8 +295,8 @@
       padding: 16px !important;
       max-width: 420px !important;
       min-width: 300px !important;
-      background-color: #111a2e !important;
-      border: 3px solid #e2b714 !important;
+      background-color: #160d33 !important;
+      border: 3px solid #00f0ff !important;
       border-radius: 8px !important;
       box-shadow: 5px 5px 0px #000000 !important;
     }
@@ -313,7 +313,7 @@
     }
 
     .gm-style .gm-style-iw-tc::after {
-      background-color: #e2b714 !important;
+      background-color: #00f0ff !important;
     }
   </style>
 </head>
@@ -326,26 +326,26 @@
       <div class="glitch-header">> INITIALIZING CYBER_QUITO_NET v8.0</div>
       <div id="hackerTerminal"></div><span class="cursor"></span>
     </div>
-    <div style="color: #e2b714; font-size: 9px;">[SYS_STATUS: INJECTING_MAP_NODES...]</div>
+    <div style="color: #00f0ff; font-size: 9px;">[SYS_STATUS: INJECTING_NEON_NODES...]</div>
   </div>
 
   <div id="app-container">
     <!-- Banner Superior Limpio -->
     <div id="topHeader">
       <div class="header-title">QUITO TRACKER 8-BIT</div>
-      <div class="header-subtitle">[Quito], Ecuador</div>
+      <div class="header-subtitle">Quito, Ecuador</div>
     </div>
 
     <!-- El Mapa de Google -->
     <div id="map"></div>
 
-    <!-- Filtros de Categoría con nuevos íconos -->
+    <!-- Filtros de Categoría -->
     <div id="filterControls">
       <button class="btn-filter gratis" onclick="filtrarLugares('GRATIS')">
-        <span>🎁</span> <span style="font-size: 9px; color: #4ade80;">GRATIS</span>
+        <span>🎁</span> <span style="font-size: 9px; color: #00f0ff;">GRATIS</span>
       </button>
       <button class="btn-filter pago" onclick="filtrarLugares('PAID')">
-        <span>🪙</span> <span style="font-size: 9px; color: #e2b714;">PAGO</span>
+        <span>🪙</span> <span style="font-size: 9px; color: #ff007f;">PAGO</span>
       </button>
     </div>
 
@@ -386,8 +386,8 @@
       "> CONNECTING TO QUITO_CORE_SERVER...",
       "> BYPASSING SECURITY GATEWAY_0.2201...",
       "> ACCESSING SATELLITE FEED... [OK]",
-      "> CUSTOMIZING BLUE_HOUSES & TEAL_PARKS...",
-      "> APPLYING SOFT_RED_ROADS_PALETTE...",
+      "> APPLYING SYNTHWAVE_NEON_PALETTE...",
+      "> LOADING PIXELATED MAP LAYERS...",
       "> INITIALIZING GALLO_SPEECH_CORE...",
       "> SYSTEM READY. ACCESS GRANTED."
     ];
@@ -416,7 +416,7 @@
     function initMap() {
       const quitoCentro = { lat: -0.1807, lng: -78.4678 };
 
-      /* Configuración personalizada de estilos del mapa */
+      /* Configuración personalizada de estilos del mapa (Estilo Synthwave / Arcade Retro) */
       map = new google.maps.Map(document.getElementById("map"), {
         zoom: 13,
         center: quitoCentro,
@@ -426,30 +426,35 @@
         streetViewControl: false,
         mapTypeControl: false,
         styles: [
-          /* Fondo general */
-          { elementType: "geometry", stylers: [{ color: "#0d1527" }] },
-          { elementType: "labels.text.stroke", stylers: [{ color: "#000000" }, { weight: 3 }] },
+          /* Fondo general - Violeta oscuro nocturno */
+          { elementType: "geometry", stylers: [{ color: "#0b0719" }] },
+          { elementType: "labels.text.stroke", stylers: [{ color: "#0b0719" }, { weight: 4 }] },
           { elementType: "labels.text.fill", stylers: [{ color: "#ffffff" }] },
           
-          /* Casas / Manzanas: Azul profundo equilibrado */
-          { featureType: "landscape", elementType: "geometry", stylers: [{ color: "#1d2a44" }] },
-          { featureType: "landscape.man_made", elementType: "geometry", stylers: [{ color: "#1d2a44" }] },
+          /* Casas / Manzanas: Púrpura profundo */
+          { featureType: "landscape", elementType: "geometry", stylers: [{ color: "#190f38" }] },
+          { featureType: "landscape.man_made", elementType: "geometry", stylers: [{ color: "#140c2e" }] },
           
-          /* Áreas Verdes / Parques: Azul verdoso contrastante */
-          { featureType: "poi.park", elementType: "geometry", stylers: [{ color: "#0e4b61" }] },
-          { featureType: "landscape.natural", elementType: "geometry", stylers: [{ color: "#0e4b61" }] },
-          { featureType: "poi", elementType: "geometry", stylers: [{ color: "#16384c" }] },
+          /* Áreas Verdes / Parques: Azul cian oscuro */
+          { featureType: "poi.park", elementType: "geometry", stylers: [{ color: "#072b38" }] },
+          { featureType: "landscape.natural", elementType: "geometry", stylers: [{ color: "#072b38" }] },
+          { featureType: "poi", elementType: "geometry", stylers: [{ color: "#141636" }] },
           
-          /* Ríos y Agua: Azul marino */
-          { featureType: "water", elementType: "geometry", stylers: [{ color: "#0a2236" }] },
+          /* Ocultar íconos nativos de Google Maps para mantener la estética */
+          { featureType: "poi", elementType: "labels.icon", stylers: [{ visibility: "off" }] },
+          { featureType: "transit", elementType: "labels.icon", stylers: [{ visibility: "off" }] },
 
-          /* Calles / Vías: Rojo suave / no chillón */
-          { featureType: "road", elementType: "geometry", stylers: [{ color: "#b83b3e" }] },
-          { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#d14549" }] },
-          { featureType: "road.highway", elementType: "geometry.stroke", stylers: [{ color: "#e2b714" }, { weight: 1 }] },
-          { featureType: "road.arterial", elementType: "geometry", stylers: [{ color: "#9c2d30" }] },
-          { featureType: "road.local", elementType: "geometry", stylers: [{ color: "#782225" }] },
-          { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#ffffff" }] }
+          /* Ríos y Agua: Azul marino profundo neón */
+          { featureType: "water", elementType: "geometry", stylers: [{ color: "#051329" }] },
+          { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#00f0ff" }] },
+
+          /* Calles y Vías Principales: Neón Magenta & Turquesa */
+          { featureType: "road", elementType: "geometry", stylers: [{ color: "#2d1b54" }] },
+          { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#ff007f" }] },
+          { featureType: "road.highway", elementType: "geometry.stroke", stylers: [{ color: "#00f0ff" }, { weight: 1 }] },
+          { featureType: "road.arterial", elementType: "geometry", stylers: [{ color: "#8a0050" }] },
+          { featureType: "road.local", elementType: "geometry", stylers: [{ color: "#421545" }] },
+          { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#00f0ff" }] }
         ]
       });
 
@@ -500,7 +505,7 @@
           if (lugar.actividades && Array.isArray(lugar.actividades) && lugar.actividades.length > 0) {
             listaActividadesHtml = `
               <div style="margin-top: 12px;">
-                <strong style="color: #e2b714; font-size: 11px; font-family: 'Press Start 2P', monospace;">ACTIVIDADES:</strong>
+                <strong style="color: #00f0ff; font-size: 11px; font-family: 'Press Start 2P', monospace;">ACTIVIDADES:</strong>
                 <ul style="margin: 8px 0 0 16px; padding: 0; font-family: system-ui, -apple-system, sans-serif; font-size: 13px; color: #ffffff; line-height: 1.4;">
                   ${lugar.actividades.map(act => `<li style="margin-bottom: 5px;">${act}</li>`).join('')}
                 </ul>
@@ -510,11 +515,11 @@
 
           const contentString = `
             <div style="padding: 2px; color: #ffffff;">
-              <h3 style="font-family: 'Press Start 2P', monospace; font-size: 13px; color: #e2b714; margin: 0 0 10px 0; line-height: 1.4;">
+              <h3 style="font-family: 'Press Start 2P', monospace; font-size: 13px; color: #00f0ff; margin: 0 0 10px 0; line-height: 1.4;">
                 ${lugar.sticker || ''} ${lugar.nombre}
               </h3>
               
-              <div style="font-size: 12px; color: #ffffff; margin-bottom: 10px; font-family: system-ui, -apple-system, sans-serif; font-weight: bold;">
+              <div style="font-size: 12px; color: #ff007f; margin-bottom: 10px; font-family: system-ui, -apple-system, sans-serif; font-weight: bold;">
                 💵 ${lugar.info || lugar.categoria || ''}
               </div>
 
@@ -527,7 +532,7 @@
               ${listaActividadesHtml}
 
               ${lugar.recomendacion ? `
-                <div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #b83b3e; font-size: 12px; font-family: system-ui, -apple-system, sans-serif; color: #e2b714; line-height: 1.4;">
+                <div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #ff007f; font-size: 12px; font-family: system-ui, -apple-system, sans-serif; color: #00f0ff; line-height: 1.4;">
                   💡 <strong>Tip:</strong> ${lugar.recomendacion}
                 </div>
               ` : ''}
@@ -565,24 +570,24 @@
       function drawRadar() {
         ctx.clearRect(0, 0, 90, 90);
 
-        ctx.strokeStyle = "rgba(226, 183, 20, 0.4)";
+        ctx.strokeStyle = "rgba(0, 240, 255, 0.4)";
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.arc(45, 45, 20, 0, Math.PI * 2);
         ctx.arc(45, 45, 38, 0, Math.PI * 2);
         ctx.stroke();
 
-        ctx.strokeStyle = "#e2b714";
+        ctx.strokeStyle = "#ff007f";
         ctx.beginPath();
         ctx.moveTo(45, 45);
         ctx.lineTo(45 + 40 * Math.cos(radarAngle), 45 + 40 * Math.sin(radarAngle));
         ctx.stroke();
 
         if (lugaresPuntos.length > 0) {
-          ctx.fillStyle = "#4ade80";
+          ctx.fillStyle = "#00f0ff";
           ctx.fillRect(35, 30, 4, 4);
           ctx.fillRect(55, 60, 4, 4);
-          ctx.fillStyle = "#e2b714";
+          ctx.fillStyle = "#ff007f";
           ctx.fillRect(40, 55, 4, 4);
         }
 
