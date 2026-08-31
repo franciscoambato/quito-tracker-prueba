@@ -963,9 +963,11 @@
         radarCtx.lineTo(cx + Math.cos(angle) * 32, cy + Math.sin(angle) * 32);
         radarCtx.stroke();
 
-        angle += 0.08;
-        setTimeout(drawSpiderWebRadar, 50);
+        angle += 0.05;
+        requestAnimationFrame(drawSpiderWebRadar);
       }
+
+      // Iniciar animación del radar
       drawSpiderWebRadar();
     </script>
   </body>
