@@ -14,7 +14,7 @@
     ----------------------------------------------------------- */
     * {
       box-sizing: border-box;
-      image-rendering: pixelated; /* Mantiene la nitidez retro */
+      image-rendering: pixelated;
     }
 
     body, html {
@@ -94,7 +94,7 @@
     .btn-filter.pago { border-color: #f97316; }
 
     /* -----------------------------------------------------------
-       3. AVATAR GALLO (ESQUINA INFERIOR IZQUIERDA)
+       3. AVATAR GALLO VIDEO (ESQUINA INFERIOR IZQUIERDA)
     ----------------------------------------------------------- */
     #galloContainer {
       position: absolute;
@@ -107,18 +107,14 @@
       pointer-events: none;
     }
 
-    #galloAvatar {
-      width: 64px;
-      height: 64px;
+    #galloVideo {
+      width: 70px;
+      height: 70px;
       border-radius: 50%;
       border: 3px solid #ef4444;
       background-color: #0f172a;
       box-shadow: 3px 3px 0px #000;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 30px;
+      object-fit: cover;
     }
 
     #galloSpeech {
@@ -202,11 +198,11 @@
     }
 
     /* -----------------------------------------------------------
-       6. PERSONALIZACIÓN DEL INFOWINDOW (CUADRO EMERGENTE GRANDE)
+       6. PERSONALIZACIÓN DEL INFOWINDOW
     ----------------------------------------------------------- */
     .gm-style .gm-style-iw-c {
       padding: 16px !important;
-      max-width: 420px !important; /* Cuadro emergente más grande */
+      max-width: 420px !important;
       min-width: 300px !important;
       background-color: #0f172a !important;
       border: 3px solid #38bdf8 !important;
@@ -252,9 +248,9 @@
       </button>
     </div>
 
-    <!-- Personaje Gallo Parlante -->
+    <!-- Personaje Gallo parlante en Video -->
     <div id="galloContainer">
-      <div id="galloAvatar">🐓</div>
+      <video id="galloVideo" src="./gallo.mp4" playsinline preload="metadata"></video>
       <div id="galloSpeech">¡EXPLORA Y DESCUBRE LOS RINCONES MÁGICOS DE QUITO!</div>
     </div>
 
@@ -275,7 +271,6 @@
 
   <!-- Script Principal de la Aplicación -->
   <script>
-    // Variables Globales
     let map;
     let infoWindow;
     let directionsService;
@@ -285,7 +280,9 @@
     let markersMap = [];
     let radarAngle = 0;
 
-    // 1. Inicialización del Mapa
+    // Ubicación por defecto si falla la geolocalización (Centro Histórico de Quito)
+    const defaultLocation = { lat: -0.2201, lng: -78.5123 };
+
     function initMap() {
       const quitoCentro = { lat: -0.1807, lng: -78.4678 };
 
@@ -304,19 +301,20 @@
 
       infoWindow = new google.maps.InfoWindow();
       directionsService = new google.maps.DirectionsService();
-      directionsRenderer = new google.maps.DirectionsRenderer({ map: map });
+      directionsRenderer = new google.maps.DirectionsRenderer({ 
+        map: map,
+        suppressMarkers: false
+      });
 
       cargarLugares();
       iniciarRadar();
     }
 
-    // 2. Cargar Datos JSON de Forma Asíncrona
     async function cargarLugares() {
       try {
         const response = await fetch("./lugares.json");
         if (!response.ok) throw new Error("No se pudo cargar lugares.json");
         lugaresPuntos = await response.json();
-        
         renderizarMarcadores(lugaresPuntos);
       } catch (error) {
         console.error("Error al cargar los datos:", error);
@@ -324,7 +322,6 @@
       }
     }
 
-    // 3. Crear los Marcadores e InfoWindows Ampliados
     function renderizarMarcadores(lugares) {
       limpiarMarcadores();
 
@@ -348,7 +345,6 @@
           const panelRutas = document.getElementById("extraBlueSpace");
           if (panelRutas) panelRutas.classList.remove("hidden");
 
-          // Construcción dinámica del HTML para Actividades
           let listaActividadesHtml = '';
           if (lugar.actividades && Array.isArray(lugar.actividades) && lugar.actividades.length > 0) {
             listaActividadesHtml = `
@@ -361,7 +357,6 @@
             `;
           }
 
-          // Plantilla HTML del InfoWindow Ampliado
           const contentString = `
             <div style="padding: 2px; color: #ffffff;">
               <h3 style="font-family: 'Press Start 2P', monospace; font-size: 13px; color: #38bdf8; margin: 0 0 10px 0; line-height: 1.4;">
@@ -399,7 +394,6 @@
       markersMap = [];
     }
 
-    // 4. Filtros Interactivos
     window.filtrarLugares = function(tipo) {
       if (tipo === 'GRATIS') {
         const gratis = lugaresPuntos.filter(l => l.categoria && l.categoria.toUpperCase().includes('GRATIS'));
@@ -412,7 +406,6 @@
       }
     };
 
-    // 5. Animación del Radar Canvas
     function iniciarRadar() {
       const canvas = document.getElementById("radarCanvas");
       if (!canvas) return;
@@ -421,7 +414,6 @@
       function drawRadar() {
         ctx.clearRect(0, 0, 90, 90);
 
-        // Fondo y círculos
         ctx.strokeStyle = "rgba(56, 189, 248, 0.4)";
         ctx.lineWidth = 1;
         ctx.beginPath();
@@ -429,14 +421,12 @@
         ctx.arc(45, 45, 38, 0, Math.PI * 2);
         ctx.stroke();
 
-        // Línea barredora
         ctx.strokeStyle = "#38bdf8";
         ctx.beginPath();
         ctx.moveTo(45, 45);
         ctx.lineTo(45 + 40 * Math.cos(radarAngle), 45 + 40 * Math.sin(radarAngle));
         ctx.stroke();
 
-        // Puntos simulados en el radar
         if (lugaresPuntos.length > 0) {
           ctx.fillStyle = "#4ade80";
           ctx.fillRect(35, 30, 3, 3);
@@ -451,36 +441,50 @@
       drawRadar();
     }
 
-    // 6. Funciones de Trazado de Ruta
+    /* -----------------------------------------------------------
+       7. CÁLCULO Y TRAZADO DE RUTAS AUMENTADO
+    ----------------------------------------------------------- */
     window.trazarRuta = function(modo) {
-      if (!destinoSeleccionado) return;
+      if (!destinoSeleccionado) {
+        showGalloSpeech("SELECCIONA UN LUGAR EN EL MAPA");
+        return;
+      }
+
+      showGalloSpeech("CALCULANDO LA RUTA...");
+
+      const ejecutarCalculo = (origenCoords) => {
+        const request = {
+          origin: origenCoords,
+          destination: { lat: destinoSeleccionado.lat, lng: destinoSeleccionado.lng },
+          travelMode: google.maps.TravelMode[modo]
+        };
+
+        directionsService.route(request, (result, status) => {
+          if (status === "OK") {
+            directionsRenderer.setDirections(result);
+            showGalloSpeech(`RUTA TRAZADA: ${destinoSeleccionado.nombre.toUpperCase()}`);
+          } else {
+            showGalloSpeech("NO SE ENCONTRÓ RUTA PARA ESE TRANSPORTE");
+          }
+        });
+      };
 
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
-            const origen = {
+            ejecutarCalculo({
               lat: position.coords.latitude,
               lng: position.coords.longitude
-            };
-
-            const request = {
-              origin: origen,
-              destination: { lat: destinoSeleccionado.lat, lng: destinoSeleccionado.lng },
-              travelMode: google.maps.TravelMode[modo]
-            };
-
-            directionsService.route(request, (result, status) => {
-              if (status === "OK") {
-                directionsRenderer.setDirections(result);
-              } else {
-                alert("No se pudo calcular la ruta: " + status);
-              }
             });
           },
-          () => {
-            alert("Error al obtener la ubicación actual.");
-          }
+          (error) => {
+            console.warn("Geolocalización bloqueada o no disponible. Usando ubicación por defecto.", error);
+            ejecutarCalculo(defaultLocation);
+          },
+          { timeout: 5000 }
         );
+      } else {
+        ejecutarCalculo(defaultLocation);
       }
     };
 
@@ -488,17 +492,26 @@
       directionsRenderer.setDirections({ routes: [] });
       document.getElementById("extraBlueSpace").classList.add("hidden");
       infoWindow.close();
+      destinoSeleccionado = null;
       showGalloSpeech("RUTA LIMPIADA");
     };
 
+    /* -----------------------------------------------------------
+       8. CONTROL DE REPRODUCCIÓN DEL VIDEO DEL GALLO
+    ----------------------------------------------------------- */
     function showGalloSpeech(texto) {
       const speechBox = document.getElementById("galloSpeech");
       if (speechBox) speechBox.textContent = texto;
+
+      const video = document.getElementById("galloVideo");
+      if (video) {
+        video.currentTime = 0;
+        video.play().catch(e => console.log("La reproducción del video requiere interacción previa del usuario."));
+      }
     }
 
-    // 7. Cargar Google Maps Script dinámicamente
     function loadGoogleMapsScript() {
-      const apiKey = "TU_API_KEY_AQUI"; // ⚠️ Reemplaza con tu API Key de Google Maps
+      const apiKey = "TAIzaSyD7yh3TteD4adDL8pAVXIEGr6RXksDKGLo"; // ⚠️ Reemplaza con tu API Key de Google Maps
       const script = document.createElement("script");
       script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyD7yh3TteD4adDL8pAVXIEGr6RXksDKGLo&callback=initMap`;
       script.async = true;
