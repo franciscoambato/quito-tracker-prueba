@@ -452,18 +452,28 @@
 
       showGalloSpeech("CALCULANDO LA RUTA...");
 
+      // Mapeo seguro del tipo de transporte en la API de Google Maps
+      let selectedTravelMode = google.maps.TravelMode.DRIVING;
+      if (modo === 'WALKING') selectedTravelMode = google.maps.TravelMode.WALKING;
+      if (modo === 'BICYCLING') selectedTravelMode = google.maps.TravelMode.BICYCLING;
+      if (modo === 'TWO_WHEELER') {
+        // En caso de que TWO_WHEELER no esté disponible en la SDK cargada, usa DRIVING como fallback
+        selectedTravelMode = google.maps.TravelMode.TWO_WHEELER || google.maps.TravelMode.DRIVING;
+      }
+
       const ejecutarCalculo = (origenCoords) => {
         const request = {
           origin: origenCoords,
-          destination: { lat: destinoSeleccionado.lat, lng: destinoSeleccionado.lng },
-          travelMode: google.maps.TravelMode[modo]
+          destination: { lat: Number(destinoSeleccionado.lat), lng: Number(destinoSeleccionado.lng) },
+          travelMode: selectedTravelMode
         };
 
         directionsService.route(request, (result, status) => {
-          if (status === "OK") {
+          if (status === google.maps.DirectionsStatus.OK || status === "OK") {
             directionsRenderer.setDirections(result);
             showGalloSpeech(`RUTA TRAZADA: ${destinoSeleccionado.nombre.toUpperCase()}`);
           } else {
+            console.error("Error al trazar la ruta:", status);
             showGalloSpeech("NO SE ENCONTRÓ RUTA PARA ESE TRANSPORTE");
           }
         });
@@ -481,7 +491,7 @@
             console.warn("Geolocalización bloqueada o no disponible. Usando ubicación por defecto.", error);
             ejecutarCalculo(defaultLocation);
           },
-          { timeout: 5000 }
+          { timeout: 5000, enableHighAccuracy: true }
         );
       } else {
         ejecutarCalculo(defaultLocation);
@@ -511,7 +521,7 @@
     }
 
     function loadGoogleMapsScript() {
-      const apiKey = "TAIzaSyD7yh3TteD4adDL8pAVXIEGr6RXksDKGLo"; // ⚠️ Reemplaza con tu API Key de Google Maps
+      // Recuerda reemplazar con tu API Key válida si es necesario
       const script = document.createElement("script");
       script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyD7yh3TteD4adDL8pAVXIEGr6RXksDKGLo&callback=initMap`;
       script.async = true;
