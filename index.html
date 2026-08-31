@@ -1,267 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
   <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quito Tracker - Pichincha Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <script>
-      // CONFIGURACIÓN DE API KEY (Reemplazar con tu clave restrictiva)
-      const CONFIG = {
-        GOOGLE_MAPS_API_KEY: "AIzaSyD7yh3TteD4adDL8pAVXIEGr6RXksDKGLo"
-      };
-
-      let map;
-      let lugaresPuntos = []; 
-      let markersMap = [];    
-      let currentFilter = 'ALL'; 
-      let currentZoomLevel = 'NEAR'; 
-      let infoWindow;
-      let directionsService;
-      let directionsDisplay;
-      let destinoSeleccionado = null;
-
-      const quitoCentro = { lat: -0.1807, lng: -78.4678 };
-      const LIMITES_PICHINCHA = {
-        north: 0.3500,
-        south: -0.7500,
-        west: -79.3000,
-        east: -77.7000,
-      };
-
-      const mapTechStyle = [
-        { "elementType": "geometry", "stylers": [{ "color": "#0a192f" }] },
-        { "elementType": "labels.text.fill", "stylers": [{ "color": "#8892b0" }] },
-        { "elementType": "labels.text.stroke", "stylers": [{ "color": "#0a192f" }] },
-        { "featureType": "administrative.land_parcel", "elementType": "labels.text.fill", "stylers": [{ "color": "#a0aec0" }] },
-        { "featureType": "poi", "elementType": "geometry", "stylers": [{ "color": "#112240" }] },
-        { "featureType": "poi", "elementType": "labels.text.fill", "stylers": [{ "color": "#64ffda" }] },
-        { "featureType": "road", "elementType": "geometry", "stylers": [{ "color": "#1d2d50" }] },
-        { "featureType": "road.arterial", "elementType": "geometry", "stylers": [{ "color": "#1e3a8a" }] },
-        { "featureType": "road.highway", "elementType": "geometry", "stylers": [{ "color": "#2563eb" }] },
-        { "featureType": "transit", "elementType": "geometry", "stylers": [{ "color": "#1e3a8a" }] },
-        { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#0284c7" }] },
-        { "featureType": "water", "elementType": "labels.text.fill", "stylers": [{ "color": "#38bdf8" }] }
-      ];
-
-      function getStickerIcon(emoji, categoria, size = 38) {
-        const esGratis = categoria && categoria.toUpperCase() === "GRATIS";
-        const borderColor = esGratis ? "#22c55e" : "#f97316";
-
-        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 40 40">
-          <circle cx="20" cy="20" r="18" fill="#ffffff" stroke="${borderColor}" stroke-width="4"/>
-          <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="20">${emoji}</text>
-        </svg>`;
-        return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
-      }
-
-      function updateMarkersSize() {
-        markersMap.forEach(item => {
-          const esGratis = item.lugar.categoria && item.lugar.categoria.toUpperCase() === "GRATIS";
-          let baseSize = (currentZoomLevel === 'FAR') ? 22 : 38;
-
-          if (currentFilter === 'GRATIS') {
-            baseSize = esGratis ? baseSize * 1.4 : baseSize * 0.6;
-          } else if (currentFilter === 'PAGO') {
-            baseSize = !esGratis ? baseSize * 1.4 : baseSize * 0.6;
-          }
-
-          const finalSize = Math.round(baseSize);
-          item.marker.setIcon({
-            url: getStickerIcon(item.lugar.sticker, item.lugar.categoria, finalSize),
-            scaledSize: new google.maps.Size(finalSize, finalSize),
-            origin: new google.maps.Point(0, 0),
-            anchor: new google.maps.Point(finalSize / 2, finalSize / 2)
-          });
-        });
-      }
-
-      // Mapeo de nombres descriptivos para el cuadro del Gallo
-      function getNombreModo(modo) {
-        switch(modo) {
-          case 'DRIVING': return 'EN CARRO';
-          case 'WALKING': return 'A PIE';
-          case 'BICYCLING': return 'EN BICICLETA';
-          case 'TWO_WHEELER': return 'EN MOTOCICLETA';
-          default: return modo;
-        }
-      }
-
-      // Función para trazar ruta o redirigir externamente si falla la API
-      window.trazarRuta = function(modo) {
-        if (!destinoSeleccionado) {
-          alert("Por favor selecciona primero un marcador en el mapa.");
-          return;
-        }
-
-        const destLat = destinoSeleccionado.lat;
-        const destLng = destinoSeleccionado.lng;
-
-        if (!navigator.geolocation) {
-          const travelParam = modo.toLowerCase();
-          window.open(`https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}&travelmode=${travelParam}`, '_blank');
-          return;
-        }
-
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const origen = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-            };
-            const destino = { lat: destLat, lng: destLng };
-
-            const request = {
-              origin: origen,
-              destination: destino,
-              travelMode: google.maps.TravelMode[modo] || google.maps.TravelMode.DRIVING
-            };
-
-            directionsService.route(request, (result, status) => {
-              if (status === 'OK') {
-                directionsDisplay.setDirections(result);
-                if (infoWindow) infoWindow.close();
-                if (typeof showGalloSpeech === "function") {
-                  showGalloSpeech(`¡TRAZANDO RUTA ${getNombreModo(modo)}!`);
-                }
-              } else {
-                const travelParam = modo.toLowerCase();
-                window.open(`https://www.google.com/maps/dir/?api=1&origin=${origen.lat},${origen.lng}&destination=${destLat},${destLng}&travelmode=${travelParam}`, '_blank');
-              }
-            });
-          },
-          () => {
-            const travelParam = modo.toLowerCase();
-            window.open(`https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}&travelmode=${travelParam}`, '_blank');
-          }
-        );
-      };
-
-      window.limpiarRuta = function() {
-        directionsDisplay.set('directions', null);
-        destinoSeleccionado = null;
-        
-        // Ocultar barra de botones al limpiar
-        const extraBlueSpace = document.getElementById("extraBlueSpace");
-        if (extraBlueSpace) {
-          extraBlueSpace.classList.add("hidden");
-        }
-
-        if (typeof showGalloSpeech === "function") {
-          showGalloSpeech("¡RUTA LIMPIADA!");
-        }
-      };
-
-      async function initMap() {
-        map = new google.maps.Map(document.getElementById("map"), {
-          zoom: 12,
-          center: quitoCentro,
-          mapTypeId: google.maps.MapTypeId.ROADMAP,
-          styles: mapTechStyle,
-          disableDefaultUI: true,
-          restriction: { latLngBounds: LIMITES_PICHINCHA, strictBounds: true },
-        });
-
-        directionsService = new google.maps.DirectionsService();
-        directionsDisplay = new google.maps.DirectionsRenderer({
-          map: map,
-          suppressMarkers: false,
-          polylineOptions: {
-            strokeColor: "#38bdf8",
-            strokeWeight: 6,
-            strokeOpacity: 0.9
-          }
-        });
-
-        map.addListener("zoom_changed", () => {
-          const z = map.getZoom();
-          currentZoomLevel = (z <= 10) ? 'FAR' : 'NEAR';
-          updateMarkersSize();
-        });
-
-        // Ocultar cuadro de rutas al hacer clic fuera de un marcador
-        map.addListener("click", () => {
-          destinoSeleccionado = null;
-          const extraBlueSpace = document.getElementById("extraBlueSpace");
-          if (extraBlueSpace) {
-            extraBlueSpace.classList.add("hidden");
-          }
-        });
-
-        infoWindow = new google.maps.InfoWindow();
-
-        try {
-          const response = await fetch('./lugares.json');
-          const lugaresBD = await response.json();
-          lugaresPuntos = lugaresBD;
-
-          lugaresBD.forEach(lugar => {
-            const esGratis = lugar.categoria && lugar.categoria.toUpperCase() === "GRATIS";
-            const badgeColor = esGratis ? "#22c55e" : "#f97316";
-
-            const marker = new google.maps.Marker({
-              position: { lat: lugar.lat, lng: lugar.lng },
-              map: map,
-              icon: {
-                url: getStickerIcon(lugar.sticker, lugar.categoria, 38),
-                scaledSize: new google.maps.Size(38, 38),
-                origin: new google.maps.Point(0, 0),
-                anchor: new google.maps.Point(19, 19)
-              }
-            });
-
-            markersMap.push({ marker: marker, lugar: lugar });
-
-            marker.addListener("click", (e) => {
-              if (e && e.stop) e.stop(); // Prevenir evento map.click
-
-              // Guardar el destino seleccionado
-              destinoSeleccionado = lugar;
-
-              // Mostrar la franja inferior de transporte
-              const extraBlueSpace = document.getElementById("extraBlueSpace");
-              if (extraBlueSpace) {
-                extraBlueSpace.classList.remove("hidden");
-              }
-
-              // Contenido HTML sin imágenes
-              const contentString = `
-                <div style="font-family: 'Press Start 2P', monospace; padding: 4px; max-width: 220px; color: #000;">
-                  <div style="display:inline-block; background:${badgeColor}; color:#fff; font-size:8px; padding:3px 5px; margin-bottom:8px; border:2px solid #000;">
-                    ${lugar.categoria}
-                  </div>
-
-                  <h3 style="font-size:10px; margin: 0 0 6px 0; line-height: 1.3; color: #000;">
-                    ${lugar.sticker ? lugar.sticker : ''} ${lugar.nombre}
-                  </h3>
-                  <p style="font-size:8px; font-family: sans-serif; line-height: 1.3; color: #333; margin: 0;">
-                    ${lugar.info}
-                  </p>
-                </div>
-              `;
-              infoWindow.setContent(contentString);
-              infoWindow.open(map, marker);
-
-              if (typeof showGalloSpeech === "function") {
-                showGalloSpeech(`DESTINO: ${lugar.nombre.toUpperCase()}`);
-              }
-            });
-          });
-        } catch (error) {
-          console.error("Error al cargar la base de datos JSON:", error);
-        }
-      }
-
-      // Carga dinámica del SDK de Google Maps usando la constante de seguridad
-      function loadGoogleMapsScript() {
-        const script = document.createElement("script");
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${CONFIG.GOOGLE_MAPS_API_KEY}&callback=initMap&v=weekly&loading=async`;
-        script.async = true;
-        script.defer = true;
-        document.head.appendChild(script);
-      }
-
-      window.initMap = initMap;
-      window.onload = loadGoogleMapsScript;
-    </script>
+    
     <style>
       * { box-sizing: border-box; }
       html, body {
@@ -273,17 +17,13 @@
         overflow: hidden;
       }
 
-      /* Utilidad para ocultar elementos */
-      .hidden {
-        display: none !important;
-      }
+      .hidden { display: none !important; }
 
       .app-frame img, 
       .app-frame video, 
       .app-frame canvas {
         image-rendering: pixelated;
         image-rendering: crisp-edges;
-        -ms-interpolation-mode: nearest-neighbor;
       }
 
       .app-frame {
@@ -292,7 +32,7 @@
         height: 100vh;
         width: 100vw;
         background-color: #2b6cb0;
-        border: 16px solid #1c4b72;
+        border: 12px solid #1c4b72;
         padding: 6px;
         position: relative;
         box-shadow: inset 0 0 0 4px #000000;
@@ -307,17 +47,16 @@
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
-        padding: 30px;
-        font-size: 10px;
-        line-height: 2.2;
+        padding: 20px;
+        font-size: 9px;
+        line-height: 2;
         transition: opacity 0.8s ease-out;
         overflow: hidden;
       }
 
       .intro-bg-image {
         position: absolute;
-        top: 40%;
-        left: 50%;
+        top: 40%; left: 50%;
         transform: translate(-50%, -50%);
         max-width: 60%;
         max-height: 50%;
@@ -349,23 +88,6 @@
         z-index: 103;
       }
 
-      #intro-screen::after {
-        content: "";
-        position: absolute;
-        top: -50%; left: -50%; width: 200%; height: 200%;
-        background: radial-gradient(circle, rgba(56,189,248,0.15) 0%, rgba(0,0,0,0.85) 80%);
-        animation: glitchFlicker 0.12s infinite alternate;
-        pointer-events: none;
-        z-index: 104;
-        opacity: 0.7;
-      }
-
-      @keyframes glitchFlicker {
-        0% { transform: translate(0, 0); opacity: 0.6; }
-        50% { transform: translate(-3px, 3px); opacity: 0.8; }
-        100% { transform: translate(3px, -2px); opacity: 0.5; }
-      }
-
       .log-line {
         opacity: 0;
         transform: translateY(5px);
@@ -386,7 +108,7 @@
         align-items: center;
         background-color: #1e427b;
         border: 4px solid #000000;
-        padding: 6px 16px;
+        padding: 6px 12px;
         margin-bottom: 6px;
         box-shadow: 4px 4px 0px #000000;
       }
@@ -395,21 +117,21 @@
         background-color: #0f2b48;
         color: #facc15;
         border: 4px solid #000000;
-        padding: 12px 26px;
-        font-size: 20px;
+        padding: 8px 16px;
+        font-size: 16px;
         letter-spacing: 2px;
         display: flex;
         align-items: center;
-        gap: 16px;
-        box-shadow: 5px 5px 0px #000000, 0 0 15px rgba(250, 204, 21, 0.4);
-        text-shadow: 3px 3px 0px #000000, 0 0 8px #facc15;
+        gap: 12px;
+        box-shadow: 4px 4px 0px #000000;
+        text-shadow: 2px 2px 0px #000000;
       }
 
       .top-shield-img {
-        width: 70px;
-        height: 70px;
+        width: 50px;
+        height: 50px;
         object-fit: contain;
-        filter: drop-shadow(4px 4px 0px #000000);
+        filter: drop-shadow(2px 2px 0px #000000);
       }
 
       .map-wrapper {
@@ -420,41 +142,18 @@
         box-shadow: 4px 4px 0px #000000;
       }
 
-      .map-wrapper::before {
-        content: "";
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 4px;
-        background-color: #ef4444;
-        z-index: 15;
-        box-shadow: 0 2px 0 #000000;
-      }
-
-      .map-wrapper::after {
-        content: "";
-        position: absolute;
-        top: 0; left: 0;
-        width: 4px; height: 100%;
-        background-color: #ef4444;
-        z-index: 15;
-        box-shadow: 2px 0 0 #000000;
-      }
-
-      #map { 
-        height: 100%; 
-        width: 100%; 
-      }
+      #map { height: 100%; width: 100%; }
 
       .rooster-avatar-container {
         position: absolute;
         bottom: 10px;
         left: 10px;
-        width: 90px;
-        height: 90px;
+        width: 75px;
+        height: 75px;
         background-color: #1e3a8a;
-        border: 5px solid #dc2626;
+        border: 4px solid #dc2626;
         border-radius: 50%;
-        box-shadow: 4px 4px 0px #000000;
+        box-shadow: 3px 3px 0px #000000;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -463,8 +162,7 @@
       }
 
       .rooster-video-left {
-        width: 100%;
-        height: 100%;
+        width: 100%; height: 100%;
         object-fit: cover;
         transform: scale(1.1);
       }
@@ -472,12 +170,12 @@
       .speech-bubble-container {
         position: absolute;
         bottom: 10px;
-        left: 110px;
+        left: 95px;
         z-index: 30;
         opacity: 0;
         visibility: hidden;
         transition: opacity 0.3s ease, visibility 0.3s ease;
-        max-width: 240px;
+        max-width: 220px;
         pointer-events: none;
       }
 
@@ -489,45 +187,21 @@
       .speech-bubble {
         position: relative;
         background: #ffffff;
-        border: 4px solid #000000;
-        border-radius: 8px;
-        padding: 10px 12px;
+        border: 3px solid #000000;
+        border-radius: 6px;
+        padding: 8px 10px;
         color: #000000;
         font-size: 8px;
-        line-height: 1.5;
-        box-shadow: 4px 4px 0px #000000;
-      }
-
-      .speech-bubble::after {
-        content: '';
-        position: absolute;
-        left: -14px;
-        bottom: 20px;
-        width: 0; height: 0;
-        border: 8px solid transparent;
-        border-right-color: #ffffff;
-        border-left: 0;
-        margin-top: -8px;
-      }
-
-      .speech-bubble::before {
-        content: '';
-        position: absolute;
-        left: -19px;
-        bottom: 18px;
-        width: 0; height: 0;
-        border: 10px solid transparent;
-        border-right-color: #000000;
-        border-left: 0;
-        margin-top: -10px;
+        line-height: 1.4;
+        box-shadow: 3px 3px 0px #000000;
       }
 
       .radar-wrapper-outer {
         position: absolute;
         bottom: 12px;
         right: 12px;
-        width: 110px;
-        height: 110px;
+        width: 100px;
+        height: 100px;
         z-index: 20;
       }
 
@@ -535,21 +209,19 @@
         width: 100%;
         height: 100%;
         background: #06111e;
-        border: 4px solid #38bdf8;
+        border: 3px solid #38bdf8;
         border-radius: 50%;
-        box-shadow: 0 0 0 4px #000000, 4px 4px 0px #000000;
+        box-shadow: 0 0 0 3px #000000, 3px 3px 0px #000000;
         overflow: hidden;
         position: relative;
       }
 
-      .radar-btn-far {
+      .radar-btn-far, .radar-btn-near {
         position: absolute;
-        top: -2px;
-        right: -2px;
-        width: 38px;
-        height: 38px;
+        width: 32px;
+        height: 32px;
         background-color: #0d253f;
-        border: 3px solid #38bdf8;
+        border: 2px solid #38bdf8;
         border-radius: 50%;
         box-shadow: 2px 2px 0px #000000;
         display: flex;
@@ -557,39 +229,15 @@
         justify-content: center;
         cursor: pointer;
         z-index: 22;
-        transition: transform 0.1s ease, background-color 0.2s ease;
+        transition: transform 0.1s ease;
       }
 
-      .radar-btn-near {
-        position: absolute;
-        bottom: -2px;
-        left: -2px;
-        width: 38px;
-        height: 38px;
-        background-color: #0d253f;
-        border: 3px solid #38bdf8;
-        border-radius: 50%;
-        box-shadow: 2px 2px 0px #000000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        z-index: 22;
-        transition: transform 0.1s ease, background-color 0.2s ease;
-      }
-
-      .radar-btn-far:hover, .radar-btn-near:hover {
-        background-color: #1e4976;
-        transform: scale(1.1);
-      }
-
-      .radar-btn-far:active, .radar-btn-near:active {
-        transform: scale(0.95);
-      }
+      .radar-btn-far { top: -2px; right: -2px; }
+      .radar-btn-near { bottom: -2px; left: -2px; }
 
       .radar-icon-svg {
-        width: 22px;
-        height: 22px;
+        width: 18px;
+        height: 18px;
         fill: none;
         stroke: #38bdf8;
         stroke-width: 2.5;
@@ -599,46 +247,32 @@
 
       .spider-badges-left {
         position: absolute;
-        top: 20px;
-        left: 0px;
+        top: 15px; left: 0px;
         z-index: 20;
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 8px;
       }
 
       .spider-badge {
-        width: 42px;
-        height: 38px;
-        border: 4px solid #000000;
+        width: 38px;
+        height: 34px;
+        border: 3px solid #000000;
         border-left: none;
-        border-radius: 0 10px 10px 0;
+        border-radius: 0 8px 8px 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 18px;
-        box-shadow: 4px 4px 0px #000000;
+        font-size: 16px;
+        box-shadow: 3px 3px 0px #000000;
         cursor: pointer;
         user-select: none;
-        transition: transform 0.15s ease, background-color 0.15s ease;
-      }
-
-      .spider-badge:hover {
-        transform: scale(1.1);
       }
 
       .badge-green { background-color: #22c55e; }
       .badge-orange { background-color: #f97316; }
-
-      .badge-green.active {
-        box-shadow: 0 0 12px #22c55e;
-        border-color: #ffffff;
-      }
-
-      .badge-orange.active {
-        box-shadow: 0 0 12px #f97316;
-        border-color: #ffffff;
-      }
+      .badge-green.active { border-color: #ffffff; box-shadow: 0 0 8px #22c55e; }
+      .badge-orange.active { border-color: #ffffff; box-shadow: 0 0 8px #f97316; }
 
       .footer-bar {
         display: flex;
@@ -652,56 +286,36 @@
         width: 100%;
         background-color: #0b192e;
         color: #ffffff;
-        border: 4px solid #000000;
-        padding: 8px 16px;
-        font-size: 10px;
+        border: 3px solid #000000;
+        padding: 6px 12px;
+        font-size: 9px;
         text-align: center;
-        box-shadow: 4px 4px 0px #000000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 36px;
-        text-shadow: 2px 2px 0px #000000;
+        box-shadow: 3px 3px 0px #000000;
       }
 
-      /* FRANJA INFERIOR DE TRANSPORTE (Solo visible al seleccionar un marcador) */
       .extra-blue-space {
-        height: 110px;
+        min-height: 80px;
         background-color: #1c4b72;
-        background-image: url('bandera quito.jpg');
-        background-size: cover;
-        background-position: center;
-        border: 4px solid #000000;
+        border: 3px solid #000000;
         margin-top: 6px;
         width: 100%;
-        box-shadow: 4px 4px 0px #000000;
+        box-shadow: 3px 3px 0px #000000;
         display: flex;
         align-items: center;
         justify-content: space-around;
-        padding: 0 20px;
+        padding: 8px 12px;
         flex-wrap: wrap;
-        gap: 8px;
+        gap: 6px;
       }
 
       .nav-btn {
         font-family: 'Press Start 2P', monospace;
-        font-size: 10px;
-        padding: 10px 14px;
+        font-size: 8px;
+        padding: 8px 10px;
         color: #ffffff;
-        border: 4px solid #000000;
-        box-shadow: 4px 4px 0px #000000;
+        border: 3px solid #000000;
+        box-shadow: 3px 3px 0px #000000;
         cursor: pointer;
-        transition: transform 0.1s ease, filter 0.2s ease;
-        text-shadow: 2px 2px 0px #000000;
-      }
-
-      .nav-btn:hover {
-        transform: scale(1.05);
-        filter: brightness(1.2);
-      }
-
-      .nav-btn:active {
-        transform: scale(0.95);
       }
 
       .btn-carro { background-color: #2563eb; }
@@ -709,6 +323,12 @@
       .btn-bici { background-color: #06b6d4; }
       .btn-moto { background-color: #8b5cf6; }
       .btn-limpiar { background-color: #ef4444; }
+
+      @media (max-width: 600px) {
+        .logo-badge { font-size: 12px; padding: 6px 10px; }
+        .top-shield-img { width: 35px; height: 35px; }
+        .speech-bubble-container { max-width: 150px; left: 85px; }
+      }
     </style>
   </head>
   <body>
@@ -716,24 +336,20 @@
     <div class="app-frame">
       <div id="intro-screen">
         <img class="intro-bg-image" src="quito renace.jpg" alt="Quito Renace">
-        <div class="log-line" id="line1">INICIALIZANDO QUITO TRACKER v4.2.0...</div>
-        <div class="log-line" id="line2">INICIANDO SERVICIOS PRINCIPALES [OK]</div>
-        <div class="log-line" id="line3">INICIALIZANDO MOTOR DE RENDERIZADO DEL MAPA QUITO...</div>
-        <div class="log-line" id="line4">CARGANDO RECURSOS BASE: INTERFAZ [OK]</div>
-        <div class="log-line" id="line5">CARGANDO RECURSOS BASE: MÓDULO DE TICKER [OK]</div>
-        <div class="log-line" id="line6">INICIANDO BUS DE EVENTOS [OK]</div>
-        <div class="log-line" id="line7">CALIBRANDO MOTOR DE SPRITES [OK]</div>
+        <div class="log-line">INICIALIZANDO QUITO TRACKER v4.2.0...</div>
+        <div class="log-line">INICIANDO SERVICIOS PRINCIPALES [OK]</div>
+        <div class="log-line">CARGANDO MOTOR DE MAPAS...</div>
+        <div class="log-line">CARGANDO RECURSOS Y TICKER [OK]</div>
+        <div class="log-line">CALIBRANDO SPRITES Y RADAR [OK]</div>
       </div>
 
       <div class="header-bar">
         <img class="top-shield-img" src="escudo2.jpg" alt="Escudo Izquierdo">
-        
         <div class="logo-badge">
           <span>QUITO</span>
-          <canvas id="topMaskCanvas" width="16" height="16" style="width: 32px; height: 32px;"></canvas>
+          <canvas id="topMaskCanvas" width="16" height="16" style="width: 24px; height: 24px;"></canvas>
           <span>TRACKER</span>
         </div>
-
         <img class="top-shield-img" src="image_a6631f.jpg" alt="Escudo Derecho">
       </div>
 
@@ -741,8 +357,8 @@
         <div id="map"></div>
 
         <div class="spider-badges-left">
-          <div id="btnGreenBadge" class="spider-badge badge-green" title="Agrandar Espacios Gratuitos">🕷️</div>
-          <div id="btnOrangeBadge" class="spider-badge badge-orange" title="Agrandar Espacios de Pago">🕷️</div>
+          <div id="btnGreenBadge" class="spider-badge badge-green" title="Filtrar Espacios Gratuitos">🕷️</div>
+          <div id="btnOrangeBadge" class="spider-badge badge-orange" title="Filtrar Espacios de Pago">🕷️</div>
         </div>
 
         <div class="rooster-avatar-container">
@@ -763,7 +379,6 @@
               <circle cx="12" cy="12" r="9"></circle>
               <line x1="3.6" y1="9" x2="20.4" y2="9"></line>
               <line x1="3.6" y1="15" x2="20.4" y2="15"></line>
-              <path d="M11.5 3a13 13 0 0 0 0 18M12.5 3a13 13 0 0 1 0 18"></path>
             </svg>
           </div>
 
@@ -771,10 +386,6 @@
             <svg class="radar-icon-svg" viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="8"></circle>
               <circle cx="12" cy="12" r="3" fill="#38bdf8"></circle>
-              <line x1="12" y1="1" x2="12" y2="5"></line>
-              <line x1="12" y1="19" x2="12" y2="23"></line>
-              <line x1="1" y1="12" x2="5" y2="12"></line>
-              <line x1="19" y1="12" x2="23" y2="12"></line>
             </svg>
           </div>
 
@@ -791,120 +402,242 @@
       </div>
 
       <div id="extraBlueSpace" class="extra-blue-space hidden">
-        <button class="nav-btn btn-carro" onclick="trazarRuta('DRIVING')">🚗 EN CARRO</button>
-        <button class="nav-btn btn-pie" onclick="trazarRuta('WALKING')">🚶 A PIE</button>
-        <button class="nav-btn btn-bici" onclick="trazarRuta('BICYCLING')">🚲 EN BICICLETA</button>
-        <button class="nav-btn btn-moto" onclick="trazarRuta('TWO_WHEELER')">🏍️ EN MOTOCICLETA</button>
+        <button class="nav-btn btn-carro" onclick="trazarRuta('DRIVING')">🚗 CARRO</button>
+        <button class="nav-btn btn-pie" onclick="trazarRuta('WALKING')">🚶 PIE</button>
+        <button class="nav-btn btn-bici" onclick="trazarRuta('BICYCLING')">🚲 BICI</button>
+        <button class="nav-btn btn-moto" onclick="trazarRuta('TWO_WHEELER')">🏍️ MOTO</button>
         <button class="nav-btn btn-limpiar" onclick="limpiarRuta()">❌ LIMPIAR</button>
       </div>
     </div>
 
     <script>
+      const CONFIG = {
+        GOOGLE_MAPS_API_KEY: "AIzaSyD7yh3TteD4adDL8pAVXIEGr6RXksDKGLo"
+      };
+
+      let map, infoWindow, directionsService, directionsDisplay;
+      let lugaresPuntos = [];
+      let markersMap = [];
+      let currentFilter = 'ALL';
+      let currentZoomLevel = 'NEAR';
+      let destinoSeleccionado = null;
+
+      const quitoCentro = { lat: -0.1807, lng: -78.4678 };
+      const LIMITES_PICHINCHA = {
+        north: 0.3500, south: -0.7500,
+        west: -79.3000, east: -77.7000
+      };
+
+      const mapTechStyle = [
+        { "elementType": "geometry", "stylers": [{ "color": "#0a192f" }] },
+        { "elementType": "labels.text.fill", "stylers": [{ "color": "#8892b0" }] },
+        { "elementType": "labels.text.stroke", "stylers": [{ "color": "#0a192f" }] },
+        { "featureType": "poi", "elementType": "geometry", "stylers": [{ "color": "#112240" }] },
+        { "featureType": "road", "elementType": "geometry", "stylers": [{ "color": "#1d2d50" }] },
+        { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#0284c7" }] }
+      ];
+
+      function getStickerIcon(emoji, categoria, size = 38) {
+        const esGratis = categoria && categoria.toUpperCase() === "GRATIS";
+        const borderColor = esGratis ? "#22c55e" : "#f97316";
+
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 40 40">
+          <circle cx="20" cy="20" r="18" fill="#ffffff" stroke="${borderColor}" stroke-width="4"/>
+          <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="20">${emoji || ''}</text>
+        </svg>`;
+        return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+      }
+
+      function updateMarkersSize() {
+        markersMap.forEach(item => {
+          const esGratis = item.lugar.categoria && item.lugar.categoria.toUpperCase() === "GRATIS";
+          let baseSize = (currentZoomLevel === 'FAR') ? 22 : 38;
+
+          if (currentFilter === 'GRATIS') {
+            baseSize = esGratis ? baseSize * 1.3 : baseSize * 0.6;
+          } else if (currentFilter === 'PAGO') {
+            baseSize = !esGratis ? baseSize * 1.3 : baseSize * 0.6;
+          }
+
+          const finalSize = Math.round(baseSize);
+          item.marker.setIcon({
+            url: getStickerIcon(item.lugar.sticker, item.lugar.categoria, finalSize),
+            scaledSize: new google.maps.Size(finalSize, finalSize),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(finalSize / 2, finalSize / 2)
+          });
+        });
+      }
+
+      window.trazarRuta = function(modo) {
+        if (!destinoSeleccionado) return;
+
+        const destLat = destinoSeleccionado.lat;
+        const destLng = destinoSeleccionado.lng;
+
+        if (!navigator.geolocation) {
+          window.open(`https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}&travelmode=${modo.toLowerCase()}`, '_blank');
+          return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const origen = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+            const request = {
+              origin: origen,
+              destination: { lat: destLat, lng: destLng },
+              travelMode: google.maps.TravelMode[modo] || google.maps.TravelMode.DRIVING
+            };
+
+            directionsService.route(request, (result, status) => {
+              if (status === 'OK') {
+                directionsDisplay.setDirections(result);
+                if (infoWindow) infoWindow.close();
+                showGalloSpeech(`RUTAS CALCULADAS`);
+              } else {
+                window.open(`https://www.google.com/maps/dir/?api=1&origin=${origen.lat},${origen.lng}&destination=${destLat},${destLng}&travelmode=${modo.toLowerCase()}`, '_blank');
+              }
+            });
+          },
+          () => {
+            window.open(`https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}&travelmode=${modo.toLowerCase()}`, '_blank');
+          }
+        );
+      };
+
+      window.limpiarRuta = function() {
+        if (directionsDisplay) directionsDisplay.set('directions', null);
+        destinoSeleccionado = null;
+        document.getElementById("extraBlueSpace").classList.add("hidden");
+        showGalloSpeech("¡RUTA LIMPIADA!");
+      };
+
+      async function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 12,
+          center: quitoCentro,
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
+          styles: mapTechStyle,
+          disableDefaultUI: true,
+          restriction: { latLngBounds: LIMITES_PICHINCHA, strictBounds: true },
+        });
+
+        directionsService = new google.maps.DirectionsService();
+        directionsDisplay = new google.maps.DirectionsRenderer({
+          map: map,
+          suppressMarkers: false,
+          polylineOptions: { strokeColor: "#38bdf8", strokeWeight: 5, strokeOpacity: 0.9 }
+        });
+
+        map.addListener("zoom_changed", () => {
+          currentZoomLevel = (map.getZoom() <= 10) ? 'FAR' : 'NEAR';
+          updateMarkersSize();
+        });
+
+        map.addListener("click", () => {
+          destinoSeleccionado = null;
+          document.getElementById("extraBlueSpace").classList.add("hidden");
+        });
+
+        infoWindow = new google.maps.InfoWindow();
+
+        try {
+          const response = await fetch('./lugares.json');
+          if (!response.ok) throw new Error("JSON no encontrado");
+          lugaresPuntos = await response.json();
+
+          lugaresPuntos.forEach(lugar => {
+            const marker = new google.maps.Marker({
+              position: { lat: lugar.lat, lng: lugar.lng },
+              map: map,
+              icon: {
+                url: getStickerIcon(lugar.sticker, lugar.categoria, 38),
+                scaledSize: new google.maps.Size(38, 38),
+                anchor: new google.maps.Point(19, 19)
+              }
+            });
+
+            markersMap.push({ marker, lugar });
+
+            marker.addListener("click", (e) => {
+              if (e && e.stop) e.stop();
+              destinoSeleccionado = lugar;
+              document.getElementById("extraBlueSpace").classList.remove("hidden");
+
+              const contentString = `
+                <div style="font-family: 'Press Start 2P', monospace; padding: 2px; max-width: 200px; color: #000;">
+                  <h3 style="font-size:9px; margin-bottom: 4px;">${lugar.sticker || ''} ${lugar.nombre}</h3>
+                  <p style="font-size:8px; font-family: sans-serif; margin: 0;">${lugar.info}</p>
+                </div>`;
+              infoWindow.setContent(contentString);
+              infoWindow.open(map, marker);
+              showGalloSpeech(`DESTINO: ${lugar.nombre.toUpperCase()}`);
+            });
+          });
+        } catch (error) {
+          console.warn("Base de datos de lugares no disponible.");
+          showGalloSpeech("ERROR CARGANDO DATOS");
+        }
+      }
+
+      // Interfaz y animaciones
       const speechBubbleContainer = document.getElementById("speechBubbleContainer");
       const speechBubbleText = document.getElementById("speechBubbleText");
-      let speechBubbleTimeout = null;
+      let speechTimeout;
 
       function showGalloSpeech(text) {
         speechBubbleText.innerText = text;
         speechBubbleContainer.classList.add("active");
-
-        if (speechBubbleTimeout) {
-          clearTimeout(speechBubbleTimeout);
-        }
-
-        speechBubbleTimeout = setTimeout(() => {
-          speechBubbleContainer.classList.remove("active");
-        }, 3000);
+        clearTimeout(speechTimeout);
+        speechTimeout = setTimeout(() => speechBubbleContainer.classList.remove("active"), 3000);
       }
 
+      // Pantalla de carga
       const lines = document.querySelectorAll(".log-line");
-      const interval = 5000 / lines.length;
-
       lines.forEach((line, index) => {
-        setTimeout(() => {
-          line.classList.add("visible");
-        }, index * interval);
+        setTimeout(() => line.classList.add("visible"), index * 800);
       });
 
       setTimeout(() => {
         const intro = document.getElementById("intro-screen");
-        intro.style.opacity = "0";
-        setTimeout(() => intro.style.display = "none", 800);
-      }, 5000);
+        if (intro) {
+          intro.style.opacity = "0";
+          setTimeout(() => intro.style.display = "none", 800);
+        }
+      }, 4500);
 
+      // Eventos UI Controles Zoom y Filtro
       document.getElementById("btnNearZoom").addEventListener("click", () => {
-        map.setCenter(quitoCentro);
-        map.setZoom(13);
-        currentZoomLevel = 'NEAR';
-        updateMarkersSize();
-        showGalloSpeech("¡VISTA CERCANA: EXPLORANDO EL CENTRO!");
+        if (map) { map.setCenter(quitoCentro); map.setZoom(13); }
       });
-
       document.getElementById("btnFarZoom").addEventListener("click", () => {
-        map.setCenter(quitoCentro);
-        map.setZoom(10);
-        currentZoomLevel = 'FAR';
-        updateMarkersSize();
-        showGalloSpeech("¡VISTA LEJANA: PANORÁMICA COMPLETA!");
+        if (map) { map.setCenter(quitoCentro); map.setZoom(10); }
       });
 
       const btnGreen = document.getElementById("btnGreenBadge");
       const btnOrange = document.getElementById("btnOrangeBadge");
 
       btnGreen.addEventListener("click", () => {
-        if (currentFilter === 'GRATIS') {
-          currentFilter = 'ALL';
-          btnGreen.classList.remove("active");
-          showGalloSpeech("¡MOSTRANDO TODOS LOS ESPACIOS!");
-        } else {
-          currentFilter = 'GRATIS';
-          btnGreen.classList.add("active");
-          btnOrange.classList.remove("active");
-          showGalloSpeech("¡DESTACANDO ESPACIOS GRATUITOS!");
-        }
+        currentFilter = (currentFilter === 'GRATIS') ? 'ALL' : 'GRATIS';
+        btnGreen.classList.toggle("active", currentFilter === 'GRATIS');
+        btnOrange.classList.remove("active");
         updateMarkersSize();
       });
 
       btnOrange.addEventListener("click", () => {
-        if (currentFilter === 'PAGO') {
-          currentFilter = 'ALL';
-          btnOrange.classList.remove("active");
-          showGalloSpeech("¡MOSTRANDO TODOS LOS ESPACIOS!");
-        } else {
-          currentFilter = 'PAGO';
-          btnOrange.classList.add("active");
-          btnGreen.classList.remove("active");
-          showGalloSpeech("¡DESTACANDO ESPACIOS DE PAGO!");
-        }
+        currentFilter = (currentFilter === 'PAGO') ? 'ALL' : 'PAGO';
+        btnOrange.classList.toggle("active", currentFilter === 'PAGO');
+        btnGreen.classList.remove("active");
         updateMarkersSize();
       });
 
-      const topCtx = document.getElementById("topMaskCanvas").getContext("2d");
-      function drawTopMask(isBlinking = false) {
-        topCtx.clearRect(0,0,16,16);
-        topCtx.fillStyle = "#000000";
-        topCtx.fillRect(4,1,8,14); topCtx.fillRect(1,4,14,8); topCtx.fillRect(2,2,12,12);
-        topCtx.fillStyle = "#d81e06";
-        topCtx.fillRect(4,2,8,12); topCtx.fillRect(2,4,12,8); topCtx.fillRect(3,3,10,10);
-
-        topCtx.fillStyle = "#ffffff";
-        if (isBlinking) {
-          topCtx.fillRect(3,8,4,1); topCtx.fillRect(9,8,4,1);
-        } else {
-          topCtx.fillRect(3,6,4,4); topCtx.fillRect(4,5,2,1);
-          topCtx.fillRect(9,6,4,4); topCtx.fillRect(10,5,2,1);
-        }
-      }
-      drawTopMask();
-      setInterval(() => {
-        drawTopMask(true);
-        setTimeout(() => drawTopMask(false), 200);
-      }, 3500);
-
-      const radarCtx = document.getElementById("radarCanvas").getContext("2d");
+      // Canvas Animaciones
+      const radarCanvas = document.getElementById("radarCanvas");
+      const radarCtx = radarCanvas ? radarCanvas.getContext("2d") : null;
       let angle = 0;
 
       function drawSpiderWebRadar() {
+        if (!radarCtx) return;
         radarCtx.clearRect(0, 0, 70, 70);
         const cx = 35, cy = 35;
 
@@ -916,28 +649,16 @@
           radarCtx.stroke();
         });
 
-        for (let i = 0; i < 8; i++) {
-          const a = (i * Math.PI) / 4;
-          radarCtx.beginPath();
-          radarCtx.moveTo(cx, cy);
-          radarCtx.lineTo(cx + Math.cos(a) * 32, cy + Math.sin(a) * 32);
-          radarCtx.stroke();
-        }
-
-        if (lugaresPuntos && lugaresPuntos.length > 0) {
+        if (lugaresPuntos.length > 0) {
           lugaresPuntos.forEach(lugar => {
             const esGratis = lugar.categoria && lugar.categoria.toUpperCase() === "GRATIS";
             radarCtx.fillStyle = esGratis ? "#22c55e" : "#f97316";
 
-            const rx = Math.round(cx + ((lugar.lng - quitoCentro.lng) * 200));
-            const ry = Math.round(cy - ((lugar.lat - quitoCentro.lat) * 200));
+            const rx = Math.round(cx + ((lugar.lng - quitoCentro.lng) * 180));
+            const ry = Math.round(cy - ((lugar.lat - quitoCentro.lat) * 180));
 
-            const dist = Math.sqrt((rx - cx) ** 2 + (ry - cy) ** 2);
-            if (dist <= 30) {
-              let dotSize = 3;
-              if (currentFilter === 'GRATIS' && esGratis) dotSize = 6;
-              if (currentFilter === 'PAGO' && !esGratis) dotSize = 6;
-              radarCtx.fillRect(rx - Math.floor(dotSize/2), ry - Math.floor(dotSize/2), dotSize, dotSize);
+            if (Math.hypot(rx - cx, ry - cy) <= 30) {
+              radarCtx.fillRect(rx - 1, ry - 1, 3, 3);
             }
           });
         }
@@ -946,15 +667,21 @@
         radarCtx.lineWidth = 2;
         radarCtx.beginPath();
         radarCtx.moveTo(cx, cy);
-        radarCtx.lineTo(cx + Math.cos(angle) * 32, cy + Math.sin(angle) * 32);
+        radarCtx.lineTo(cx + Math.cos(angle) * 30, cy + Math.sin(angle) * 30);
         radarCtx.stroke();
 
-        angle += 0.05;
+        angle += 0.04;
         requestAnimationFrame(drawSpiderWebRadar);
       }
 
-      // Iniciar animación del radar
       drawSpiderWebRadar();
+
+      // Carga Script de Google Maps
+      window.initMap = initMap;
+      const script = document.createElement("script");
+      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyD7yh3TteD4adDL8pAVXIEGr6RXksDKGLo&callback=initMap&v=weekly`;
+      script.async = true;
+      document.head.appendChild(script);
     </script>
   </body>
 </html>
