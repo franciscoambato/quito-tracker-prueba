@@ -999,15 +999,18 @@
         radarCtx.strokeStyle = "#38bdf8";
         radarCtx.lineWidth = 1.5;
         radarCtx.stroke();
-
         radarCtx.restore();
 
-        angle += 0.03;
+        angle += 0.05;
         requestAnimationFrame(drawSpiderWebRadar);
       }
 
       drawSpiderWebRadar();
     </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD7yh3TteD4adDL8pAVXIEGr6RXksDKGLo&callback=initMap"></script>
+
+    <!-- Remember to replace YOUR_API_KEY with your Google Maps API Key -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD7yh3TteD4adDL8pAVXIEGr6RXksDKGLo
+      
+      &callback=initMap"></script>
   </body>
 </html>
