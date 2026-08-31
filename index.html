@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quito Tracker - Mapa Retro</title>
+  <title>Quito Tracker - Mapa Retro Pixel Art</title>
   
   <!-- Fuente Pixel Art -->
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
   <style>
     /* -----------------------------------------------------------
-       ESTILOS RETRO & PIXEL ART
+       1. CONFIGURACIÓN BASE & ESTILOS RETRO PIXEL ART
     ----------------------------------------------------------- */
     * {
       box-sizing: border-box;
-      image-rendering: pixelated; /* Evita que las imágenes/elementos se vean borrosos */
+      image-rendering: pixelated; /* Mantiene la nitidez retro */
     }
 
     body, html {
@@ -33,25 +33,141 @@
       flex-direction: column;
       height: 100vh;
       width: 100vw;
+      position: relative;
     }
 
-    /* Contenedor del Mapa */
+    /* Cabecera / Banner Superior */
+    #topHeader {
+      background-color: #0f172a;
+      border-bottom: 4px solid #38bdf8;
+      padding: 8px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .header-title {
+      font-size: 12px;
+      color: #38bdf8;
+      text-shadow: 2px 2px #000000;
+    }
+
+    /* Contenedor Principal del Mapa */
     #map {
       flex: 1;
       width: 100%;
       height: 100%;
     }
 
-    /* Panel inferior de botones y transporte */
+    /* -----------------------------------------------------------
+       2. CONTROLES FLOTANTES Y FILTROS LATERALES
+    ----------------------------------------------------------- */
+    #filterControls {
+      position: absolute;
+      top: 60px;
+      left: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 5;
+    }
+
+    .btn-filter {
+      background-color: #1e293b;
+      border: 3px solid #000;
+      padding: 8px 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 3px 3px 0px #000;
+      transition: transform 0.1s;
+    }
+
+    .btn-filter:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px #000;
+    }
+
+    .btn-filter.gratis { border-color: #4ade80; }
+    .btn-filter.pago { border-color: #f97316; }
+
+    /* -----------------------------------------------------------
+       3. AVATAR GALLO (ESQUINA INFERIOR IZQUIERDA)
+    ----------------------------------------------------------- */
+    #galloContainer {
+      position: absolute;
+      bottom: 60px;
+      left: 15px;
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    #galloAvatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 3px solid #ef4444;
+      background-color: #0f172a;
+      box-shadow: 3px 3px 0px #000;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 30px;
+    }
+
+    #galloSpeech {
+      background-color: #0f172a;
+      border: 3px solid #ef4444;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 9px;
+      color: #ffffff;
+      max-width: 260px;
+      box-shadow: 3px 3px 0px #000;
+      line-height: 1.4;
+    }
+
+    /* -----------------------------------------------------------
+       4. RADAR CANVAS (ESQUINA INFERIOR DERECHA)
+    ----------------------------------------------------------- */
+    #radarContainer {
+      position: absolute;
+      bottom: 60px;
+      right: 15px;
+      width: 90px;
+      height: 90px;
+      background-color: rgba(15, 23, 42, 0.85);
+      border: 3px solid #38bdf8;
+      border-radius: 50%;
+      box-shadow: 3px 3px 0px #000;
+      z-index: 5;
+      overflow: hidden;
+    }
+
+    #radarCanvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* -----------------------------------------------------------
+       5. PANEL DE BOTONES INFERIOR (RUTAS)
+    ----------------------------------------------------------- */
     #extraBlueSpace {
       background-color: #0f172a;
       border-top: 4px solid #38bdf8;
       padding: 10px;
       display: flex;
-      flex-wrap: wrap; /* Soporte responsivo para móviles */
+      flex-wrap: wrap;
       gap: 10px;
       justify-content: center;
       align-items: center;
+      z-index: 10;
     }
 
     #extraBlueSpace.hidden {
@@ -86,24 +202,23 @@
     }
 
     /* -----------------------------------------------------------
-       PERSONALIZACIÓN DEL INFOWINDOW (CUADRO ROJO MÁS GRANDE)
+       6. PERSONALIZACIÓN DEL INFOWINDOW (CUADRO EMERGENTE GRANDE)
     ----------------------------------------------------------- */
     .gm-style .gm-style-iw-c {
       padding: 16px !important;
       max-width: 420px !important; /* Cuadro emergente más grande */
       min-width: 300px !important;
-      background-color: #0f172a !important; /* Fondo oscuro retro */
-      border: 3px solid #38bdf8 !important;  /* Borde brillante */
+      background-color: #0f172a !important;
+      border: 3px solid #38bdf8 !important;
       border-radius: 8px !important;
       box-shadow: 5px 5px 0px #000000 !important;
     }
 
     .gm-style .gm-style-iw-d {
       overflow: auto !important;
-      max-height: 350px !important; /* Scroll interno si el contenido es extenso */
+      max-height: 350px !important;
     }
 
-    /* Botón de cerrar (X) */
     .gm-style button.gm-ui-hover-effect {
       filter: invert(1);
       top: 8px !important;
@@ -111,15 +226,42 @@
     }
 
     .gm-style .gm-style-iw-tc::after {
-      background-color: #38bdf8 !important; /* Flecha inferior del boceto */
+      background-color: #38bdf8 !important;
     }
   </style>
 </head>
 <body>
 
   <div id="app-container">
+    <!-- Banner Superior -->
+    <div id="topHeader">
+      <div class="header-title">QUITO TRACKER 8-BIT</div>
+      <div style="font-size: 10px; color: #facc15;"> Pichincha, Ecuador</div>
+    </div>
+
     <!-- El Mapa de Google -->
     <div id="map"></div>
+
+    <!-- Filtros de Categoría -->
+    <div id="filterControls">
+      <button class="btn-filter gratis" onclick="filtrarLugares('GRATIS')">
+        <span>🕷️</span> <span style="font-size: 9px; color: #4ade80;">GRATIS</span>
+      </button>
+      <button class="btn-filter pago" onclick="filtrarLugares('PAID')">
+        <span>🕷️</span> <span style="font-size: 9px; color: #f97316;">PAGO</span>
+      </button>
+    </div>
+
+    <!-- Personaje Gallo Parlante -->
+    <div id="galloContainer">
+      <div id="galloAvatar">🐓</div>
+      <div id="galloSpeech">¡EXPLORA Y DESCUBRE LOS RINCONES MÁGICOS DE QUITO!</div>
+    </div>
+
+    <!-- Radar Canvas estilo SpiderWeb -->
+    <div id="radarContainer">
+      <canvas id="radarCanvas" width="90" height="90"></canvas>
+    </div>
 
     <!-- Panel de Control de Rutas -->
     <div id="extraBlueSpace" class="hidden">
@@ -141,10 +283,10 @@
     let lugaresPuntos = [];
     let destinoSeleccionado = null;
     let markersMap = [];
+    let radarAngle = 0;
 
     // 1. Inicialización del Mapa
     function initMap() {
-      // Coordenadas iniciales (Centro de Quito)
       const quitoCentro = { lat: -0.1807, lng: -78.4678 };
 
       map = new google.maps.Map(document.getElementById("map"), {
@@ -164,8 +306,8 @@
       directionsService = new google.maps.DirectionsService();
       directionsRenderer = new google.maps.DirectionsRenderer({ map: map });
 
-      // Cargar los datos desde el JSON local
       cargarLugares();
+      iniciarRadar();
     }
 
     // 2. Cargar Datos JSON de Forma Asíncrona
@@ -175,7 +317,6 @@
         if (!response.ok) throw new Error("No se pudo cargar lugares.json");
         lugaresPuntos = await response.json();
         
-        // Renderizar marcadores
         renderizarMarcadores(lugaresPuntos);
       } catch (error) {
         console.error("Error al cargar los datos:", error);
@@ -185,6 +326,8 @@
 
     // 3. Crear los Marcadores e InfoWindows Ampliados
     function renderizarMarcadores(lugares) {
+      limpiarMarcadores();
+
       lugares.forEach((lugar) => {
         const marker = new google.maps.Marker({
           position: { lat: lugar.lat, lng: lugar.lng },
@@ -198,12 +341,10 @@
 
         markersMap.push(marker);
 
-        // Evento de Clic en el Marcador
         marker.addListener("click", (e) => {
           if (e && e.stop) e.stop();
           destinoSeleccionado = lugar;
           
-          // Mostrar panel de transporte
           const panelRutas = document.getElementById("extraBlueSpace");
           if (panelRutas) panelRutas.classList.remove("hidden");
 
@@ -220,30 +361,25 @@
             `;
           }
 
-          // Plantilla HTML del InfoWindow (Cuadro emergente ampliado)
+          // Plantilla HTML del InfoWindow Ampliado
           const contentString = `
             <div style="padding: 2px; color: #ffffff;">
-              <!-- Título con sticker -->
               <h3 style="font-family: 'Press Start 2P', monospace; font-size: 13px; color: #38bdf8; margin: 0 0 10px 0; line-height: 1.4;">
                 ${lugar.sticker || ''} ${lugar.nombre}
               </h3>
               
-              <!-- Precio / Categoría -->
               <div style="font-size: 12px; color: #4ade80; margin-bottom: 10px; font-family: system-ui, -apple-system, sans-serif; font-weight: bold;">
                 💵 ${lugar.info || lugar.categoria || ''}
               </div>
 
-              <!-- Descripción -->
               ${lugar.descripcion ? `
                 <p style="font-size: 13px; font-family: system-ui, -apple-system, sans-serif; color: #cbd5e1; margin: 10px 0; line-height: 1.5;">
                   ${lugar.descripcion}
                 </p>
               ` : ''}
 
-              <!-- Lista de Actividades -->
               ${listaActividadesHtml}
 
-              <!-- Recomendación -->
               ${lugar.recomendacion ? `
                 <div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #475569; font-size: 12px; font-family: system-ui, -apple-system, sans-serif; color: #fbbf24; line-height: 1.4;">
                   💡 <strong>Tip:</strong> ${lugar.recomendacion}
@@ -258,7 +394,64 @@
       });
     }
 
-    // 4. Funciones de Trazado de Ruta
+    function limpiarMarcadores() {
+      markersMap.forEach(m => m.setMap(null));
+      markersMap = [];
+    }
+
+    // 4. Filtros Interactivos
+    window.filtrarLugares = function(tipo) {
+      if (tipo === 'GRATIS') {
+        const gratis = lugaresPuntos.filter(l => l.categoria && l.categoria.toUpperCase().includes('GRATIS'));
+        renderizarMarcadores(gratis);
+        showGalloSpeech("MOSTRANDO LUGARES GRATUITOS");
+      } else if (tipo === 'PAID') {
+        const pago = lugaresPuntos.filter(l => l.categoria && !l.categoria.toUpperCase().includes('GRATIS'));
+        renderizarMarcadores(pago);
+        showGalloSpeech("MOSTRANDO LUGARES DE PAGO");
+      }
+    };
+
+    // 5. Animación del Radar Canvas
+    function iniciarRadar() {
+      const canvas = document.getElementById("radarCanvas");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+
+      function drawRadar() {
+        ctx.clearRect(0, 0, 90, 90);
+
+        // Fondo y círculos
+        ctx.strokeStyle = "rgba(56, 189, 248, 0.4)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(45, 45, 20, 0, Math.PI * 2);
+        ctx.arc(45, 45, 38, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Línea barredora
+        ctx.strokeStyle = "#38bdf8";
+        ctx.beginPath();
+        ctx.moveTo(45, 45);
+        ctx.lineTo(45 + 40 * Math.cos(radarAngle), 45 + 40 * Math.sin(radarAngle));
+        ctx.stroke();
+
+        // Puntos simulados en el radar
+        if (lugaresPuntos.length > 0) {
+          ctx.fillStyle = "#4ade80";
+          ctx.fillRect(35, 30, 3, 3);
+          ctx.fillRect(55, 60, 3, 3);
+          ctx.fillStyle = "#f97316";
+          ctx.fillRect(40, 55, 3, 3);
+        }
+
+        radarAngle += 0.05;
+        requestAnimationFrame(drawRadar);
+      }
+      drawRadar();
+    }
+
+    // 6. Funciones de Trazado de Ruta
     window.trazarRuta = function(modo) {
       if (!destinoSeleccionado) return;
 
@@ -295,13 +488,15 @@
       directionsRenderer.setDirections({ routes: [] });
       document.getElementById("extraBlueSpace").classList.add("hidden");
       infoWindow.close();
+      showGalloSpeech("RUTA LIMPIADA");
     };
 
     function showGalloSpeech(texto) {
-      console.log("MENSAJE GALLO:", texto);
+      const speechBox = document.getElementById("galloSpeech");
+      if (speechBox) speechBox.textContent = texto;
     }
 
-    // 5. Cargar Google Maps Script dinámicamente de forma limpia
+    // 7. Cargar Google Maps Script dinámicamente
     function loadGoogleMapsScript() {
       const apiKey = "TU_API_KEY_AQUI"; // ⚠️ Reemplaza con tu API Key de Google Maps
       const script = document.createElement("script");
