@@ -232,7 +232,9 @@
     <!-- Banner Superior -->
     <div id="topHeader">
       <div class="header-title">QUITO TRACKER 8-BIT</div>
-      <div style="font-size: 10px; color: #facc15;"> Pichincha, Ecuador</div>
+
+http://googleusercontent.com/map_location_reference/1
+      <div style="font-size: 10px; color: #facc15;"> [Quito](http://googleusercontent.com/map_location_reference/0), Ecuador</div>
     </div>
 
     <!-- El Mapa de Google -->
@@ -261,10 +263,10 @@
 
     <!-- Panel de Control de Rutas -->
     <div id="extraBlueSpace" class="hidden">
-      <button class="btn-retro" onclick="trazarRuta('DRIVING')">🚗 CARRO</button>
-      <button class="btn-retro" onclick="trazarRuta('WALKING')">🚶 PIE</button>
-      <button class="btn-retro" onclick="trazarRuta('BICYCLING')">🚴 BICI</button>
-      <button class="btn-retro" onclick="trazarRuta('TWO_WHEELER')">🛵 MOTO</button>
+      <button class="btn-retro" onclick="trazarRuta('driving')">🚗 CARRO</button>
+      <button class="btn-retro" onclick="trazarRuta('walking')">🚶 PIE</button>
+      <button class="btn-retro" onclick="trazarRuta('bicycling')">🚴 BICI</button>
+      <button class="btn-retro" onclick="trazarRuta('two-wheeler')">🛵 MOTO</button>
       <button class="btn-retro danger" onclick="limpiarRuta()">❌ LIMPIAR</button>
     </div>
   </div>
@@ -273,15 +275,10 @@
   <script>
     let map;
     let infoWindow;
-    let directionsService;
-    let directionsRenderer;
     let lugaresPuntos = [];
     let destinoSeleccionado = null;
     let markersMap = [];
     let radarAngle = 0;
-
-    // Ubicación por defecto si falla la geolocalización (Centro Histórico de Quito)
-    const defaultLocation = { lat: -0.2201, lng: -78.5123 };
 
     function initMap() {
       const quitoCentro = { lat: -0.1807, lng: -78.4678 };
@@ -300,12 +297,6 @@
       });
 
       infoWindow = new google.maps.InfoWindow();
-      directionsService = new google.maps.DirectionsService();
-      directionsRenderer = new google.maps.DirectionsRenderer({ 
-        map: map,
-        suppressMarkers: false
-      });
-
       cargarLugares();
       iniciarRadar();
     }
@@ -442,7 +433,7 @@
     }
 
     /* -----------------------------------------------------------
-       7. CÁLCULO Y TRAZADO DE RUTAS AUMENTADO
+       7. APERTURA DIRECTA EN LA APP DE GOOGLE MAPS
     ----------------------------------------------------------- */
     window.trazarRuta = function(modo) {
       if (!destinoSeleccionado) {
@@ -450,60 +441,25 @@
         return;
       }
 
-      showGalloSpeech("CALCULANDO LA RUTA...");
+      showGalloSpeech("ABRIENDO GOOGLE MAPS...");
 
-      // Mapeo seguro del tipo de transporte en la API de Google Maps
-      let selectedTravelMode = google.maps.TravelMode.DRIVING;
-      if (modo === 'WALKING') selectedTravelMode = google.maps.TravelMode.WALKING;
-      if (modo === 'BICYCLING') selectedTravelMode = google.maps.TravelMode.BICYCLING;
-      if (modo === 'TWO_WHEELER') {
-        // En caso de que TWO_WHEELER no esté disponible en la SDK cargada, usa DRIVING como fallback
-        selectedTravelMode = google.maps.TravelMode.TWO_WHEELER || google.maps.TravelMode.DRIVING;
-      }
+      // Construcción del enlace para abrir Google Maps
+      // Al no especificar origin, Google Maps tomará automáticamente la ubicación del dispositivo del usuario
+      const lat = destinoSeleccionado.lat;
+      const lng = destinoSeleccionado.lng;
+      const nombreLugar = encodeURIComponent(destinoSeleccionado.nombre || "Destino");
+      
+      const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&destination_place_id=${nombreLugar}&travelmode=${modo}`;
 
-      const ejecutarCalculo = (origenCoords) => {
-        const request = {
-          origin: origenCoords,
-          destination: { lat: Number(destinoSeleccionado.lat), lng: Number(destinoSeleccionado.lng) },
-          travelMode: selectedTravelMode
-        };
-
-        directionsService.route(request, (result, status) => {
-          if (status === google.maps.DirectionsStatus.OK || status === "OK") {
-            directionsRenderer.setDirections(result);
-            showGalloSpeech(`RUTA TRAZADA: ${destinoSeleccionado.nombre.toUpperCase()}`);
-          } else {
-            console.error("Error al trazar la ruta:", status);
-            showGalloSpeech("NO SE ENCONTRÓ RUTA PARA ESE TRANSPORTE");
-          }
-        });
-      };
-
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            ejecutarCalculo({
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-            });
-          },
-          (error) => {
-            console.warn("Geolocalización bloqueada o no disponible. Usando ubicación por defecto.", error);
-            ejecutarCalculo(defaultLocation);
-          },
-          { timeout: 5000, enableHighAccuracy: true }
-        );
-      } else {
-        ejecutarCalculo(defaultLocation);
-      }
+      // Abre la aplicación de Google Maps (o pestaña del navegador en dispositivos móviles/escritorio)
+      window.open(mapsUrl, "_blank");
     };
 
     window.limpiarRuta = function() {
-      directionsRenderer.setDirections({ routes: [] });
       document.getElementById("extraBlueSpace").classList.add("hidden");
       infoWindow.close();
       destinoSeleccionado = null;
-      showGalloSpeech("RUTA LIMPIADA");
+      showGalloSpeech("SELECCIÓN LIMPIADA");
     };
 
     /* -----------------------------------------------------------
@@ -521,7 +477,6 @@
     }
 
     function loadGoogleMapsScript() {
-      // Recuerda reemplazar con tu API Key válida si es necesario
       const script = document.createElement("script");
       script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyD7yh3TteD4adDL8pAVXIEGr6RXksDKGLo&callback=initMap`;
       script.async = true;
