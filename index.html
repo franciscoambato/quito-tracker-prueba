@@ -22,7 +22,7 @@
       padding: 0;
       width: 100%;
       height: 100%;
-      background-color: #020617;
+      background-color: #001a4d;
       font-family: 'Press Start 2P', monospace;
       color: #ffffff;
       overflow: hidden;
@@ -45,13 +45,13 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background-color: #000000;
+      background-color: #0a0014;
       z-index: 9999;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       padding: 30px;
-      color: #4ade80;
+      color: #E7CD54;
       font-family: 'Press Start 2P', monospace;
       font-size: 11px;
       overflow: hidden;
@@ -70,8 +70,8 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                  linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), 
+                  linear-gradient(90deg, rgba(229, 5, 46, 0.08), rgba(0, 51, 153, 0.08), rgba(231, 205, 84, 0.05));
       background-size: 100% 4px, 6px 100%;
       pointer-events: none;
       z-index: 10000;
@@ -79,7 +79,7 @@
 
     #hackerTerminal {
       line-height: 1.8;
-      text-shadow: 0 0 5px #4ade80;
+      text-shadow: 0 0 5px #E7CD54;
       white-space: pre-wrap;
     }
 
@@ -87,7 +87,7 @@
       display: inline-block;
       width: 8px;
       height: 12px;
-      background-color: #4ade80;
+      background-color: #E7CD54;
       animation: blink 0.6s infinite;
       vertical-align: middle;
     }
@@ -98,26 +98,27 @@
     }
 
     .glitch-header {
-      color: #38bdf8;
+      color: #E5052E;
       margin-bottom: 20px;
       font-size: 14px;
-      text-shadow: 2px 2px #ef4444, -2px -2px #000;
+      text-shadow: 2px 2px #E7CD54, -2px -2px #003399;
     }
 
-    /* Cabecera / Banner Superior */
+    /* Cabecera / Banner Superior - Colores Bandera Quito */
     #topHeader {
-      background-color: #0f172a;
-      border-bottom: 4px solid #38bdf8;
+      background-color: #E5052E;
+      border-bottom: 4px solid #E7CD54;
       padding: 8px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       z-index: 10;
+      box-shadow: 0 4px 0 #002266;
     }
 
     .header-title {
       font-size: 12px;
-      color: #38bdf8;
+      color: #FFFFFF;
       text-shadow: 2px 2px #000000;
     }
 
@@ -142,24 +143,24 @@
     }
 
     .btn-filter {
-      background-color: #1e293b;
-      border: 3px solid #000;
+      background-color: #003399;
+      border: 3px solid #000000;
       padding: 8px 10px;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 8px;
-      box-shadow: 3px 3px 0px #000;
+      box-shadow: 3px 3px 0px #000000;
       transition: transform 0.1s;
     }
 
     .btn-filter:active {
       transform: translate(2px, 2px);
-      box-shadow: 1px 1px 0px #000;
+      box-shadow: 1px 1px 0px #000000;
     }
 
-    .btn-filter.gratis { border-color: #4ade80; }
-    .btn-filter.pago { border-color: #f97316; }
+    .btn-filter.gratis { border-color: #E7CD54; }
+    .btn-filter.pago { border-color: #E5052E; }
 
     /* -----------------------------------------------------------
        3. AVATAR GALLO VIDEO (ESQUINA INFERIOR IZQUIERDA)
@@ -179,21 +180,21 @@
       width: 70px;
       height: 70px;
       border-radius: 50%;
-      border: 3px solid #ef4444;
-      background-color: #0f172a;
-      box-shadow: 3px 3px 0px #000;
+      border: 3px solid #E7CD54;
+      background-color: #003399;
+      box-shadow: 3px 3px 0px #000000;
       object-fit: cover;
     }
 
     #galloSpeech {
-      background-color: #0f172a;
-      border: 3px solid #ef4444;
+      background-color: #002266;
+      border: 3px solid #E5052E;
       border-radius: 6px;
       padding: 8px 12px;
       font-size: 9px;
       color: #ffffff;
       max-width: 260px;
-      box-shadow: 3px 3px 0px #000;
+      box-shadow: 3px 3px 0px #000000;
       line-height: 1.4;
     }
 
@@ -206,10 +207,10 @@
       right: 15px;
       width: 90px;
       height: 90px;
-      background-color: rgba(15, 23, 42, 0.85);
-      border: 3px solid #38bdf8;
+      background-color: rgba(0, 51, 153, 0.9);
+      border: 3px solid #E7CD54;
       border-radius: 50%;
-      box-shadow: 3px 3px 0px #000;
+      box-shadow: 3px 3px 0px #000000;
       z-index: 5;
       overflow: hidden;
     }
@@ -223,8 +224,8 @@
        5. PANEL DE BOTONES INFERIOR DESLIZABLE (RUTAS)
     ----------------------------------------------------------- */
     #extraBlueSpace {
-      background-color: #0f172a;
-      border-top: 4px solid #38bdf8;
+      background-color: #003399;
+      border-top: 4px solid #E5052E;
       padding: 10px 15px;
       display: flex;
       flex-wrap: nowrap;
@@ -238,15 +239,14 @@
       max-width: 100vw;
     }
 
-    /* Personalización de la barra de desplazamiento */
     #extraBlueSpace::-webkit-scrollbar {
       height: 6px;
     }
     #extraBlueSpace::-webkit-scrollbar-track {
-      background: #020617;
+      background: #001a4d;
     }
     #extraBlueSpace::-webkit-scrollbar-thumb {
-      background: #38bdf8;
+      background: #E7CD54;
       border-radius: 3px;
     }
 
@@ -255,9 +255,9 @@
     }
 
     .btn-retro {
-      background-color: #1e293b;
-      color: #38bdf8;
-      border: 2px solid #38bdf8;
+      background-color: #001a4d;
+      color: #E7CD54;
+      border: 2px solid #E7CD54;
       padding: 10px 14px;
       font-family: 'Press Start 2P', monospace;
       font-size: 10px;
@@ -268,29 +268,30 @@
     }
 
     .btn-retro:hover {
-      background-color: #38bdf8;
-      color: #0f172a;
+      background-color: #E7CD54;
+      color: #001a4d;
     }
 
     .btn-retro.danger {
-      color: #f87171;
-      border-color: #f87171;
+      color: #ffffff;
+      background-color: #E5052E;
+      border-color: #ffffff;
     }
 
     .btn-retro.danger:hover {
-      background-color: #f87171;
-      color: #0f172a;
+      background-color: #b30021;
+      color: #ffffff;
     }
 
     /* -----------------------------------------------------------
-       6. PERSONALIZACIÓN DEL INFOWINDOW
+       6. PERSONALIZACIÓN DEL INFOWINDOW (TEMÁTICA QUITO)
     ----------------------------------------------------------- */
     .gm-style .gm-style-iw-c {
       padding: 16px !important;
       max-width: 420px !important;
       min-width: 300px !important;
-      background-color: #0f172a !important;
-      border: 3px solid #38bdf8 !important;
+      background-color: #002266 !important;
+      border: 3px solid #E7CD54 !important;
       border-radius: 8px !important;
       box-shadow: 5px 5px 0px #000000 !important;
     }
@@ -307,7 +308,7 @@
     }
 
     .gm-style .gm-style-iw-tc::after {
-      background-color: #38bdf8 !important;
+      background-color: #E7CD54 !important;
     }
   </style>
 </head>
@@ -320,14 +321,14 @@
       <div class="glitch-header">> INITIALIZING CYBER_QUITO_NET v8.0</div>
       <div id="hackerTerminal"></div><span class="cursor"></span>
     </div>
-    <div style="color: #facc15; font-size: 9px;">[SYS_STATUS: INJECTING_MAP_NODES...]</div>
+    <div style="color: #E7CD54; font-size: 9px;">[SYS_STATUS: INJECTING_QUITO_COLORS...]</div>
   </div>
 
   <div id="app-container">
     <!-- Banner Superior -->
     <div id="topHeader">
       <div class="header-title">QUITO TRACKER 8-BIT</div>
-      <div style="font-size: 10px; color: #facc15;">Quito, Ecuador</div>
+      <div style="font-size: 10px; color: #E7CD54;">[Quito](http://googleusercontent.com/map_location_reference/2), Ecuador</div>
     </div>
 
     <!-- El Mapa de Google -->
@@ -336,16 +337,16 @@
     <!-- Filtros de Categoría -->
     <div id="filterControls">
       <button class="btn-filter gratis" onclick="filtrarLugares('GRATIS')">
-        <span>🕷️</span> <span style="font-size: 9px; color: #4ade80;">GRATIS</span>
+        <span>🕷️</span> <span style="font-size: 9px; color: #E7CD54;">GRATIS</span>
       </button>
       <button class="btn-filter pago" onclick="filtrarLugares('PAID')">
-        <span>🕷️</span> <span style="font-size: 9px; color: #f97316;">PAGO</span>
+        <span>🕷️</span> <span style="font-size: 9px; color: #ffffff;">PAGO</span>
       </button>
     </div>
 
-    <!-- Personaje Gallo parlante en Video -->
+    <!-- Personaje Gallo parlante en Video (Muted / Sin Audio) -->
     <div id="galloContainer">
-      <video id="galloVideo" src="./gallo.mp4" playsinline preload="metadata"></video>
+      <video id="galloVideo" src="./gallo.mp4" playsinline muted preload="metadata"></video>
       <div id="galloSpeech">¡EXPLORA Y DESCUBRE LOS RINCONES MÁGICOS DE QUITO!</div>
     </div>
 
@@ -358,7 +359,6 @@
     <div id="extraBlueSpace" class="hidden">
       <button class="btn-retro" onclick="trazarRuta('driving')">🚗 CARRO</button>
       <button class="btn-retro" onclick="trazarRuta('walking')">🚶 PIE</button>
-      <button class="btn-retro" onclick="trazarRuta('bicycling')">🚴 BICI</button>
       <button class="btn-retro" onclick="trazarRuta('two-wheeler')">🛵 MOTO</button>
       <button class="btn-retro" onclick="trazarRuta('transit')">🚌 BUS</button>
       <button class="btn-retro danger" onclick="limpiarRuta()">❌ LIMPIAR</button>
@@ -381,8 +381,8 @@
       "> CONNECTING TO QUITO_CORE_SERVER...",
       "> BYPASSING SECURITY GATEWAY_0.2201...",
       "> ACCESSING SATELLITE FEED... [OK]",
-      "> DECRYPTING GEO_LOCATION_DATA...",
-      "> LOAD_MODULE: RETRO_MAP_RENDERER",
+      "> APPLYING QUITO_FLAG_THEME (RED & BLUE)...",
+      "> LOAD_MODULE: RETRO_PIXEL_MAP_RENDERER",
       "> INITIALIZING GALLO_SPEECH_CORE...",
       "> SYSTEM READY. ACCESS GRANTED."
     ];
@@ -411,20 +411,37 @@
     function initMap() {
       const quitoCentro = { lat: -0.1807, lng: -78.4678 };
 
-      /* Se desactivan todos los controles de la interfaz por defecto de Google Maps */
+      /* Configuración del mapa pixelado retro con paleta de la Bandera de Quito */
       map = new google.maps.Map(document.getElementById("map"), {
         zoom: 13,
         center: quitoCentro,
-        disableDefaultUI: true, // Quita +, -, pantalla completa y flechas
+        disableDefaultUI: true,
         zoomControl: false,
         fullscreenControl: false,
         streetViewControl: false,
         mapTypeControl: false,
         styles: [
-          { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
-          { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
-          { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
-          { featureType: "water", elementType: "geometry", stylers: [{ color: "#17263c" }] }
+          /* Fondo de suelo / tierra: Azul Oscuro de Quito */
+          { elementType: "geometry", stylers: [{ color: "#001a4d" }] },
+          { elementType: "labels.text.stroke", stylers: [{ color: "#000000" }, { weight: 4 }] },
+          { elementType: "labels.text.fill", stylers: [{ color: "#E7CD54" }] },
+          /* Agua / Ríos: Azul Bandera */
+          { featureType: "water", elementType: "geometry", stylers: [{ color: "#003399" }] },
+          { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#FFFFFF" }] },
+          /* Parques y Paisaje: Azul Medio / Dorado acentuado */
+          { featureType: "landscape", elementType: "geometry", stylers: [{ color: "#002699" }] },
+          { featureType: "poi", elementType: "geometry", stylers: [{ color: "#001f66" }] },
+          { featureType: "poi.park", elementType: "geometry", stylers: [{ color: "#003380" }] },
+          /* Vías y Calles principales: Rojo Quito */
+          { featureType: "road", elementType: "geometry", stylers: [{ color: "#E5052E" }] },
+          { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#ff1a40" }] },
+          { featureType: "road.highway", elementType: "geometry.stroke", stylers: [{ color: "#E7CD54" }, { weight: 2 }] },
+          { featureType: "road.arterial", elementType: "geometry", stylers: [{ color: "#cc0025" }] },
+          { featureType: "road.local", elementType: "geometry", stylers: [{ color: "#99001c" }] },
+          { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#FFFFFF" }] },
+          /* Edificios y Áreas Urbanas */
+          { featureType: "transit", elementType: "geometry", stylers: [{ color: "#E7CD54" }] },
+          { featureType: "administrative", elementType: "geometry.stroke", stylers: [{ color: "#E5052E" }] }
         ]
       });
 
@@ -468,15 +485,15 @@
           const panelRutas = document.getElementById("extraBlueSpace");
           if (panelRutas) {
             panelRutas.classList.remove("hidden");
-            panelRutas.scrollLeft = 0; // Reinicia el scroll al seleccionar
+            panelRutas.scrollLeft = 0;
           }
 
           let listaActividadesHtml = '';
           if (lugar.actividades && Array.isArray(lugar.actividades) && lugar.actividades.length > 0) {
             listaActividadesHtml = `
               <div style="margin-top: 12px;">
-                <strong style="color: #facc15; font-size: 11px; font-family: 'Press Start 2P', monospace;">ACTIVIDADES:</strong>
-                <ul style="margin: 8px 0 0 16px; padding: 0; font-family: system-ui, -apple-system, sans-serif; font-size: 13px; color: #e2e8f0; line-height: 1.4;">
+                <strong style="color: #E7CD54; font-size: 11px; font-family: 'Press Start 2P', monospace;">ACTIVIDADES:</strong>
+                <ul style="margin: 8px 0 0 16px; padding: 0; font-family: system-ui, -apple-system, sans-serif; font-size: 13px; color: #ffffff; line-height: 1.4;">
                   ${lugar.actividades.map(act => `<li style="margin-bottom: 5px;">${act}</li>`).join('')}
                 </ul>
               </div>
@@ -485,16 +502,16 @@
 
           const contentString = `
             <div style="padding: 2px; color: #ffffff;">
-              <h3 style="font-family: 'Press Start 2P', monospace; font-size: 13px; color: #38bdf8; margin: 0 0 10px 0; line-height: 1.4;">
+              <h3 style="font-family: 'Press Start 2P', monospace; font-size: 13px; color: #E7CD54; margin: 0 0 10px 0; line-height: 1.4;">
                 ${lugar.sticker || ''} ${lugar.nombre}
               </h3>
               
-              <div style="font-size: 12px; color: #4ade80; margin-bottom: 10px; font-family: system-ui, -apple-system, sans-serif; font-weight: bold;">
+              <div style="font-size: 12px; color: #ffffff; margin-bottom: 10px; font-family: system-ui, -apple-system, sans-serif; font-weight: bold;">
                 💵 ${lugar.info || lugar.categoria || ''}
               </div>
 
               ${lugar.descripcion ? `
-                <p style="font-size: 13px; font-family: system-ui, -apple-system, sans-serif; color: #cbd5e1; margin: 10px 0; line-height: 1.5;">
+                <p style="font-size: 13px; font-family: system-ui, -apple-system, sans-serif; color: #e2e8f0; margin: 10px 0; line-height: 1.5;">
                   ${lugar.descripcion}
                 </p>
               ` : ''}
@@ -502,7 +519,7 @@
               ${listaActividadesHtml}
 
               ${lugar.recomendacion ? `
-                <div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #475569; font-size: 12px; font-family: system-ui, -apple-system, sans-serif; color: #fbbf24; line-height: 1.4;">
+                <div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #E5052E; font-size: 12px; font-family: system-ui, -apple-system, sans-serif; color: #E7CD54; line-height: 1.4;">
                   💡 <strong>Tip:</strong> ${lugar.recomendacion}
                 </div>
               ` : ''}
@@ -540,25 +557,25 @@
       function drawRadar() {
         ctx.clearRect(0, 0, 90, 90);
 
-        ctx.strokeStyle = "rgba(56, 189, 248, 0.4)";
+        ctx.strokeStyle = "rgba(231, 205, 84, 0.4)";
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.arc(45, 45, 20, 0, Math.PI * 2);
         ctx.arc(45, 45, 38, 0, Math.PI * 2);
         ctx.stroke();
 
-        ctx.strokeStyle = "#38bdf8";
+        ctx.strokeStyle = "#E7CD54";
         ctx.beginPath();
         ctx.moveTo(45, 45);
         ctx.lineTo(45 + 40 * Math.cos(radarAngle), 45 + 40 * Math.sin(radarAngle));
         ctx.stroke();
 
         if (lugaresPuntos.length > 0) {
-          ctx.fillStyle = "#4ade80";
-          ctx.fillRect(35, 30, 3, 3);
-          ctx.fillRect(55, 60, 3, 3);
-          ctx.fillStyle = "#f97316";
-          ctx.fillRect(40, 55, 3, 3);
+          ctx.fillStyle = "#E7CD54";
+          ctx.fillRect(35, 30, 4, 4);
+          ctx.fillRect(55, 60, 4, 4);
+          ctx.fillStyle = "#E5052E";
+          ctx.fillRect(40, 55, 4, 4);
         }
 
         radarAngle += 0.05;
@@ -595,7 +612,7 @@
     };
 
     /* -----------------------------------------------------------
-       8. CONTROL DE REPRODUCCIÓN DEL VIDEO DEL GALLO
+       8. CONTROL DE REPRODUCCIÓN DEL VIDEO (SIN AUDIO)
     ----------------------------------------------------------- */
     function showGalloSpeech(texto) {
       const speechBox = document.getElementById("galloSpeech");
@@ -603,8 +620,9 @@
 
       const video = document.getElementById("galloVideo");
       if (video) {
+        video.muted = true;
         video.currentTime = 0;
-        video.play().catch(e => console.log("La reproducción del video requiere interacción previa del usuario."));
+        video.play().catch(e => console.log("La reproducción del video requiere interacción previa."));
       }
     }
 
