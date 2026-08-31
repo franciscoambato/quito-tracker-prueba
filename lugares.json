@@ -5,7 +5,14 @@
     "lng": -78.5203,
     "categoria": "HASTA $10 USD",
     "sticker": "🪂",
-    "info": "Adulto: $5.25 (Nacional) / $9.00 (Extranjero). Niño: $3.25 (Nacional) / $7.00 (Extranjero)."
+    "info": "Adulto: $5.25 (Nacional) / $9.00 (Extranjero). Niño: $3.25 (Nacional) / $7.00 (Extranjero).",
+    "descripcion": "Uno de los teleféricos más altos del mundo, asciende hasta Cruz Loma a 3.947 m s. n. m. en las laderas del volcán Pichincha.",
+    "actividades": [
+      "Fotografiar la panorámica de la ciudad y la cordillera",
+      "Subir al columpio en las nubes",
+      "Iniciar el trekking hacia la cumbre del volcán Rucu Pichincha"
+    ],
+    "recomendacion": "Subir temprano por la mañana para evitar neblina o lluvia y llevar ropa abrigada."
   },
   {
     "nombre": "Ciudad Mitad del Mundo",
@@ -13,7 +20,14 @@
     "lng": -78.4558,
     "categoria": "HASTA $10 USD",
     "sticker": "📍",
-    "info": "Adulto: $5.00. Niño (6 a 12 años): $2.50. Menores de 6 años gratis."
+    "info": "Adulto: $5.00. Niño (6 a 12 años): $2.50. Menores de 6 años gratis.",
+    "descripcion": "Complejo turístico situado a 30 km del centro de Quito que conmemora la Misión Geodésica Francesa y el paso de la línea ecuatorial.",
+    "actividades": [
+      "Tomarse fotos con un pie en el hemisferio Norte y otro en el Sur",
+      "Visitar el Museo Etnográfico dentro del monumento",
+      "Explorar el planetario y el pabellón del cacao"
+    ],
+    "recomendacion": "Planificar al menos 2 a 3 horas para recorrer todo el parque temático."
   },
   {
     "nombre": "Basílica del Voto Nacional",
@@ -21,7 +35,13 @@
     "lng": -78.5074,
     "categoria": "HASTA $10 USD",
     "sticker": "⛪",
-    "info": "Adulto: $2.00 (Nacional) / $3.00 (Extranjero). Niño: $1.00 (Nacional) / $1.50 (Extranjero)."
+    "info": "Adulto: $2.00 (Nacional) / $3.00 (Extranjero). Niño: $1.00 (Nacional) / $1.50 (Extranjero).",
+    "descripcion": "Templo neogótico representativo de la ciudad, famoso por sus gárgolas con forma de animales de la fauna ecuatoriana.",
+    "actividades": [
+      "Admirar los vitrales y la nave central",
+      "Subir a las torres altas cruzando pasarelas y escaleras para vistas panorámicas"
+    ],
+    "recomendacion": "Usar calzado cómodo si se planea ascender a las torres."
   },
   {
     "nombre": "Iglesia de la Compañía de Jesús",
@@ -29,7 +49,13 @@
     "lng": -78.514,
     "categoria": "HASTA $10 USD",
     "sticker": "✨",
-    "info": "Adulto: $2.50 (Nacional) / $6.00 (Extranjero). Niño/Estudiante: $0.60 - $2.50."
+    "info": "Adulto: $2.50 (Nacional) / $6.00 (Extranjero). Niño/Estudiante: $0.60 - $2.50.",
+    "descripcion": "Obra cumbre del barroco americano cubierta internamente por láminas de pan de oro de 23 quilates y tallados en madera de cedro.",
+    "actividades": [
+      "Observar el altar mayor y la iluminación de la cúpula",
+      "Apreciar las obras de arte barroco de la Escuela Quiteña"
+    ],
+    "recomendacion": "Consultar horarios de visita guiada para conocer a fondo su historia."
   },
   {
     "nombre": "El Panecillo",
@@ -37,7 +63,13 @@
     "lng": -78.5186,
     "categoria": "GRATIS",
     "sticker": "🗽",
-    "info": "Entrada libre al mirador. (Subida a la Virgen: Adultos $2.00 / Niños $1.00)."
+    "info": "Entrada libre al mirador. (Subida a la Virgen: Adultos $2.00 / Niños $1.00).",
+    "descripcion": "Colina natural en el centro urbano de Quito donde se erige la imponente escultura de la Virgen de Quito en aluminio.",
+    "actividades": [
+      "Disfrutar del mirador de 360 grados hacia el centro, norte y sur de la ciudad",
+      "Ingresar al interior del monumento y su museo"
+    ],
+    "recomendacion": "Acceder preferentemente en taxi o transporte turístico por seguridad."
   },
   {
     "nombre": "Plaza de la Independencia (Grande)",
@@ -45,7 +77,13 @@
     "lng": -78.5122,
     "categoria": "GRATIS",
     "sticker": "🏛️",
-    "info": "Acceso libre para todo público."
+    "info": "Acceso libre para todo público.",
+    "descripcion": "Plaza principal y centro político de Quito, rodeada por el Palacio de Carondelet, la Catedral Primada y la Alcaldía.",
+    "actividades": [
+      "Presenciar el cambio de guardia presidencial (lunes por la mañana)",
+      "Pasear por el pasaje comercial del Palacio Arzobispal"
+    ],
+    "recomendacion": "Ideal como punto de partida para recorrer el Centro Histórico a pie."
   },
   {
     "nombre": "Parque La Carolina",
@@ -53,7 +91,14 @@
     "lng": -78.4845,
     "categoria": "GRATIS",
     "sticker": "🌳",
-    "info": "Acceso libre para todo público."
+    "info": "Acceso libre para todo público.",
+    "descripcion": "Amplio parque urbano en la zona moderna de Quito, centro de actividades deportivas y de esparcimiento.",
+    "actividades": [
+      "Caminar o hacer deporte en sus áreas verdes",
+      "Pasear en bote por la laguna artificial",
+      "Visitar atracciones cercanas dentro del parque como el Jardín Botánico"
+    ],
+    "recomendacion": "Muy concurrido los fines de semana por familias y deportistas."
   },
   {
     "nombre": "Calle La Ronda",
@@ -61,6 +106,13 @@
     "lng": -78.5148,
     "categoria": "GRATIS",
     "sticker": "🎨",
-    "info": "Acceso libre para todo público."
+    "info": "Acceso libre para todo público.",
+    "descripcion": "Calle peatonal empedrada de ambiente tradicional, famosa por su historia bohemia y artesanal.",
+    "actividades": [
+      "Visitar talleres artesanales tradicionales",
+      "Degustar un canelazo caliente o empanadas de viento",
+      "Disfrutar de música en vivo por las noches"
+    ],
+    "recomendacion": "Visitarla durante la tarde o noche para experimentar su vida nocturna."
   }
 ]
