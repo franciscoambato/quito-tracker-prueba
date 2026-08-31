@@ -64,7 +64,6 @@
       pointer-events: none;
     }
 
-    /* Logo mezclado con estática */
     .logo-container {
       position: absolute;
       top: 50%;
@@ -73,24 +72,26 @@
       z-index: 10001;
       text-align: center;
       pointer-events: none;
+      width: 90%;
+      max-width: 400px;
     }
 
     .logo-container img {
-      max-width: 220px;
+      width: 100%;
+      max-width: 340px;
       height: auto;
-      opacity: 0.85;
+      opacity: 0.9;
       mix-blend-mode: screen;
-      filter: drop-shadow(0 0 12px #25898f);
+      filter: drop-shadow(0 0 16px #25898f);
       animation: glitchLogo 0.3s infinite alternate;
     }
 
     @keyframes glitchLogo {
-      0% { transform: translate(0, 0) scale(1); filter: drop-shadow(0 0 8px #25898f); }
-      50% { transform: translate(-2px, 2px) scale(1.02); filter: drop-shadow(0 0 14px #b80058); }
-      100% { transform: translate(2px, -1px) scale(0.99); filter: drop-shadow(0 0 10px #25898f); }
+      0% { transform: translate(0, 0) scale(1); filter: drop-shadow(0 0 10px #25898f); }
+      50% { transform: translate(-3px, 3px) scale(1.03); filter: drop-shadow(0 0 18px #b80058); }
+      100% { transform: translate(3px, -2px) scale(0.98); filter: drop-shadow(0 0 12px #25898f); }
     }
 
-    /* Efecto Estática CRT */
     .crt-overlay {
       position: absolute;
       top: 0;
@@ -160,7 +161,7 @@
       border: 4px solid #25898f;
       padding: 25px;
       text-align: center;
-      max-width: 500px;
+      max-width: 520px;
       box-shadow: 6px 6px 0px #000000;
     }
 
@@ -191,12 +192,13 @@
     }
 
     .character-preview-video {
-      width: 90px;
-      height: 90px;
+      width: 110px;
+      height: 110px;
       border-radius: 50%;
       border: 3px solid #b80058;
       background-color: #0b0719;
       object-fit: cover;
+      object-position: center top;
       box-shadow: 4px 4px 0px #000000;
     }
 
@@ -240,14 +242,15 @@
       color: #b80058;
     }
 
-    /* Contenedor Principal del Mapa */
+    /* Contenedor Principal del Mapa (Reducido en 0.3cm) */
     #map {
       flex: 1;
       width: 100%;
-      height: 100%;
+      height: calc(100% - 0.3cm);
+      margin-bottom: 0.3cm;
     }
 
-    /* Controles Flotantes */
+    /* Filtros de Categoría */
     #filterControls {
       position: absolute;
       top: 60px;
@@ -286,13 +289,14 @@
     }
 
     #galloVideo {
-      width: 70px;
-      height: 70px;
+      width: 75px;
+      height: 75px;
       border-radius: 50%;
       border: 3px solid #25898f;
       background-color: #160d33;
       box-shadow: 3px 3px 0px #000000;
       object-fit: cover;
+      object-position: center top;
     }
 
     #galloSpeech {
@@ -305,6 +309,39 @@
       max-width: 260px;
       box-shadow: 3px 3px 0px #000000;
       line-height: 1.4;
+    }
+
+    /* Controles de Vista de Mapa (Al lado del radar) */
+    #radarControls {
+      position: absolute;
+      bottom: 70px;
+      right: 115px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 5;
+    }
+
+    .btn-radar-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background-color: #160d33;
+      border: 3px solid #25898f;
+      color: #25898f;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 3px 3px 0px #000000;
+      transition: transform 0.1s, background-color 0.2s;
+    }
+
+    .btn-radar-icon:hover {
+      background-color: #25898f;
+      color: #0b0719;
+      transform: scale(1.1);
     }
 
     /* Radar Canvas */
@@ -383,7 +420,7 @@
 </head>
 <body>
 
-  <!-- Introducción Estática Hacker + Mezcla con logotipo.jpg (5 Segundos) -->
+  <!-- Introducción Estática Hacker + Mezcla con logotipo.jpg -->
   <div id="hackerIntro">
     <div class="crt-overlay"></div>
     <div class="logo-container">
@@ -402,13 +439,11 @@
       <div class="modal-title">¿CON QUIÉN TE GUSTARÍA CONOCER QUITO?</div>
       
       <div class="characters-grid">
-        <!-- Gallo / Marco -->
         <div class="character-card" onclick="seleccionarPersonaje('marco', './gallo.mp4')">
           <video class="character-preview-video" src="./gallo.mp4" playsinline muted preload="metadata"></video>
           <button class="character-btn">MARCO</button>
         </div>
 
-        <!-- Gallo Mujer / Andrea -->
         <div class="character-card" onclick="seleccionarPersonaje('andrea', './gallo_mujer.mp4')">
           <video class="character-preview-video" src="./gallo_mujer.mp4" playsinline muted preload="metadata"></video>
           <button class="character-btn">ANDREA</button>
@@ -443,6 +478,12 @@
       <div id="galloSpeech">¡EXPLORA Y DESCUBRE LOS RINCONES MÁGICOS DE QUITO!</div>
     </div>
 
+    <!-- Botones de Control de Vista al lado del Radar -->
+    <div id="radarControls">
+      <button class="btn-radar-icon" title="Vista Más Amplia" onclick="vistaAmplia()">🌐</button>
+      <button class="btn-radar-icon" title="Enfoque Quito" onclick="vistaQuito()">🎯</button>
+    </div>
+
     <!-- Radar Canvas -->
     <div id="radarContainer">
       <canvas id="radarCanvas" width="90" height="90"></canvas>
@@ -466,9 +507,10 @@
     let markersMap = [];
     let radarAngle = 0;
     let personajeElegido = "Marco";
+    const QUITO_CENTER = { lat: -0.1807, lng: -78.4678 };
 
     /* -----------------------------------------------------------
-       SECUENCIA HACKER (5 SEGUNDOS)
+       SECUENCIA HACKER
     ----------------------------------------------------------- */
     const hackerCommands = [
       "> CONNECTING TO QUITO_CORE_SERVER...",
@@ -498,7 +540,6 @@
         
         setTimeout(() => {
           intro.style.display = "none";
-          // Mostrar modal de selección de personaje con videos pausados
           const modal = document.getElementById("characterSelectionModal");
           modal.classList.remove("hidden");
           document.querySelectorAll('.character-preview-video').forEach(v => v.pause());
@@ -511,24 +552,35 @@
     ----------------------------------------------------------- */
     function seleccionarPersonaje(nombre, videoSrc) {
       personajeElegido = nombre === 'marco' ? 'MARCO' : 'ANDREA';
-      
-      // Actualizar el video en el círculo flotante inferior
       const mainVideo = document.getElementById("galloVideo");
       mainVideo.src = videoSrc;
-      
-      // Ocultar modal
       document.getElementById("characterSelectionModal").classList.add("hidden");
-      
-      // Bienvenida del personaje seleccionado
       showGalloSpeech(`¡HOLA! SOY ${personajeElegido}, ¡VAMOS A EXPLORAR QUITO!`);
+    }
+
+    /* -----------------------------------------------------------
+       FUNCIONES DE VISTA DE MAPA (BOTONES DE RADAR)
+    ----------------------------------------------------------- */
+    function vistaAmplia() {
+      if (map) {
+        map.setCenter(QUITO_CENTER);
+        map.setZoom(9);
+        showGalloSpeech("VISTA AMPLIA DE LA REGIÓN");
+      }
+    }
+
+    function vistaQuito() {
+      if (map) {
+        map.setCenter(QUITO_CENTER);
+        map.setZoom(14);
+        showGalloSpeech("ENFOCANDO EN QUITO");
+      }
     }
 
     /* -----------------------------------------------------------
        INICIALIZACIÓN DEL MAPA DE GOOGLE
     ----------------------------------------------------------- */
     function initMap() {
-      const quitoCentro = { lat: -0.1807, lng: -78.4678 };
-
       const PICHINCHA_BOUNDS = {
         north: 0.3800,
         south: -0.7000,
@@ -561,7 +613,7 @@
         zoom: 12,
         minZoom: 9,
         maxZoom: 18,
-        center: quitoCentro,
+        center: QUITO_CENTER,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         disableDefaultUI: true,
         zoomControl: false,
