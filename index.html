@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quito Tracker - Mapa Retro Pixel Art</title>
   
+  <!-- FAVICON: LOGOTIPO EN LA PESTAÑA DEL NAVEGADOR -->
+  <link rel="icon" type="image/jpeg" href="./logotipo.jpg">
+  
   <!-- Fuente Pixel Art -->
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
@@ -26,12 +29,14 @@
       font-family: 'Press Start 2P', monospace;
       color: #ffffff;
       overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
     }
 
     #app-container {
       display: flex;
       flex-direction: column;
       height: 100vh;
+      height: 100dvh; /* Soporte para navegadores móviles modernos */
       width: 100vw;
       position: relative;
     }
@@ -45,16 +50,17 @@
       left: 0;
       width: 100vw;
       height: 100vh;
+      height: 100dvh;
       background-color: #0b0719;
       z-index: 9999;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       align-items: center;
-      padding: 30px;
+      padding: 20px;
       color: #25898f;
       font-family: 'Press Start 2P', monospace;
-      font-size: 11px;
+      font-size: 10px;
       overflow: hidden;
     }
 
@@ -72,14 +78,14 @@
       z-index: 10001;
       text-align: center;
       pointer-events: none;
-      width: 90%;
-      max-width: 400px;
+      width: 85%;
+      max-width: 320px;
     }
 
     .logo-container img {
       width: 100%;
-      max-width: 340px;
       height: auto;
+      max-width: 280px;
       opacity: 0.9;
       mix-blend-mode: screen;
       filter: drop-shadow(0 0 16px #25898f);
@@ -106,11 +112,12 @@
     }
 
     #hackerTerminal {
-      line-height: 1.8;
+      line-height: 1.6;
       text-shadow: 0 0 5px #1a6b72;
       white-space: pre-wrap;
       width: 100%;
       z-index: 10002;
+      font-size: 9px;
     }
 
     .cursor {
@@ -129,8 +136,8 @@
 
     .glitch-header {
       color: #b80058;
-      margin-bottom: 20px;
-      font-size: 14px;
+      margin-bottom: 15px;
+      font-size: 11px;
       text-shadow: 2px 2px #1a6b72, -2px -2px #241442;
     }
 
@@ -143,13 +150,14 @@
       left: 0;
       width: 100vw;
       height: 100vh;
+      height: 100dvh;
       background-color: rgba(11, 7, 25, 0.95);
       z-index: 9998;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 20px;
+      padding: 15px;
     }
 
     #characterSelectionModal.hidden {
@@ -158,25 +166,26 @@
 
     .modal-box {
       background-color: #160d33;
-      border: 4px solid #25898f;
-      padding: 25px;
+      border: 3px solid #25898f;
+      padding: 20px 15px;
       text-align: center;
-      max-width: 520px;
-      box-shadow: 6px 6px 0px #000000;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 4px 4px 0px #000000;
     }
 
     .modal-title {
-      font-size: 11px;
+      font-size: 10px;
       color: #25898f;
-      margin-bottom: 25px;
-      line-height: 1.6;
+      margin-bottom: 20px;
+      line-height: 1.5;
       text-shadow: 2px 2px #000000;
     }
 
     .characters-grid {
       display: flex;
       justify-content: center;
-      gap: 30px;
+      gap: 20px;
     }
 
     .character-card {
@@ -187,34 +196,35 @@
       transition: transform 0.2s;
     }
 
-    .character-card:hover {
+    .character-card:hover, .character-card:active {
       transform: scale(1.05);
     }
 
     .character-preview-video {
-      width: 110px;
-      height: 110px;
+      width: 85px;
+      height: 85px;
       border-radius: 50%;
       border: 3px solid #b80058;
       background-color: #0b0719;
       object-fit: cover;
       object-position: center top;
-      box-shadow: 4px 4px 0px #000000;
+      box-shadow: 3px 3px 0px #000000;
     }
 
     .character-btn {
-      margin-top: 15px;
+      margin-top: 12px;
       background-color: #0b0719;
       color: #25898f;
       border: 2px solid #25898f;
-      padding: 8px 14px;
+      padding: 10px 12px;
+      min-height: 44px; /* Zona táctil para móvil */
       font-family: 'Press Start 2P', monospace;
-      font-size: 10px;
+      font-size: 9px;
       cursor: pointer;
       box-shadow: 2px 2px 0px #000000;
     }
 
-    .character-card:hover .character-btn {
+    .character-card:hover .character-btn, .character-card:active .character-btn {
       background-color: #25898f;
       color: #0b0719;
     }
@@ -223,7 +233,7 @@
     #topHeader {
       background-color: #160d33;
       border-bottom: 3px solid #b80058;
-      padding: 10px 16px;
+      padding: 10px 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -232,17 +242,17 @@
     }
 
     .header-title {
-      font-size: 12px;
+      font-size: 10px;
       color: #25898f;
       text-shadow: 2px 2px #000000;
     }
 
     .header-subtitle {
-      font-size: 10px;
+      font-size: 9px;
       color: #b80058;
     }
 
-    /* Contenedor Principal del Mapa (Reducido en 0.3cm) */
+    /* Contenedor Principal del Mapa */
     #map {
       flex: 1;
       width: 100%;
@@ -253,23 +263,24 @@
     /* Filtros de Categoría */
     #filterControls {
       position: absolute;
-      top: 60px;
-      left: 15px;
+      top: 55px;
+      left: 10px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
       z-index: 5;
     }
 
     .btn-filter {
       background-color: #160d33;
-      border: 3px solid #000000;
-      padding: 8px 12px;
+      border: 2px solid #000000;
+      padding: 6px 10px;
+      min-height: 44px; /* Zonas táctiles adaptadas a móvil */
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 8px;
-      box-shadow: 3px 3px 0px #000000;
+      gap: 6px;
+      box-shadow: 2px 2px 0px #000000;
       transition: transform 0.1s;
     }
 
@@ -279,82 +290,84 @@
     /* Avatar Inferior Izquierdo Dinámico */
     #galloContainer {
       position: absolute;
-      bottom: 70px;
-      left: 15px;
+      bottom: 65px;
+      left: 10px;
       display: flex;
       align-items: flex-end;
-      gap: 10px;
+      gap: 8px;
       z-index: 5;
       pointer-events: none;
+      max-width: 65vw;
     }
 
     #galloVideo {
-      width: 75px;
-      height: 75px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
-      border: 3px solid #25898f;
+      border: 2px solid #25898f;
       background-color: #160d33;
-      box-shadow: 3px 3px 0px #000000;
+      box-shadow: 2px 2px 0px #000000;
       object-fit: cover;
       object-position: center top;
+      flex-shrink: 0;
     }
 
     #galloSpeech {
       background-color: #160d33;
-      border: 3px solid #b80058;
+      border: 2px solid #b80058;
       border-radius: 6px;
-      padding: 8px 12px;
-      font-size: 9px;
+      padding: 6px 10px;
+      font-size: 8px;
       color: #ffffff;
-      max-width: 260px;
-      box-shadow: 3px 3px 0px #000000;
-      line-height: 1.4;
+      box-shadow: 2px 2px 0px #000000;
+      line-height: 1.3;
+      word-break: break-word;
     }
 
-    /* Controles de Vista de Mapa (Al lado del radar) */
+    /* Controles de Vista de Mapa */
     #radarControls {
       position: absolute;
-      bottom: 70px;
-      right: 115px;
+      bottom: 65px;
+      right: 85px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
       z-index: 5;
     }
 
     .btn-radar-icon {
-      width: 38px;
-      height: 38px;
+      width: 44px; /* Zona táctil ideal para pulgares en pantalla táctil */
+      height: 44px;
       border-radius: 50%;
       background-color: #160d33;
-      border: 3px solid #25898f;
+      border: 2px solid #25898f;
       color: #25898f;
       font-size: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 3px 3px 0px #000000;
+      box-shadow: 2px 2px 0px #000000;
       transition: transform 0.1s, background-color 0.2s;
     }
 
-    .btn-radar-icon:hover {
+    .btn-radar-icon:hover, .btn-radar-icon:active {
       background-color: #25898f;
       color: #0b0719;
-      transform: scale(1.1);
+      transform: scale(1.05);
     }
 
     /* Radar Canvas */
     #radarContainer {
       position: absolute;
-      bottom: 70px;
-      right: 15px;
-      width: 90px;
-      height: 90px;
+      bottom: 65px;
+      right: 10px;
+      width: 70px;
+      height: 70px;
       background-color: rgba(22, 13, 51, 0.9);
-      border: 3px solid #25898f;
+      border: 2px solid #25898f;
       border-radius: 50%;
-      box-shadow: 3px 3px 0px #000000;
+      box-shadow: 2px 2px 0px #000000;
       z-index: 5;
       overflow: hidden;
     }
@@ -367,16 +380,17 @@
     /* Panel de Rutas */
     #extraBlueSpace {
       background-color: #160d33;
-      border-top: 4px solid #25898f;
-      padding: 10px 15px;
+      border-top: 3px solid #25898f;
+      padding: 8px 10px;
       display: flex;
       flex-wrap: nowrap;
-      gap: 12px;
+      gap: 8px;
       align-items: center;
       z-index: 10;
       overflow-x: auto;
       white-space: nowrap;
       max-width: 100vw;
+      -webkit-overflow-scrolling: touch;
     }
 
     #extraBlueSpace.hidden {
@@ -387,15 +401,18 @@
       background-color: #0b0719;
       color: #25898f;
       border: 2px solid #25898f;
-      padding: 10px 14px;
+      padding: 8px 12px;
+      min-height: 44px;
       font-family: 'Press Start 2P', monospace;
-      font-size: 10px;
+      font-size: 9px;
       cursor: pointer;
       box-shadow: 2px 2px 0px #000000;
       flex-shrink: 0;
+      display: flex;
+      align-items: center;
     }
 
-    .btn-retro:hover {
+    .btn-retro:hover, .btn-retro:active {
       background-color: #25898f;
       color: #0b0719;
     }
@@ -406,15 +423,29 @@
       border-color: #ffffff;
     }
 
-    /* Custom InfoWindow */
+    /* Custom InfoWindow Adaptable a móviles */
     .gm-style .gm-style-iw-c {
-      padding: 16px !important;
-      max-width: 420px !important;
-      min-width: 300px !important;
+      padding: 12px !important;
+      max-width: 85vw !important;
+      min-width: 240px !important;
       background-color: #160d33 !important;
-      border: 3px solid #25898f !important;
-      border-radius: 8px !important;
-      box-shadow: 5px 5px 0px #000000 !important;
+      border: 2px solid #25898f !important;
+      border-radius: 6px !important;
+      box-shadow: 3px 3px 0px #000000 !important;
+    }
+
+    /* -----------------------------------------------------------
+       MEDIA QUERIES (ADAPTACIÓN PARA PANTALLAS GRANDES Y ESCRITORIO)
+    ----------------------------------------------------------- */
+    @media (min-width: 768px) {
+      .header-title { font-size: 13px; }
+      .header-subtitle { font-size: 11px; }
+      #galloVideo { width: 75px; height: 75px; }
+      #galloSpeech { font-size: 9px; max-width: 260px; }
+      #radarContainer { width: 90px; height: 90px; }
+      #radarControls { right: 110px; }
+      .modal-title { font-size: 11px; }
+      .character-preview-video { width: 110px; height: 110px; }
     }
   </style>
 </head>
@@ -430,7 +461,7 @@
       <div class="glitch-header">> INITIALIZING CYBER_QUITO_NET v8.0</div>
       <div id="hackerTerminal"></div><span class="cursor"></span>
     </div>
-    <div style="color: #25898f; font-size: 9px; z-index: 10002;">[SYS_STATUS: INJECTING_MUTED_NODES...]</div>
+    <div style="color: #25898f; font-size: 8px; z-index: 10002;">[SYS_STATUS: INJECTING_MUTED_NODES...]</div>
   </div>
 
   <!-- Modal Pregunta: Selección de Acompañante -->
@@ -465,10 +496,10 @@
     <!-- Filtros de Categoría -->
     <div id="filterControls">
       <button class="btn-filter gratis" onclick="filtrarLugares('GRATIS')">
-        <span>🎁</span> <span style="font-size: 9px; color: #25898f;">GRATIS</span>
+        <span>🎁</span> <span style="font-size: 8px; color: #25898f;">GRATIS</span>
       </button>
       <button class="btn-filter pago" onclick="filtrarLugares('PAID')">
-        <span>🪙</span> <span style="font-size: 9px; color: #b80058;">PAGO</span>
+        <span>🪙</span> <span style="font-size: 8px; color: #b80058;">PAGO</span>
       </button>
     </div>
 
@@ -673,10 +704,10 @@
           let listaActividadesHtml = '';
           if (lugar.actividades && Array.isArray(lugar.actividades) && lugar.actividades.length > 0) {
             listaActividadesHtml = `
-              <div style="margin-top: 12px;">
-                <strong style="color: #25898f; font-size: 11px; font-family: 'Press Start 2P', monospace;">ACTIVIDADES:</strong>
-                <ul style="margin: 8px 0 0 16px; padding: 0; font-family: system-ui, -apple-system, sans-serif; font-size: 13px; color: #ffffff; line-height: 1.4;">
-                  ${lugar.actividades.map(act => `<li style="margin-bottom: 5px;">${act}</li>`).join('')}
+              <div style="margin-top: 10px;">
+                <strong style="color: #25898f; font-size: 10px; font-family: 'Press Start 2P', monospace;">ACTIVIDADES:</strong>
+                <ul style="margin: 6px 0 0 14px; padding: 0; font-family: system-ui, -apple-system, sans-serif; font-size: 12px; color: #ffffff; line-height: 1.4;">
+                  ${lugar.actividades.map(act => `<li style="margin-bottom: 4px;">${act}</li>`).join('')}
                 </ul>
               </div>
             `;
@@ -684,16 +715,16 @@
 
           const contentString = `
             <div style="padding: 2px; color: #ffffff;">
-              <h3 style="font-family: 'Press Start 2P', monospace; font-size: 13px; color: #25898f; margin: 0 0 10px 0; line-height: 1.4;">
+              <h3 style="font-family: 'Press Start 2P', monospace; font-size: 11px; color: #25898f; margin: 0 0 8px 0; line-height: 1.4;">
                 ${lugar.sticker || ''} ${lugar.nombre}
               </h3>
               
-              <div style="font-size: 12px; color: #b80058; margin-bottom: 10px; font-family: system-ui, -apple-system, sans-serif; font-weight: bold;">
+              <div style="font-size: 11px; color: #b80058; margin-bottom: 8px; font-family: system-ui, -apple-system, sans-serif; font-weight: bold;">
                 💵 ${lugar.info || lugar.categoria || ''}
               </div>
 
               ${lugar.descripcion ? `
-                <p style="font-size: 13px; font-family: system-ui, -apple-system, sans-serif; color: #e2e8f0; margin: 10px 0; line-height: 1.5;">
+                <p style="font-size: 12px; font-family: system-ui, -apple-system, sans-serif; color: #e2e8f0; margin: 8px 0; line-height: 1.4;">
                   ${lugar.descripcion}
                 </p>
               ` : ''}
@@ -701,7 +732,7 @@
               ${listaActividadesHtml}
 
               ${lugar.recomendacion ? `
-                <div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #b80058; font-size: 12px; font-family: system-ui, -apple-system, sans-serif; color: #25898f; line-height: 1.4;">
+                <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed #b80058; font-size: 11px; font-family: system-ui, -apple-system, sans-serif; color: #25898f; line-height: 1.3;">
                   💡 <strong>Tip:</strong> ${lugar.recomendacion}
                 </div>
               ` : ''}
