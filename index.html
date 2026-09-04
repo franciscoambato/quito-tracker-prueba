@@ -5,16 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quito Tracker - Mapa Retro Pixel Art</title>
   
-  <!-- FAVICON: LOGOTIPO EN LA PESTAÑA DEL NAVEGADOR -->
   <link rel="icon" type="image/jpeg" href="./logotipo.jpg">
-  
-  <!-- Fuente Pixel Art -->
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
   <style>
-    /* -----------------------------------------------------------
-       1. CONFIGURACIÓN BASE & ESTILOS RETRO PIXEL ART
-    ----------------------------------------------------------- */
     * {
       box-sizing: border-box;
       image-rendering: pixelated;
@@ -36,14 +30,12 @@
       display: flex;
       flex-direction: column;
       height: 100vh;
-      height: 100dvh; /* Soporte para navegadores móviles modernos */
+      height: 100dvh;
       width: 100vw;
       position: relative;
     }
 
-    /* -----------------------------------------------------------
-       PANTALLA DE CARGA CON MEZCLA DE LOGOTIPO Y INTERFERENCIA
-    ----------------------------------------------------------- */
+    /* PANTALLA DE CARGA HACKER */
     #hackerIntro {
       position: fixed;
       top: 0;
@@ -141,9 +133,7 @@
       text-shadow: 2px 2px #1a6b72, -2px -2px #241442;
     }
 
-    /* -----------------------------------------------------------
-       MODAL DE SELECCIÓN DE PERSONAJE
-    ----------------------------------------------------------- */
+    /* SELECCIÓN DE PERSONAJE */
     #characterSelectionModal {
       position: fixed;
       top: 0;
@@ -217,7 +207,7 @@
       color: #25898f;
       border: 2px solid #25898f;
       padding: 10px 12px;
-      min-height: 44px; /* Zona táctil para móvil */
+      min-height: 44px;
       font-family: 'Press Start 2P', monospace;
       font-size: 9px;
       cursor: pointer;
@@ -229,7 +219,7 @@
       color: #0b0719;
     }
 
-    /* Cabecera / Banner Superior */
+    /* HEADER */
     #topHeader {
       background-color: #160d33;
       border-bottom: 3px solid #b80058;
@@ -252,7 +242,6 @@
       color: #b80058;
     }
 
-    /* Contenedor Principal del Mapa */
     #map {
       flex: 1;
       width: 100%;
@@ -260,7 +249,7 @@
       margin-bottom: 0.3cm;
     }
 
-    /* Filtros de Categoría */
+    /* BOTONES OVALADOS Y DE CATEGORÍA */
     #filterControls {
       position: absolute;
       top: 55px;
@@ -269,25 +258,44 @@
       flex-direction: column;
       gap: 8px;
       z-index: 5;
+      max-height: calc(100vh - 180px);
+      overflow-y: auto;
+      padding-right: 5px;
     }
 
     .btn-filter {
       background-color: #160d33;
       border: 2px solid #000000;
-      padding: 6px 10px;
-      min-height: 44px; /* Zonas táctiles adaptadas a móvil */
+      padding: 8px 14px;
+      min-height: 40px;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       box-shadow: 2px 2px 0px #000000;
-      transition: transform 0.1s;
+      transition: transform 0.1s, background-color 0.2s;
+      border-radius: 20px; /* Bordes ovalados */
     }
 
-    .btn-filter.gratis { border-color: #25898f; }
-    .btn-filter.pago { border-color: #b80058; }
+    .btn-filter span {
+      font-size: 8px;
+      font-weight: bold;
+    }
 
-    /* Avatar Inferior Izquierdo Dinámico */
+    .btn-filter:hover, .btn-filter:active {
+      transform: scale(1.03);
+    }
+
+    /* Estilos de Color Específico para cada Filtro */
+    .btn-filter.gratis { border-color: #25898f; color: #25898f; }
+    .btn-filter.pago { border-color: #b80058; color: #b80058; }
+    .btn-filter.jovenes { border-color: #e2b714; color: #e2b714; }
+    .btn-filter.museos { border-color: #9b59b6; color: #9b59b6; }
+    .btn-filter.parques { border-color: #2ecc71; color: #2ecc71; }
+    .btn-filter.leyendas { border-color: #e67e22; color: #e67e22; }
+    .btn-filter.todos { border-color: #ffffff; color: #ffffff; }
+
+    /* AVATAR DE ACOMPAÑANTE */
     #galloContainer {
       position: absolute;
       bottom: 65px;
@@ -324,7 +332,7 @@
       word-break: break-word;
     }
 
-    /* Controles de Vista de Mapa */
+    /* CONTROLES Y RADAR */
     #radarControls {
       position: absolute;
       bottom: 65px;
@@ -336,7 +344,7 @@
     }
 
     .btn-radar-icon {
-      width: 44px; /* Zona táctil ideal para pulgares en pantalla táctil */
+      width: 44px;
       height: 44px;
       border-radius: 50%;
       background-color: #160d33;
@@ -357,7 +365,6 @@
       transform: scale(1.05);
     }
 
-    /* Radar Canvas */
     #radarContainer {
       position: absolute;
       bottom: 65px;
@@ -377,7 +384,7 @@
       height: 100%;
     }
 
-    /* Panel de Rutas */
+    /* RUTAS */
     #extraBlueSpace {
       background-color: #160d33;
       border-top: 3px solid #25898f;
@@ -423,7 +430,7 @@
       border-color: #ffffff;
     }
 
-    /* Custom InfoWindow Adaptable a móviles */
+    /* INFOWINDOW DE MAPS */
     .gm-style .gm-style-iw-c {
       padding: 12px !important;
       max-width: 85vw !important;
@@ -434,9 +441,6 @@
       box-shadow: 3px 3px 0px #000000 !important;
     }
 
-    /* -----------------------------------------------------------
-       MEDIA QUERIES (ADAPTACIÓN PARA PANTALLAS GRANDES Y ESCRITORIO)
-    ----------------------------------------------------------- */
     @media (min-width: 768px) {
       .header-title { font-size: 13px; }
       .header-subtitle { font-size: 11px; }
@@ -451,7 +455,7 @@
 </head>
 <body>
 
-  <!-- Introducción Estática Hacker + Mezcla con logotipo.jpg -->
+  <!-- Introducción Hacker -->
   <div id="hackerIntro">
     <div class="crt-overlay"></div>
     <div class="logo-container">
@@ -464,7 +468,7 @@
     <div style="color: #25898f; font-size: 8px; z-index: 10002;">[SYS_STATUS: INJECTING_MUTED_NODES...]</div>
   </div>
 
-  <!-- Modal Pregunta: Selección de Acompañante -->
+  <!-- Modal Selección Personaje -->
   <div id="characterSelectionModal" class="hidden">
     <div class="modal-box">
       <div class="modal-title">¿CON QUIÉN TE GUSTARÍA CONOCER QUITO?</div>
@@ -484,43 +488,55 @@
   </div>
 
   <div id="app-container">
-    <!-- Banner Superior -->
     <div id="topHeader">
       <div class="header-title">QUITO TRACKER 8-BIT</div>
       <div class="header-subtitle">Quito, Ecuador</div>
     </div>
 
-    <!-- El Mapa de Google -->
     <div id="map"></div>
 
-    <!-- Filtros de Categoría -->
+    <!-- Filtros de Categoría con Botones Ovalados Modificados -->
     <div id="filterControls">
+      <button class="btn-filter todos" onclick="filtrarLugares('TODOS')">
+        <span>🌐</span> <span>TODOS</span>
+      </button>
+      <button class="btn-filter jovenes" onclick="filtrarLugares('PLANES DESTACADOS PARA JÓVENES')">
+        <span>🎨</span> <span>JÓVENES</span>
+      </button>
+      <button class="btn-filter museos" onclick="filtrarLugares('MUSEOS')">
+        <span>🏺</span> <span>MUSEOS</span>
+      </button>
+      <button class="btn-filter parques" onclick="filtrarLugares('PARQUES')">
+        <span>🌳</span> <span>PARQUES</span>
+      </button>
+      <button class="btn-filter leyendas" onclick="filtrarLugares('LUGARES DE HISTORIAS Y LEYENDAS')">
+        <span>📜</span> <span>LEYENDAS</span>
+      </button>
       <button class="btn-filter gratis" onclick="filtrarLugares('GRATIS')">
-        <span>🎁</span> <span style="font-size: 8px; color: #25898f;">GRATIS</span>
+        <span>🎁</span> <span>GRATIS</span>
       </button>
       <button class="btn-filter pago" onclick="filtrarLugares('PAID')">
-        <span>🪙</span> <span style="font-size: 8px; color: #b80058;">PAGO</span>
+        <span>🪙</span> <span>PAGO</span>
       </button>
     </div>
 
-    <!-- Personaje Seleccionado en Video -->
+    <!-- Personaje Seleccionado -->
     <div id="galloContainer">
       <video id="galloVideo" src="./gallo.mp4" playsinline muted preload="metadata"></video>
       <div id="galloSpeech">¡EXPLORA Y DESCUBRE LOS RINCONES MÁGICOS DE QUITO!</div>
     </div>
 
-    <!-- Botones de Control de Vista al lado del Radar -->
+    <!-- Controles Radar y Mapa -->
     <div id="radarControls">
       <button class="btn-radar-icon" title="Vista Más Amplia" onclick="vistaAmplia()">🌐</button>
       <button class="btn-radar-icon" title="Enfoque Quito" onclick="vistaQuito()">🎯</button>
     </div>
 
-    <!-- Radar Canvas -->
     <div id="radarContainer">
       <canvas id="radarCanvas" width="90" height="90"></canvas>
     </div>
 
-    <!-- Panel Deslizable de Botones (Rutas) -->
+    <!-- Panel de Rutas -->
     <div id="extraBlueSpace" class="hidden">
       <button class="btn-retro" onclick="trazarRuta('driving')">🚗 CARRO</button>
       <button class="btn-retro" onclick="trazarRuta('walking')">🚶 PIE</button>
@@ -533,22 +549,596 @@
   <script>
     let map;
     let infoWindow;
-    let lugaresPuntos = [];
+    let lugaresPuntos = [
+      {
+        "etiqueta": "PLANES DESTACADOS PARA JÓVENES",
+        "nombre": "Di Pinto (Café & Taller de Arte)",
+        "lat": -0.1785,
+        "lng": -78.4812,
+        "categoria": "HASTA $15 USD",
+        "zona": "NORTE",
+        "tipo": "Plan Jóvenes 1 / Arte & Café",
+        "sticker": "🎨",
+        "info": "Kits de pintura y cerámica desde $12.00 USD.",
+        "descripcion": "Concepto de café-taller súper viral en redes enfocado en liberar el estrés. Puedes tomar café o bebidas frías mientras personalizas cerámica, macetas, lienzos, gorras o bolsas de tela.",
+        "actividades": ["Pintar macetas y piezas de cerámica", "Personalizar tote bags o lienzos", "Disfrutar de café y postres gourmet"],
+        "recomendacion": "Ideal para ir en pareja o con amigos. Reserva con tiempo o ve temprano los fines de semana."
+      },
+      {
+        "etiqueta": "PLANES DESTACADOS PARA JÓVENES",
+        "nombre": "Cafetería Roca Roja",
+        "lat": -0.1812,
+        "lng": -78.4795,
+        "categoria": "HASTA $20 USD",
+        "zona": "NORTE",
+        "tipo": "Plan Jóvenes 2 / Cerámica & Café",
+        "sticker": "🪴",
+        "info": "Kits de arcilla y pintura desde $15.00 hasta $25.00 USD.",
+        "descripcion": "Un espacio con estética acogedora diseñado para amantes del arte en arcilla y la cerámica. Ofrecen kits completos con pinceles y pinturas acrílicas para moldear y pintar macetas, tazas o espejos.",
+        "actividades": ["Moldear arcilla desde cero", "Pintar macetas, tazas y espejos de mesa", "Armar pulseras con charms mientras tomas café"],
+        "recomendacion": "Su kit de regalo con pieza de cerámica es uno de los planes más populares entre jóvenes en TikTok e Instagram."
+      },
+      {
+        "etiqueta": "PLANES DESTACADOS PARA JÓVENES",
+        "nombre": "CelebrART (Galería & Gastronomía)",
+        "lat": -0.1985,
+        "lng": -78.4358,
+        "categoria": "HASTA $15 USD",
+        "zona": "CUMBAYÁ / NORTE",
+        "tipo": "Plan Jóvenes 3 / Arte & Cerveza Artesanal",
+        "sticker": "🍷",
+        "info": "Actividades y consumo desde $10.00 USD.",
+        "descripcion": "Centro cultural y galería en Cumbayá que combina exposiciones de arte de jóvenes artistas con talleres de pintura en vivo, tapas españolas y cerveza artesanal.",
+        "actividades": ["Pintar cerámica en barra o mesa", "Probar tapas y cerveza artesanal", "Recorrer las salas de exposiciones de arte emergente"],
+        "recomendacion": "Revisa su agenda cultural mensual ya que organizan eventos de pintura nocturna con vino."
+      },
+      {
+        "etiqueta": "PLANES DESTACADOS PARA JÓVENES",
+        "nombre": "Café Taller Tamayo",
+        "lat": -0.2035,
+        "lng": -78.4890,
+        "categoria": "HASTA $15 USD",
+        "zona": "NORTE (La Mariscal)",
+        "tipo": "Plan Jóvenes 4 / Pintura por Números",
+        "sticker": "🖼️",
+        "info": "Kits y talleres desde $15.00 USD (Bajo cita previa).",
+        "descripcion": "Espacio pet-friendly perfecto para quienes quieren pintar cuadros sin experiencia previa. Te entregan lienzos guiados por números, copas de cristal para decorar o telas preparadas.",
+        "actividades": ["Pintar lienzos por números guiados", "Decorar copas de vidrio", "Ir acompañado de tu mascota"],
+        "recomendacion": "Atienden bajo reserva previa, ideal para cumpleaños o citas tranquilas."
+      },
+      {
+        "etiqueta": "PLANES DESTACADOS PARA JÓVENES",
+        "nombre": "Ochoymedio (Cine Independiente & Café)",
+        "lat": -0.2082,
+        "lng": -78.4860,
+        "categoria": "HASTA $10 USD",
+        "zona": "NORTE (La Floresta)",
+        "tipo": "Plan Jóvenes 5 / Cine & Cultura Indie",
+        "sticker": "🎬",
+        "info": "Entradas al cine desde $5.00 USD. Café y snacks desde $3.00 USD.",
+        "descripcion": "El epicentro de la cultura urbana e indie de Quito en el barrio creativo La Floresta. Proyectan cine independiente y cuentan con un café al aire libre con ambiente cultural.",
+        "actividades": ["Ver películas de autor e independientes", "Tomar café o cerveza artesanal en el patio", "Ver conversatorios y ferias de arte local"],
+        "recomendacion": "Camina por el barrio La Floresta antes de tu función para tomar fotos de sus murales de arte urbano."
+      },
+      {
+        "etiqueta": "PLANES DESTACADOS PARA JÓVENES",
+        "nombre": "Librería y Cafetería Rayuela",
+        "lat": -0.1982,
+        "lng": -78.4810,
+        "categoria": "HASTA $10 USD",
+        "zona": "NORTE",
+        "tipo": "Plan Jóvenes 6 / Café & Lectura Aesthetic",
+        "sticker": "📚",
+        "info": "Consumos en cafetería desde $3.50 USD.",
+        "descripcion": "Librería independiente con espacio de cafetería integrada. Muy frecuentada por estudiantes universitarios y creadores de contenido por sus rincocitos tranquilos de lectura.",
+        "actividades": ["Leer novelas o cómics mientras tomas café de especialidad", "Probar repostería artesanal", "Asistir a clubes de lectura y lanzamientos"],
+        "recomendacion": "Excelente opción si buscas un lugar silencioso para trabajar con tu laptop o leer con luz natural."
+      },
+      {
+        "etiqueta": "PLANES DESTACADOS PARA JÓVENES",
+        "nombre": "Kao Board Game Café",
+        "lat": -0.1820,
+        "lng": -78.4835,
+        "categoria": "HASTA $10 USD",
+        "zona": "NORTE",
+        "tipo": "Plan Jóvenes 7 / Juegos de Mesa",
+        "sticker": "🎲",
+        "info": "Acceso a la ludoteca + consumo promedio: $6.00 a $10.00 USD.",
+        "descripcion": "Cafetería temática con una enorme colección de más de 300 juegos de mesa modernos. Hay explicadores que te enseñan a jugar las dinámicas que elijas mientras cenas o tomas café.",
+        "actividades": ["Jugar juegos de estrategia, rol o fiesta con amigos", "Probar hamburguesas, malteadas y milkshakes"],
+        "recomendacion": "Perfecto para grupos de 4 o más amigos. Ve durante la tarde noche."
+      },
+      {
+        "etiqueta": "PLANES DESTACADOS PARA JÓVENES",
+        "nombre": "Bottega de Arte & Café Centro Histórico",
+        "lat": -0.2225,
+        "lng": -78.5135,
+        "categoria": "HASTA $10 USD",
+        "zona": "CENTRO",
+        "tipo": "Plan Jóvenes 8 / Café & Arte Colonial",
+        "sticker": "☕",
+        "info": "Café y postres desde $3.00 USD.",
+        "descripcion": "Cafetería ubicada dentro de una casa colonial restaurada en el Centro Histórico. Es tendencia en TikTok gracias a sus balcones con vista a los tejados antiguos y sus talleres esporádicos de dibujo.",
+        "actividades": ["Pintar acuarelas en la terraza con vista al centro", "Tomar fotos aesthetic en sus patios coloniales", "Probar café de origen ecuatoriano"],
+        "recomendacion": "Pide una mesa en los balcones superiores para la mejor vista fotográfica."
+      },
+      {
+        "etiqueta": "PLANES DESTACADOS PARA JÓVENES",
+        "nombre": "Isvelio Jardín Bar (Noche Temática & Cócteles)",
+        "lat": -0.2015,
+        "lng": -78.4885,
+        "categoria": "HASTA $15 USD",
+        "zona": "NORTE (La Mariscal)",
+        "tipo": "Plan Jóvenes 9 / Jardín Coctelería",
+        "sticker": "🍹",
+        "info": "Cócteles y entradas desde $6.00 USD.",
+        "descripcion": "Un jardín secreto en medio de la ciudad iluminado con guirnaldas de luces. Popular entre jóvenes por sus noches temáticas, música indie, ambiente relajado y cócteles de autor.",
+        "actividades": ["Tomar cócteles artesanales en mesas de jardín", "Escuchar DJs locales o bandas acústicas", "Tomar fotos en sus rincones iluminados"],
+        "recomendacion": "El ambiente se pone mejor a partir de las 19:00 de jueves a sábado."
+      },
+      {
+        "etiqueta": "PLANES DESTACADOS PARA JÓVENES",
+        "nombre": "Naya Café Matcha & Specialty",
+        "lat": -0.1765,
+        "lng": -78.4790,
+        "categoria": "HASTA $10 USD",
+        "zona": "NORTE",
+        "tipo": "Plan Jóvenes 10 / Matcha & Brunch Aesthetic",
+        "sticker": "🍵",
+        "info": "Bebidas y brunch desde $4.00 a $9.00 USD.",
+        "descripcion": "Cafetería especializada en bebidas a base de matcha de grado ceremonial y café de especialidad. Su decoración minimalista en tonos neutros la convierte en uno de los puntos más grabados por creadores de contenido.",
+        "actividades": ["Probar variaciones gourmet de Matcha Latte", "Disfrutar de tostadas de aguacate o repostería japonesa", "Grabar contenido aesthetic para redes"],
+        "recomendacion": "Prueba sus bebidas de temporada y sus postres de matcha o taro."
+      },
+      {
+        "etiqueta": "MUSEOS",
+        "nombre": "Museo de la Ciudad",
+        "lat": -0.2251,
+        "lng": -78.5152,
+        "categoria": "HASTA $10 USD",
+        "zona": "CENTRO",
+        "tipo": "Museo 1 / Historia",
+        "sticker": "📜",
+        "info": "Adultos: $4.00, Estudiantes: $2.00, Niños y Tercera edad: $2.00.",
+        "descripcion": "Ubicado en el antiguo Hospital San Juan de Dios, ofrece un recorrido interactivo sobre la historia de Quito desde la era precolombina.",
+        "actividades": ["Recorrer maquetas de la vida cotidiana en distintas épocas", "Visitar los patios coloniales"],
+        "recomendacion": "Un espacio indispensable para entender la evolución sociocultural de Quito."
+      },
+      {
+        "etiqueta": "MUSEOS",
+        "nombre": "Museo Nacional del Ecuador (MUNA)",
+        "lat": -0.2115,
+        "lng": -78.4983,
+        "categoria": "GRATIS",
+        "zona": "CENTRO",
+        "tipo": "Museo 2 / Historia",
+        "sticker": "🏺",
+        "info": "Acceso libre para todo público.",
+        "descripcion": "Alberga la colección arqueológica, de oro precolombino y de arte colonial/moderno más importante del país dentro de la Casa de la Cultura.",
+        "actividades": ["Ver la Sala del Oro precolombino", "Apreciar arte colonial e identidades diversas de Ecuador"],
+        "recomendacion": "Llevar identificación para ingresar de forma fluida."
+      },
+      {
+        "etiqueta": "MUSEOS",
+        "nombre": "Museo Casa de Sucre",
+        "lat": -0.2230,
+        "lng": -78.5132,
+        "categoria": "HASTA $10 USD",
+        "zona": "CENTRO",
+        "tipo": "Museo 3 / Historia",
+        "sticker": "⚔️",
+        "info": "Adultos: $1.50, Niños/Estudiantes: $0.50.",
+        "descripcion": "Residencia histórica del Mariscal Antonio José de Sucre y su esposa, conservada con mobiliario y objetos militares del siglo XIX.",
+        "actividades": ["Observar uniformes y mapas de batallas independentistas", "Visitar habitaciones coloniales conservadas"],
+        "recomendacion": "Aprovecha la guía dentro del museo para conocer detalles de la vida de los próceres."
+      },
+      {
+        "etiqueta": "MUSEOS",
+        "nombre": "Museo Alberto Mena Caamaño (Museo de Cera)",
+        "lat": -0.2208,
+        "lng": -78.5126,
+        "categoria": "HASTA $10 USD",
+        "zona": "CENTRO",
+        "tipo": "Museo 4 / Cera e Historia",
+        "sticker": "🕯️",
+        "info": "Adultos: $1.50, Estudiantes: $0.75, Niños: $0.50.",
+        "descripcion": "Representa con figuras de cera tamaño real escenas históricas impactantes como la masacre de los patriotas del 2 de agosto de 1810.",
+        "actividades": ["Ver la escena en cera basada en la pintura de César Villacrés", "Explorar el Centro Cultural Metropolitano"],
+        "recomendacion": "Excelente opción para entender de forma visual las narraciones patrias."
+      },
+      {
+        "etiqueta": "MUSEOS",
+        "nombre": "Museo de Cera e Historia Convento de San Francisco",
+        "lat": -0.2218,
+        "lng": -78.5158,
+        "categoria": "HASTA $10 USD",
+        "zona": "CENTRO",
+        "tipo": "Museo 5 / Arte Religioso",
+        "sticker": "🧱",
+        "info": "Adultos: $3.00, Estudiantes: $1.50.",
+        "descripcion": "El complejo religioso más grande de América Latina, con salas de exposición barroca y la emblemática arquitectura franciscana.",
+        "actividades": ["Admirar arte religioso colonial", "Subir a la torre del campanario y visitar catacumbas"],
+        "recomendacion": "Visita el coro alto para una vista panorámica del interior de la iglesia."
+      },
+      {
+        "etiqueta": "MUSEOS",
+        "nombre": "Museo Yaku Parque del Agua",
+        "lat": -0.2255,
+        "lng": -78.5195,
+        "categoria": "HASTA $10 USD",
+        "zona": "CENTRO",
+        "tipo": "Museo 6 / Ciencia e Interactivo",
+        "sticker": "💧",
+        "info": "Adultos: $4.00, Estudiantes: $2.00, Niños: $2.00.",
+        "descripcion": "Museo interactivo ubicado en las laderas del Pichincha enfocado en la física, biología y conservación del agua.",
+        "actividades": ["Juegos con pompas de agua gigantes", "Recorrer el sendero ecológico y mirador hacia el Centro Histórico"],
+        "recomendacion": "Llevar ropa de cambio para los niños ya que se pueden mojar en las zonas lúdicas."
+      },
+      {
+        "etiqueta": "MUSEOS",
+        "nombre": "Museo Interactivo de Ciencia (MIC)",
+        "lat": -0.2415,
+        "lng": -78.5130,
+        "categoria": "HASTA $10 USD",
+        "zona": "SUR",
+        "tipo": "Museo 7 / Ciencia",
+        "sticker": "🔬",
+        "info": "Adultos: $4.00, Estudiantes: $2.00, Niños: $2.00.",
+        "descripcion": "Ubicado en la antigua fábrica textil Chimbacalle en el sur, promueve la ciencia y la tecnología a través del juego y experimentos.",
+        "actividades": ["Visitar la sala Guaguas para niños pequeños", "Conocer la historia textil e industrial de Quito"],
+        "recomendacion": "Ideal para viajes familiares en el sector Sur."
+      },
+      {
+        "etiqueta": "MUSEOS",
+        "nombre": "Capilla del Hombre y Museo Guayasamín",
+        "lat": -0.1808,
+        "lng": -78.4715,
+        "categoria": "HASTA $10 USD",
+        "zona": "NORTE",
+        "tipo": "Museo 8 / Arte",
+        "sticker": "🎨",
+        "info": "General: $10.00. Estudiantes/Tercera Edad: $5.00.",
+        "descripcion": "Espacio diseñado por el artista Oswaldo Guayasamín dedicado a la historia del ser humano en América Latina y su sufrimiento.",
+        "actividades": ["Observar murales monumentales", "Visitar la Casa-Museo donde vivió Guayasamín"],
+        "recomendacion": "Ubicado en el barrio Bellavista con una excelente vista del norte de la ciudad."
+      },
+      {
+        "etiqueta": "MUSEOS",
+        "nombre": "Museo Etnohistórico del Artesanado Mindalae",
+        "lat": -0.2023,
+        "lng": -78.4902,
+        "categoria": "HASTA $10 USD",
+        "zona": "NORTE",
+        "tipo": "Museo 9 / Etnografía",
+        "sticker": "🪅",
+        "info": "Adultos: $3.00, Niños/Tercera edad: $1.50.",
+        "descripcion": "Museo de 5 pisos en la zona de La Mariscal dedicado a la exhibición de la rica diversidad artesanal e indígena del Ecuador.",
+        "actividades": ["Conocer textiles, cerámica y mitología solar de los pueblos originarios"],
+        "recomendacion": "Cerca del sector turístico de La Mariscal."
+      },
+      {
+        "etiqueta": "MUSEOS",
+        "nombre": "Museo Numismático del Banco Central",
+        "lat": -0.2205,
+        "lng": -78.5129,
+        "categoria": "HASTA $10 USD",
+        "zona": "CENTRO",
+        "tipo": "Museo 10 / Historia Monetaria",
+        "sticker": "🪙",
+        "info": "Adultos: $2.00, Estudiantes/Niños: $1.00.",
+        "descripcion": "Exhibe la historia de la moneda en Ecuador desde el trueque precolombino hasta el Sucre y la Dolarización.",
+        "actividades": ["Ver las antiguas prensas y acuñadoras de monedas", "Aprender sobre la transición al dólar"],
+        "recomendacion": "Ubicado en el antiguo edificio del Banco Central frente a la Compañía de Jesús."
+      },
+      {
+        "etiqueta": "PARQUES",
+        "nombre": "Parque La Carolina",
+        "lat": -0.1825,
+        "lng": -78.4845,
+        "categoria": "GRATIS",
+        "zona": "NORTE",
+        "tipo": "Parque 1 / Recreativo",
+        "sticker": "🌳",
+        "info": "Acceso libre para todo público.",
+        "descripcion": "El parque urbano más activo en el corazón financiero de Quito, ideal para deporte y paseo familiar.",
+        "actividades": ["Pasear en barca por la laguna", "Hacer skate o atletismo", "Visitar el Jardín Botánico (de pago)"],
+        "recomendacion": "Cerca de centros comerciales y la línea del Metro de Quito."
+      },
+      {
+        "etiqueta": "PARQUES",
+        "nombre": "Parque Metropolitano Guanguiltagua",
+        "lat": -0.1712,
+        "lng": -78.4610,
+        "categoria": "GRATIS",
+        "zona": "NORTE",
+        "tipo": "Parque 2 / Naturaleza",
+        "sticker": "🌲",
+        "info": "Acceso libre para todo público.",
+        "descripcion": "Con 557 hectáreas, es uno de los parques urbanos más grandes de Sudamérica, rodeado de bosques de eucalipto.",
+        "actividades": ["Ciclismo de montaña", "Pícnic en zonas con parrillas", "Miradores hacia los valles orientales de Quito"],
+        "recomendacion": "Llevar protector solar y calzado adecuado para caminata silvestre."
+      },
+      {
+        "etiqueta": "PARQUES",
+        "nombre": "Parque Bicentenario",
+        "lat": -0.1388,
+        "lng": -78.4872,
+        "categoria": "GRATIS",
+        "zona": "NORTE",
+        "tipo": "Parque 3 / Deportivo",
+        "sticker": "✈️",
+        "info": "Acceso libre para todo público.",
+        "descripcion": "Ubicado en las pistas del antiguo Aeropuerto Internacional Mariscal Sucre, ofrece enormes extensiones planas.",
+        "actividades": ["Patinar o andar en bicicleta por la pista de aterrizaje", "Caminatas al aire libre y eventos culturales"],
+        "recomendacion": "Cuenta con alquiler de bicicletas en sus ingresos."
+      },
+      {
+        "etiqueta": "PARQUES",
+        "nombre": "Parque El Ejido",
+        "lat": -0.2118,
+        "lng": -78.4988,
+        "categoria": "GRATIS",
+        "zona": "CENTRO",
+        "tipo": "Parque 4 / Arte al Aire Libre",
+        "sticker": "🖼️",
+        "info": "Acceso libre para todo público.",
+        "descripcion": "Parque tradicional que divide el norte moderno con el centro histórico. Famoso por su galería de arte al aire libre los fines de semana.",
+        "actividades": ["Comprar pinturas artesanales", "Probar comida típica en los puestos exteriores"],
+        "recomendacion": "Visítalo los sábados y domingos para ver a los artistas trabajando."
+      },
+      {
+        "etiqueta": "PARQUES",
+        "nombre": "Parque La Alameda",
+        "lat": -0.2155,
+        "lng": -78.5030,
+        "categoria": "GRATIS",
+        "zona": "CENTRO",
+        "tipo": "Parque 5 / Histórico",
+        "sticker": "🔭",
+        "info": "Acceso libre para todo público.",
+        "descripcion": "El parque más antiguo de Quito. Alberga el Observatorio Astronómico de Quito inaugurado en 1873.",
+        "actividades": ["Pasear en botes de pedal en la pequeña laguna", "Visitar el Observatorio Astronómico"],
+        "recomendacion": "Cercano a la estación del metro Alameda."
+      },
+      {
+        "etiqueta": "PARQUES",
+        "nombre": "Parque Las Cuadras",
+        "lat": -0.2858,
+        "lng": -78.5482,
+        "categoria": "GRATIS",
+        "zona": "SUR",
+        "tipo": "Parque 6 / Naturaleza Ecológica",
+        "sticker": "🌿",
+        "info": "Acceso libre para todo público.",
+        "descripcion": "Gran pulmón verde del Sur de Quito con senderos ecológicos, riachuelos y especies nativas de flora andina.",
+        "actividades": ["Senderismo relajante", "Observación de aves endémicas"],
+        "recomendacion": "Ideal para descansar en un entorno natural sin salir del sur urbano."
+      },
+      {
+        "etiqueta": "PARQUES",
+        "nombre": "Parque Ecológico Fundeporte",
+        "lat": -0.2920,
+        "lng": -78.5520,
+        "categoria": "GRATIS",
+        "zona": "SUR",
+        "tipo": "Parque 7 / Deportivo",
+        "sticker": "⚽",
+        "info": "Acceso libre para todo público.",
+        "descripcion": "Complejo deportivo recreativo del sur equipado con canchas, áreas verdes y pistas para entrenamiento.",
+        "actividades": ["Jugar fútbol, baloncesto o tenis", "Ejercicios al aire libre"],
+        "recomendacion": "Ideal para ir en grupo de amigos o familia los fines de semana."
+      },
+      {
+        "etiqueta": "PARQUES",
+        "nombre": "Parque Lineal del Machángara",
+        "lat": -0.2450,
+        "lng": -78.5180,
+        "categoria": "GRATIS",
+        "zona": "SUR",
+        "tipo": "Parque 8 / Recreativo",
+        "sticker": "🚴",
+        "info": "Acceso libre para todo público.",
+        "descripcion": "Espacio verde recuperado a lo largo de las riberas del río Machángara en la zona de Chimbacalle.",
+        "actividades": ["Caminatas peatonales", "Uso de juegos infantiles y ciclovía"],
+        "recomendacion": "Excelente conexión con el Museo Interactivo de Ciencia (MIC)."
+      },
+      {
+        "etiqueta": "PARQUES",
+        "nombre": "Parque Metropolitano del Sur",
+        "lat": -0.3205,
+        "lng": -78.5550,
+        "categoria": "GRATIS",
+        "zona": "SUR",
+        "tipo": "Parque 9 / Aventura y Naturaleza",
+        "sticker": "🏕️",
+        "info": "Acceso libre para todo público.",
+        "descripcion": "Reserva natural masiva con más de 600 hectáreas con vistas al volcán Cotopaxi y miradores naturales.",
+        "actividades": ["Camping autorizado", "Ciclismo extremo y caminatas de montaña"],
+        "recomendacion": "Ir con vehículo o transporte con dirección a El Troje."
+      },
+      {
+        "etiqueta": "PARQUES",
+        "nombre": "Parque Inglés",
+        "lat": -0.1315,
+        "lng": -78.4950,
+        "categoria": "GRATIS",
+        "zona": "NORTE",
+        "tipo": "Parque 10 / Barrial y Recreativo",
+        "sticker": "🐕",
+        "info": "Acceso libre para todo público.",
+        "descripcion": "Popular parque de la zona norte (Sector San Carlos) conocido por sus áreas caninas, canchas deportivas y ambiente gastronómico cercano.",
+        "actividades": ["Pasear mascotas", "Deportes de fin de semana"],
+        "recomendacion": "Rodeado de varios puestos de comida tradicional del norte."
+      },
+      {
+        "etiqueta": "LUGARES DE HISTORIAS Y LEYENDAS",
+        "nombre": "El Panecillo",
+        "lat": -0.2298,
+        "lng": -78.5186,
+        "categoria": "GRATIS",
+        "zona": "CENTRO",
+        "tipo": "Leyenda 1 / Mirador de la Virgen Alada",
+        "sticker": "🗽",
+        "info": "Entrada libre al mirador. (Subida a la Virgen: Adultos $2.00 / Niños $1.00).",
+        "descripcion": "Colina ancestral apodada Yavirac por los incas. Alberga la Virgen de Quito y leyendas sobre los tesoros ocultos de Atahualpa.",
+        "actividades": ["Mirador de 360 grados", "Ingresar al interior del monumento", "Escuchar mitos del cerro Yavirac"],
+        "recomendacion": "Acceder preferentemente en taxi o transporte turístico por seguridad."
+      },
+      {
+        "etiqueta": "LUGARES DE HISTORIAS Y LEYENDAS",
+        "nombre": "Atrio de la Iglesia de San Francisco",
+        "lat": -0.2218,
+        "lng": -78.5158,
+        "categoria": "GRATIS",
+        "zona": "CENTRO",
+        "tipo": "Leyenda 2 / Leyenda de Cantuña",
+        "sticker": "😈",
+        "info": "Acceso libre a la plaza y atrio exterior.",
+        "descripcion": "El lugar exacto donde se sitúa la famosa leyenda indígena de Cantuña, un indígena que engañó al diablo escondiendo la última piedra del atrio.",
+        "actividades": ["Buscar la atrio de piedra de la famosa leyenda", "Tomar fotos de la plaza principal"],
+        "recomendacion": "Observa el detalle del atrio exterior para tratar de hallar el hueco de la piedra faltante."
+      },
+      {
+        "etiqueta": "LUGARES DE HISTORIAS Y LEYENDAS",
+        "nombre": "Iglesia y Convento de Santo Domingo",
+        "lat": -0.2248,
+        "lng": -78.5125,
+        "categoria": "HASTA $10 USD",
+        "zona": "CENTRO",
+        "tipo": "Leyenda 3 / El Padre Almeida",
+        "sticker": "🍷",
+        "info": "Entrada al templo libre. Museo: $2.00 USD.",
+        "descripcion": "Templo barroco donde nació la célebre narración popular del Padre Almeida, un sacerdote que escapaba por las noches apoyándose en los hombros del Cristo del altar.",
+        "actividades": ["Conocer el Cristo de la leyenda del Padre Almeida", "Visitar la Capilla del Rosario"],
+        "recomendacion": "Pregunta a los guías del museo por el ventanal original del escape."
+      },
+      {
+        "etiqueta": "LUGARES DE HISTORIAS Y LEYENDAS",
+        "nombre": "Calle La Ronda",
+        "lat": -0.2245,
+        "lng": -78.5148,
+        "categoria": "GRATIS",
+        "zona": "CENTRO",
+        "tipo": "Leyenda 4 / Mitos Urbanos y Bohemia",
+        "sticker": "🎭",
+        "info": "Acceso libre para todo público.",
+        "descripcion": "Calle emblemática donde abundan mitos de duendes, fantasmas bohemios y contadores de historias tradicionales en sus antiguos patios.",
+        "actividades": ["Escuchar cuentos tradicionales contados por artesanos", "Degustar canelazo y empanadas gigantes"],
+        "recomendacion": "Visítala al atardecer cuando se encienden los faroles coloniales."
+      },
+      {
+        "etiqueta": "LUGARES DE HISTORIAS Y LEYENDAS",
+        "nombre": "Museo Carmen Alto",
+        "lat": -0.2249,
+        "lng": -78.5152,
+        "categoria": "HASTA $10 USD",
+        "zona": "CENTRO",
+        "tipo": "Leyenda 5 / Santa Mariana de Jesús",
+        "sticker": "🌹",
+        "info": "Adultos: $4.00, Estudiantes: $2.00.",
+        "descripcion": "Convento histórico vinculado a la vida y profecías de Santa Mariana de Jesús (la Azucena de Quito) y sus milagros populares.",
+        "actividades": ["Ver las celdas conservadas de clausura", "Probar los dulces elaborados por las monjas"],
+        "recomendacion": "Prueba la tradicional 'Agua de Almofía' en su tienda de recuerdos."
+      },
+      {
+        "etiqueta": "ATRACTIVOS GENERALES",
+        "nombre": "Teleférico de Quito",
+        "lat": -0.1906,
+        "lng": -78.5203,
+        "categoria": "HASTA $10 USD",
+        "zona": "NORTE",
+        "tipo": "Atractivo / Aventura",
+        "sticker": "🪂",
+        "info": "Adulto: $5.25 (Nacional) / $9.00 (Extranjero).",
+        "descripcion": "Ascenso hasta Cruz Loma a 3.947 m s. n. m. en las laderas del volcán Pichincha.",
+        "actividades": ["Miradores panorámicos", "Columpio en las nubes", "Trekking al Rucu Pichincha"],
+        "recomendacion": "Ir temprano por la mañana."
+      },
+      {
+        "etiqueta": "ATRACTIVOS GENERALES",
+        "nombre": "Ciudad Mitad del Mundo",
+        "lat": -0.0022,
+        "lng": -78.4558,
+        "categoria": "HASTA $10 USD",
+        "zona": "NORTE",
+        "tipo": "Atractivo Cultural",
+        "sticker": "📍",
+        "info": "Adulto: $5.00. Niño: $2.50.",
+        "descripcion": "Monumento ecuatorial a 30 km del centro de Quito que conmemora la Misión Geodésica.",
+        "actividades": ["Fotos sobre la línea ecuatorial", "Museo etnográfico", "Planetario"],
+        "recomendacion": "Planificar 2 a 3 horas de recorrido."
+      },
+      {
+        "etiqueta": "ATRACTIVOS GENERALES",
+        "nombre": "Basílica del Voto Nacional",
+        "lat": -0.2144,
+        "lng": -78.5074,
+        "categoria": "HASTA $10 USD",
+        "zona": "CENTRO",
+        "tipo": "Patrimonio / Arquitectura",
+        "sticker": "⛪",
+        "info": "Adulto: $2.00 (Nacional) / $3.00 (Extranjero).",
+        "descripcion": "Templo neogótico adornado con gárgolas de animales de la fauna ecuatoriana.",
+        "actividades": ["Subida a las torres altas", "Admirar vitrales"],
+        "recomendacion": "Llevar calzado cómodo para las escaleras."
+      },
+      {
+        "etiqueta": "ATRACTIVOS GENERALES",
+        "nombre": "Yumbos Chocolate (Junto a la Basílica)",
+        "lat": -0.2148,
+        "lng": -78.5078,
+        "categoria": "HASTA $10 USD",
+        "zona": "CENTRO",
+        "tipo": "Gastronomía / Cacao",
+        "sticker": "🍫",
+        "info": "Degustaciones desde $2.00 USD.",
+        "descripcion": "Chocolatería artesanal con cata de cacao fino de aroma y vista directa a las torres de la Basílica.",
+        "actividades": ["Catas de chocolate artesanal", "Tomar chocolate caliente gourmet"],
+        "recomendacion": "Ideal tras subir las torres de la Basílica."
+      },
+      {
+        "etiqueta": "ATRACTIVOS GENERALES",
+        "nombre": "Iglesia de la Compañía de Jesús",
+        "lat": -0.2212,
+        "lng": -78.5140,
+        "categoria": "HASTA $10 USD",
+        "zona": "CENTRO",
+        "tipo": "Patrimonio / Barroco",
+        "sticker": "✨",
+        "info": "Adulto: $2.50 (Nacional) / $6.00 (Extranjero).",
+        "descripcion": "Joya del barroco recubierta en su interior por pan de oro de 23 quilates.",
+        "actividades": ["Observar el altar de pan de oro", "Cúpula barroca"],
+        "recomendacion": "Aprovechar las visitas guiadas gratuitas en el interior."
+      },
+      {
+        "etiqueta": "ATRACTIVOS GENERALES",
+        "nombre": "Plaza de la Independencia (Plaza Grande)",
+        "lat": -0.2201,
+        "lng": -78.5122,
+        "categoria": "GRATIS",
+        "zona": "CENTRO",
+        "tipo": "Plaza Principal",
+        "sticker": "🏛️",
+        "info": "Acceso libre.",
+        "descripcion": "Plaza principal rodeada del Palacio Presidencial, la Catedral y la Alcaldía.",
+        "actividades": ["Ver el cambio de guardia los lunes", "Paseo por portales del Palacio Arzobispal"],
+        "recomendacion": "Punto de inicio clásico para caminar el Centro Histórico."
+      }
+    ];
+
     let destinoSeleccionado = null;
     let markersMap = [];
     let radarAngle = 0;
     let personajeElegido = "Marco";
     const QUITO_CENTER = { lat: -0.1807, lng: -78.4678 };
 
-    /* -----------------------------------------------------------
-       SECUENCIA HACKER
-    ----------------------------------------------------------- */
+    /* INTRO HACKER */
     const hackerCommands = [
       "> CONNECTING TO QUITO_CORE_SERVER...",
       "> BYPASSING SECURITY GATEWAY_0.2201...",
       "> ACCESSING SATELLITE FEED... [OK]",
       "> APPLYING RETRO_TEAL_PALETTE...",
-      "> LOADING LOGO OVERLAY...",
+      "> INJECTING PARKS, MUSEUMS & LEGENDS...",
       "> INITIALIZING CHARACTER_SELECTION...",
       "> SYSTEM READY."
     ];
@@ -562,7 +1152,7 @@
           terminal.innerHTML += hackerCommands[lineIndex] + "<br>";
           lineIndex++;
         }
-      }, 600);
+      }, 500);
 
       setTimeout(() => {
         clearInterval(interval);
@@ -575,12 +1165,10 @@
           modal.classList.remove("hidden");
           document.querySelectorAll('.character-preview-video').forEach(v => v.pause());
         }, 500);
-      }, 5000);
+      }, 4000);
     }
 
-    /* -----------------------------------------------------------
-       SELECCIÓN DE PERSONAJE
-    ----------------------------------------------------------- */
+    /* SELECCIÓN DE PERSONAJE */
     function seleccionarPersonaje(nombre, videoSrc) {
       personajeElegido = nombre === 'marco' ? 'MARCO' : 'ANDREA';
       const mainVideo = document.getElementById("galloVideo");
@@ -589,9 +1177,7 @@
       showGalloSpeech(`¡HOLA! SOY ${personajeElegido}, ¡VAMOS A EXPLORAR QUITO!`);
     }
 
-    /* -----------------------------------------------------------
-       FUNCIONES DE VISTA DE MAPA (BOTONES DE RADAR)
-    ----------------------------------------------------------- */
+    /* MAPA */
     function vistaAmplia() {
       if (map) {
         map.setCenter(QUITO_CENTER);
@@ -603,14 +1189,11 @@
     function vistaQuito() {
       if (map) {
         map.setCenter(QUITO_CENTER);
-        map.setZoom(14);
+        map.setZoom(13);
         showGalloSpeech("ENFOCANDO EN QUITO");
       }
     }
 
-    /* -----------------------------------------------------------
-       INICIALIZACIÓN DEL MAPA DE GOOGLE
-    ----------------------------------------------------------- */
     function initMap() {
       const PICHINCHA_BOUNDS = {
         north: 0.3800,
@@ -647,10 +1230,6 @@
         center: QUITO_CENTER,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         disableDefaultUI: true,
-        zoomControl: false,
-        fullscreenControl: false,
-        streetViewControl: false,
-        mapTypeControl: false,
         restriction: {
           latLngBounds: PICHINCHA_BOUNDS,
           strictBounds: false
@@ -659,20 +1238,8 @@
       });
 
       infoWindow = new google.maps.InfoWindow();
-      cargarLugares();
+      renderizarMarcadores(lugaresPuntos);
       iniciarRadar();
-    }
-
-    async function cargarLugares() {
-      try {
-        const response = await fetch("./lugares.json");
-        if (!response.ok) throw new Error("No se pudo cargar lugares.json");
-        lugaresPuntos = await response.json();
-        renderizarMarcadores(lugaresPuntos);
-      } catch (error) {
-        console.error("Error al cargar los datos:", error);
-        showGalloSpeech("ERROR CARGANDO DATOS DEL SERVIDOR");
-      }
     }
 
     function renderizarMarcadores(lugares) {
@@ -719,6 +1286,10 @@
                 ${lugar.sticker || ''} ${lugar.nombre}
               </h3>
               
+              <div style="font-size: 10px; color: #e2b714; margin-bottom: 4px; font-family: 'Press Start 2P', monospace;">
+                🏷️ ${lugar.etiqueta || ''}
+              </div>
+
               <div style="font-size: 11px; color: #b80058; margin-bottom: 8px; font-family: system-ui, -apple-system, sans-serif; font-weight: bold;">
                 💵 ${lugar.info || lugar.categoria || ''}
               </div>
@@ -750,16 +1321,26 @@
       markersMap = [];
     }
 
-    window.filtrarLugares = function(tipo) {
-      if (tipo === 'GRATIS') {
-        const gratis = lugaresPuntos.filter(l => l.categoria && l.categoria.toUpperCase().includes('GRATIS'));
-        renderizarMarcadores(gratis);
+    /* FILTRADO MULTICATEGORÍA */
+    window.filtrarLugares = function(criterio) {
+      let resultado = [];
+
+      if (criterio === 'TODOS') {
+        resultado = lugaresPuntos;
+        showGalloSpeech("MOSTRANDO TODOS LOS DESTINOS");
+      } else if (criterio === 'GRATIS') {
+        resultado = lugaresPuntos.filter(l => l.categoria && l.categoria.toUpperCase().includes('GRATIS'));
         showGalloSpeech("MOSTRANDO LUGARES GRATUITOS");
-      } else if (tipo === 'PAID') {
-        const pago = lugaresPuntos.filter(l => l.categoria && !l.categoria.toUpperCase().includes('GRATIS'));
-        renderizarMarcadores(pago);
+      } else if (criterio === 'PAID') {
+        resultado = lugaresPuntos.filter(l => l.categoria && !l.categoria.toUpperCase().includes('GRATIS'));
         showGalloSpeech("MOSTRANDO LUGARES DE PAGO");
+      } else {
+        // Filtrar directamente por el campo "etiqueta" del JSON
+        resultado = lugaresPuntos.filter(l => l.etiqueta && l.etiqueta.toUpperCase() === criterio.toUpperCase());
+        showGalloSpeech(`FILTRANDO: ${criterio}`);
       }
+
+      renderizarMarcadores(resultado);
     };
 
     function iniciarRadar() {
@@ -816,7 +1397,7 @@
 
     window.limpiarRuta = function() {
       document.getElementById("extraBlueSpace").classList.add("hidden");
-      infoWindow.close();
+      if (infoWindow) infoWindow.close();
       destinoSeleccionado = null;
       showGalloSpeech("SELECCIÓN LIMPIADA");
     };
@@ -829,7 +1410,7 @@
       if (video) {
         video.muted = true;
         video.currentTime = 0;
-        video.play().catch(e => console.log("La reproducción del video requiere interacción previa."));
+        video.play().catch(e => console.log("La reproducción requiere interacción previa."));
       }
     }
 
