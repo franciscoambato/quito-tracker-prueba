@@ -1,346 +1,71 @@
-<!DOCTYPE html>
+<!DOCTYPE1 html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  
+  <!-- 1. ETIPETA VIEWPORT PARA MÓVILES -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mapa de Lugares - Quito Retro Style</title>
+  
+  <title>Quito Tracker - Mapa Retro Pixel</title>
 
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- ICONO EN LA PESTAÑA (FAVICON EN EL ÁREA AZUL) -->
+  <!-- Reemplaza "ruta/de/tu-logotipo.png" por la ubicación real de tu imagen -->
+  <link rel="icon" type="image/png" href="ruta/de/tu-logotipo.png">
 
-  <style>
-    /* Configuración Base y Fondo */
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #1a1a2e;
-      color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-    }
-
-    /* Panel de Botones Ovalados */
-    .filter-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px;
-      padding: 15px;
-      background-color: #16213e;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-    }
-
-    /* Estilo de Botón Ovalado Retro */
-    .btn-filter {
-      border: 2px solid;
-      border-radius: 25px; /* Bordes ovalados */
-      padding: 10px 20px;
-      font-size: 13px;
-      font-weight: bold;
-      color: #ffffff;
-      background-color: #0f3460;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 3px 3px 0px rgba(0,0,0,0.4);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /* Efectos Hover y Active */
-    .btn-filter:hover {
-      transform: translateY(-2px);
-      box-shadow: 4px 6px 0px rgba(0,0,0,0.5);
-    }
-
-    .btn-filter.active {
-      box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.6);
-      transform: translateY(2px);
-    }
-
-    /* Colores Específicos e Identificativos para cada Categoría */
-    .btn-jovenes {
-      border-color: #ff2a6d;
-      color: #ff2a6d;
-    }
-    .btn-jovenes.active, .btn-jovenes:hover {
-      background-color: #ff2a6d;
-      color: #fff;
-    }
-
-    .btn-museos {
-      border-color: #05d9e8;
-      color: #05d9e8;
-    }
-    .btn-museos.active, .btn-museos:hover {
-      background-color: #05d9e8;
-      color: #1a1a2e;
-    }
-
-    .btn-parques {
-      border-color: #00ff87;
-      color: #00ff87;
-    }
-    .btn-parques.active, .btn-parques:hover {
-      background-color: #00ff87;
-      color: #1a1a2e;
-    }
-
-    .btn-leyendas {
-      border-color: #ffb703;
-      color: #ffb703;
-    }
-    .btn-leyendas.active, .btn-leyendas:hover {
-      background-color: #ffb703;
-      color: #1a1a2e;
-    }
-
-    .btn-todos {
-      border-color: #d800ff;
-      color: #d800ff;
-    }
-    .btn-todos.active, .btn-todos:hover {
-      background-color: #d800ff;
-      color: #fff;
-    }
-
-    /* Contenedor del Mapa */
-    #map {
-      flex: 1;
-      width: 100%;
-    }
-
-    /* Custom Marker Styling (Etiquetas en el Mapa) */
-    .custom-label-marker {
-      background: #0f3460;
-      border: 2px solid #ff2a6d;
-      border-radius: 15px;
-      padding: 4px 8px;
-      color: #fff;
-      font-size: 11px;
-      font-weight: bold;
-      white-space: nowrap;
-      box-shadow: 2px 2px 6px rgba(0,0,0,0.6);
-      text-align: center;
-    }
-  </style>
+  <!-- Estilos CSS -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <!-- Botones Ovalados de Filtrado -->
-  <div class="filter-container">
-    <button class="btn-filter btn-todos active" onclick="filtrarCategoria('TODOS')">
-      🌐 MOSTRAR TODOS
-    </button>
-    <button class="btn-filter btn-jovenes" onclick="filtrarCategoria('PLANES DESTACADOS PARA JÓVENES')">
-      🎨 PLANES PARA JÓVENES
-    </button>
-    <button class="btn-filter btn-museos" onclick="filtrarCategoria('MUSEOS')">
-      🏛️ MUSEOS
-    </button>
-    <button class="btn-filter btn-parques" onclick="filtrarCategoria('PARQUES')">
-      🌳 PARQUES
-    </button>
-    <button class="btn-filter btn-leyendas" onclick="filtrarCategoria('LUGARES DE HISTORIAS Y LEYENDAS')">
-      📜 HISTORIAS Y LEYENDAS
-    </button>
-  </div>
+  <!-- ENCABEZADO Y NAVEGACIÓN -->
+  <header class="header">
+    <div class="logo-container">
+      <img src="ruta/de/tu-logotipo.png" alt="Quito Tracker Logo" class="logo-img">
+      <span class="logo-text">Quito Tracker</span>
+    </div>
 
-  <!-- Contenedor Mapa Leaflet -->
-  <div id="map"></div>
+    <!-- 4. MENÚ DE HAMBURGUESA PARA MÓVIL -->
+    <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menú">
+      ☰
+    </button>
 
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <nav class="nav-menu" id="nav-menu">
+      <a href="#inicio" class="nav-link">Inicio</a>
+      <a href="#mapa" class="nav-link">Mapa</a>
+      <a href="#contacto" class="nav-link">Contacto</a>
+    </nav>
+  </header>
 
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="main-content">
+    <section class="card">
+      <h1>Bienvenido a Quito Tracker</h1>
+      <p>Explora el mapa retro pixelado directamente desde tu teléfono o computadora.</p>
+    </section>
+
+    <!-- 4. FORMULARIO CON TECLADOS Y BOTONES OPTIMIZADOS -->
+    <section class="card">
+      <h2>Iniciar Sesión</h2>
+      <form class="mobile-form">
+        <label for="email">Correo Electrónico:</label>
+        <input type="email" id="email" placeholder="ejemplo@correo.com" required>
+
+        <label for="phone">Teléfono:</label>
+        <input type="tel" id="phone" placeholder="0991234567">
+
+        <button type="submit" class="btn-primary">Ingresar</button>
+      </form>
+    </section>
+  </main>
+
+  <!-- LÓGICA DEL MENÚ INTERACTIVO EN MÓVIL -->
   <script>
-    // Datos JSON provistos
-    const lugaresData = [
-      {
-        "etiqueta": "PLANES DESTACADOS PARA JÓVENES",
-        "nombre": "Di Pinto (Café & Taller de Arte)",
-        "lat": -0.1785, "lng": -78.4812,
-        "categoria": "HASTA $15 USD", "zona": "NORTE", "tipo": "Plan Jóvenes 1 / Arte & Café",
-        "sticker": "🎨", "info": "Kits de pintura y cerámica desde $12.00 USD.",
-        "descripcion": "Concepto de café-taller súper viral en redes enfocado en liberar el estrés.",
-        "actividades": ["Pintar macetas y piezas de cerámica", "Personalizar tote bags o lienzos", "Disfrutar de café y postres gourmet"],
-        "recomendacion": "Ideal para ir en pareja o con amigos."
-      },
-      {
-        "etiqueta": "PLANES DESTACADOS PARA JÓVENES",
-        "nombre": "Cafetería Roca Roja",
-        "lat": -0.1812, "lng": -78.4795,
-        "categoria": "HASTA $20 USD", "zona": "NORTE", "tipo": "Plan Jóvenes 2 / Cerámica & Café",
-        "sticker": "🪴", "info": "Kits de arcilla y pintura desde $15.00 hasta $25.00 USD.",
-        "descripcion": "Un espacio con estética acogedora diseñado para amantes del arte en arcilla y la cerámica.",
-        "actividades": ["Moldear arcilla desde cero", "Pintar macetas, tazas y espejos de mesa"],
-        "recomendacion": "Su kit de regalo con pieza de cerámica es uno de los planes más populares."
-      },
-      {
-        "etiqueta": "PLANES DESTACADOS PARA JÓVENES",
-        "nombre": "CelebrART (Galería & Gastronomía)",
-        "lat": -0.1985, "lng": -78.4358,
-        "categoria": "HASTA $15 USD", "zona": "CUMBAYÁ / NORTE", "tipo": "Plan Jóvenes 3 / Arte & Cerveza Artesanal",
-        "sticker": "🍷", "info": "Actividades y consumo desde $10.00 USD.",
-        "descripcion": "Centro cultural y galería en Cumbayá que combina exposiciones de arte de jóvenes artistas.",
-        "actividades": ["Pintar cerámica en barra o mesa", "Probar tapas y cerveza artesanal"],
-        "recomendacion": "Revisa su agenda cultural mensual ya que organizan eventos de pintura nocturna con vino."
-      },
-      {
-        "etiqueta": "PLANES DESTACADOS PARA JÓVENES",
-        "nombre": "Café Taller Tamayo",
-        "lat": -0.2035, "lng": -78.4890,
-        "categoria": "HASTA $15 USD", "zona": "NORTE (La Mariscal)", "tipo": "Plan Jóvenes 4 / Pintura por Números",
-        "sticker": "🖼️", "info": "Kits y talleres desde $15.00 USD.",
-        "descripcion": "Espacio pet-friendly perfecto para quienes quieren pintar cuadros sin experiencia previa.",
-        "actividades": ["Pintar lienzos por números guiados", "Decorar copas de vidrio"],
-        "recomendacion": "Atienden bajo reserva previa, ideal para cumpleaños o citas tranquilas."
-      },
-      {
-        "etiqueta": "MUSEOS",
-        "nombre": "Museo de la Ciudad",
-        "lat": -0.2251, "lng": -78.5152,
-        "categoria": "HASTA $10 USD", "zona": "CENTRO", "tipo": "Museo 1 / Historia",
-        "sticker": "📜", "info": "Adultos: $4.00, Estudiantes: $2.00",
-        "descripcion": "Ubicado en el antiguo Hospital San Juan de Dios, ofrece un recorrido interactivo.",
-        "actividades": ["Recorrer maquetas de la vida cotidiana", "Visitar los patios coloniales"],
-        "recomendacion": "Un espacio indispensable para entender la evolución sociocultural de Quito."
-      },
-      {
-        "etiqueta": "MUSEOS",
-        "nombre": "Museo Nacional del Ecuador (MUNA)",
-        "lat": -0.2115, "lng": -78.4983,
-        "categoria": "GRATIS", "zona": "CENTRO", "tipo": "Museo 2 / Historia",
-        "sticker": "🏺", "info": "Acceso libre para todo público.",
-        "descripcion": "Alberga la colección arqueológica y de oro precolombino más importante del país.",
-        "actividades": ["Ver la Sala del Oro precolombino", "Apreciar arte colonial"],
-        "recomendacion": "Llevar identificación para ingresar de forma fluida."
-      },
-      {
-        "etiqueta": "PARQUES",
-        "nombre": "Parque La Carolina",
-        "lat": -0.1825, "lng": -78.4845,
-        "categoria": "GRATIS", "zona": "NORTE", "tipo": "Parque 1 / Recreativo",
-        "sticker": "🌳", "info": "Acceso libre para todo público.",
-        "descripcion": "El parque urbano más activo en el corazón financiero de Quito.",
-        "actividades": ["Pasear en barca por la laguna", "Hacer skate o atletismo"],
-        "recomendacion": "Cerca de centros comerciales y la línea del Metro de Quito."
-      },
-      {
-        "etiqueta": "PARQUES",
-        "nombre": "Parque Metropolitano Guanguiltagua",
-        "lat": -0.1712, "lng": -78.4610,
-        "categoria": "GRATIS", "zona": "NORTE", "tipo": "Parque 2 / Naturaleza",
-        "sticker": "🌲", "info": "Acceso libre para todo público.",
-        "descripcion": "Uno de los parques urbanos más grandes de Sudamérica con vistas panorámicas.",
-        "actividades": ["Ciclismo de montaña", "Pícnic en zonas con parrillas"],
-        "recomendacion": "Llevar protector solar y calzado adecuado para caminata."
-      },
-      {
-        "etiqueta": "LUGARES DE HISTORIAS Y LEYENDAS",
-        "nombre": "El Panecillo",
-        "lat": -0.2298, "lng": -78.5186,
-        "categoria": "GRATIS", "zona": "CENTRO", "tipo": "Leyenda 1 / Mirador",
-        "sticker": "🗽", "info": "Entrada libre al mirador.",
-        "descripcion": "Colina ancestral que alberga la Virgen de Quito y leyendas sobre los tesoros ocultos de Atahualpa.",
-        "actividades": ["Mirador de 360 grados", "Ingresar al interior del monumento"],
-        "recomendacion": "Acceder preferentemente en taxi o transporte turístico por seguridad."
-      },
-      {
-        "etiqueta": "LUGARES DE HISTORIAS Y LEYENDAS",
-        "nombre": "Atrio de la Iglesia de San Francisco",
-        "lat": -0.2218, "lng": -78.5158,
-        "categoria": "GRATIS", "zona": "CENTRO", "tipo": "Leyenda 2 / Cantuña",
-        "sticker": "😈", "info": "Acceso libre a la plaza.",
-        "descripcion": "Lugar exacto donde se sitúa la famosa leyenda indígena de Cantuña.",
-        "actividades": ["Buscar la piedra de la famosa leyenda", "Tomar fotos de la plaza"],
-        "recomendacion": "Observa el detalle del atrio exterior para tratar de hallar la piedra faltante."
-      }
-    ];
+    const menuToggle = document.getElementById('menu-toggle');
+    const navMenu = document.getElementById('nav-menu');
 
-    // Inicializar el mapa centrado en Quito
-    const map = L.map('map').setView([-0.2000, -78.4800], 13);
-
-    // Cargar capa de mapa de estilo oscuro (CartoDB Dark Matter)
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      maxZoom: 19,
-      attribution: '&copy; <a href="https://carto.com/">CARTO</a>'
-    }).addTo(map);
-
-    // Array para almacenar marcadores activos
-    let markersList = [];
-
-    // Función para obtener el color dinámico de las etiquetas del mapa según su categoría
-    function getBorderColor(etiqueta) {
-      switch(etiqueta) {
-        case 'PLANES DESTACADOS PARA JÓVENES': return '#ff2a6d';
-        case 'MUSEOS': return '#05d9e8';
-        case 'PARQUES': return '#00ff87';
-        case 'LUGARES DE HISTORIAS Y LEYENDAS': return '#ffb703';
-        default: return '#d800ff';
-      }
-    }
-
-    // Función para renderizar los marcadores en el mapa
-    function cargarMarcadores(categoria) {
-      // Limpiar marcadores anteriores
-      markersList.forEach(m => map.removeLayer(m));
-      markersList = [];
-
-      // Filtrar los datos según el botón presionado
-      const lugaresFiltrados = categoria === 'TODOS' 
-        ? lugaresData 
-        : lugaresData.filter(lugar => lugar.etiqueta === categoria);
-
-      // Crear cada marcador con su etiqueta retro
-      lugaresFiltrados.forEach(lugar => {
-        const colorBorde = getBorderColor(lugar.etiqueta);
-
-        // Crear Icono personalizadoHTML para la etiqueta del mapa
-        const customIcon = L.divIcon({
-          className: 'custom-div-icon',
-          html: `<div class="custom-label-marker" style="border-color: ${colorBorde};">
-                   ${lugar.sticker} ${lugar.nombre}
-                 </div>`,
-          iconSize: [120, 30],
-          iconAnchor: [60, 15]
-        });
-
-        // Contenido del Popup al dar clic
-        const popupContent = `
-          <div style="color: #1a1a2e;">
-            <h3 style="margin: 0 0 5px 0;">${lugar.sticker} ${lugar.nombre}</h3>
-            <p><strong>Categoría:</strong> ${lugar.etiqueta}</p>
-            <p><strong>Tipo:</strong> ${lugar.tipo}</p>
-            <p><strong>Info:</strong> ${lugar.info}</p>
-            <p>${lugar.descripcion}</p>
-            <p><em>💡 ${lugar.recomendacion}</em></p>
-          </div>
-        `;
-
-        // Crear y añadir el marcador
-        const marker = L.marker([lugar.lat, lugar.lng], { icon: customIcon })
-          .bindPopup(popupContent)
-          .addTo(map);
-
-        markersList.push(marker);
-      });
-    }
-
-    // Función llamada al pulsar cada botón ovalado
-    function filtrarCategoria(categoria) {
-      // Manejo de clase 'active' en botones
-      document.querySelectorAll('.btn-filter').forEach(btn => btn.classList.remove('active'));
-      event.currentTarget.classList.add('active');
-
-      // Actualizar el mapa
-      cargarMarcadores(categoria);
-    }
-
-    // Cargar todos los marcadores al iniciar la página
-    cargarMarcadores('TODOS');
+    menuToggle.addEventListener('click', () => {
+      navMenu.classList.toggle('active');
+    });
   </script>
 </body>
 </html>
