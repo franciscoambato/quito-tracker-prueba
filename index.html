@@ -1,71 +1,850 @@
-<!DOCTYPE1 html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  
-  <!-- 1. ETIPETA VIEWPORT PARA MÓVILES -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quito Tracker - Mapa Retro Pixel Art</title>
   
-  <title>Quito Tracker - Mapa Retro Pixel</title>
+  <!-- FAVICON: LOGOTIPO EN LA PESTAÑA DEL NAVEGADOR -->
+  <link rel="icon" type="image/jpeg" href="./logotipo.jpg">
+  
+  <!-- Fuente Pixel Art -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
-  <!-- ICONO EN LA PESTAÑA (FAVICON EN EL ÁREA AZUL) -->
-  <!-- Reemplaza "ruta/de/tu-logotipo.png" por la ubicación real de tu imagen -->
-  <link rel="icon" type="image/png" href="ruta/de/tu-logotipo.png">
+  <style>
+    /* -----------------------------------------------------------
+       1. CONFIGURACIÓN BASE & ESTILOS RETRO PIXEL ART
+    ----------------------------------------------------------- */
+    * {
+      box-sizing: border-box;
+      image-rendering: pixelated;
+    }
 
-  <!-- Estilos CSS -->
-  <link rel="stylesheet" href="styles.css">
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #0b0719;
+      font-family: 'Press Start 2P', monospace;
+      color: #ffffff;
+      overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    #app-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      height: 100dvh; /* Soporte para navegadores móviles modernos */
+      width: 100vw;
+      position: relative;
+    }
+
+    /* -----------------------------------------------------------
+       PANTALLA DE CARGA CON MEZCLA DE LOGOTIPO Y INTERFERENCIA
+    ----------------------------------------------------------- */
+    #hackerIntro {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      background-color: #0b0719;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      color: #25898f;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      overflow: hidden;
+    }
+
+    #hackerIntro.fade-out {
+      opacity: 0;
+      transition: opacity 0.5s ease-out;
+      pointer-events: none;
+    }
+
+    .logo-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10001;
+      text-align: center;
+      pointer-events: none;
+      width: 85%;
+      max-width: 320px;
+    }
+
+    .logo-container img {
+      width: 100%;
+      height: auto;
+      max-width: 280px;
+      opacity: 0.9;
+      mix-blend-mode: screen;
+      filter: drop-shadow(0 0 16px #25898f);
+      animation: glitchLogo 0.3s infinite alternate;
+    }
+
+    @keyframes glitchLogo {
+      0% { transform: translate(0, 0) scale(1); filter: drop-shadow(0 0 10px #25898f); }
+      50% { transform: translate(-3px, 3px) scale(1.03); filter: drop-shadow(0 0 18px #b80058); }
+      100% { transform: translate(3px, -2px) scale(0.98); filter: drop-shadow(0 0 12px #25898f); }
+    }
+
+    .crt-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%), 
+                  linear-gradient(90deg, rgba(184, 0, 88, 0.1), rgba(37, 137, 143, 0.1), rgba(226, 183, 20, 0.05));
+      background-size: 100% 4px, 6px 100%;
+      pointer-events: none;
+      z-index: 10000;
+    }
+
+    #hackerTerminal {
+      line-height: 1.6;
+      text-shadow: 0 0 5px #1a6b72;
+      white-space: pre-wrap;
+      width: 100%;
+      z-index: 10002;
+      font-size: 9px;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 8px;
+      height: 12px;
+      background-color: #b80058;
+      animation: blink 0.6s infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .glitch-header {
+      color: #b80058;
+      margin-bottom: 15px;
+      font-size: 11px;
+      text-shadow: 2px 2px #1a6b72, -2px -2px #241442;
+    }
+
+    /* -----------------------------------------------------------
+       MODAL DE SELECCIÓN DE PERSONAJE
+    ----------------------------------------------------------- */
+    #characterSelectionModal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      background-color: rgba(11, 7, 25, 0.95);
+      z-index: 9998;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+    }
+
+    #characterSelectionModal.hidden {
+      display: none;
+    }
+
+    .modal-box {
+      background-color: #160d33;
+      border: 3px solid #25898f;
+      padding: 20px 15px;
+      text-align: center;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 4px 4px 0px #000000;
+    }
+
+    .modal-title {
+      font-size: 10px;
+      color: #25898f;
+      margin-bottom: 20px;
+      line-height: 1.5;
+      text-shadow: 2px 2px #000000;
+    }
+
+    .characters-grid {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .character-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .character-card:hover, .character-card:active {
+      transform: scale(1.05);
+    }
+
+    .character-preview-video {
+      width: 85px;
+      height: 85px;
+      border-radius: 50%;
+      border: 3px solid #b80058;
+      background-color: #0b0719;
+      object-fit: cover;
+      object-position: center top;
+      box-shadow: 3px 3px 0px #000000;
+    }
+
+    .character-btn {
+      margin-top: 12px;
+      background-color: #0b0719;
+      color: #25898f;
+      border: 2px solid #25898f;
+      padding: 10px 12px;
+      min-height: 44px; /* Zona táctil para móvil */
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      cursor: pointer;
+      box-shadow: 2px 2px 0px #000000;
+    }
+
+    .character-card:hover .character-btn, .character-card:active .character-btn {
+      background-color: #25898f;
+      color: #0b0719;
+    }
+
+    /* Cabecera / Banner Superior */
+    #topHeader {
+      background-color: #160d33;
+      border-bottom: 3px solid #b80058;
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+      box-shadow: 0 4px 0 #070410;
+    }
+
+    .header-title {
+      font-size: 10px;
+      color: #25898f;
+      text-shadow: 2px 2px #000000;
+    }
+
+    .header-subtitle {
+      font-size: 9px;
+      color: #b80058;
+    }
+
+    /* Contenedor Principal del Mapa */
+    #map {
+      flex: 1;
+      width: 100%;
+      height: calc(100% - 0.3cm);
+      margin-bottom: 0.3cm;
+    }
+
+    /* Filtros de Categoría */
+    #filterControls {
+      position: absolute;
+      top: 55px;
+      left: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 5;
+    }
+
+    .btn-filter {
+      background-color: #160d33;
+      border: 2px solid #000000;
+      padding: 6px 10px;
+      min-height: 44px; /* Zonas táctiles adaptadas a móvil */
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 2px 2px 0px #000000;
+      transition: transform 0.1s;
+    }
+
+    .btn-filter.gratis { border-color: #25898f; }
+    .btn-filter.pago { border-color: #b80058; }
+
+    /* Avatar Inferior Izquierdo Dinámico */
+    #galloContainer {
+      position: absolute;
+      bottom: 65px;
+      left: 10px;
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      z-index: 5;
+      pointer-events: none;
+      max-width: 65vw;
+    }
+
+    #galloVideo {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 2px solid #25898f;
+      background-color: #160d33;
+      box-shadow: 2px 2px 0px #000000;
+      object-fit: cover;
+      object-position: center top;
+      flex-shrink: 0;
+    }
+
+    #galloSpeech {
+      background-color: #160d33;
+      border: 2px solid #b80058;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 8px;
+      color: #ffffff;
+      box-shadow: 2px 2px 0px #000000;
+      line-height: 1.3;
+      word-break: break-word;
+    }
+
+    /* Controles de Vista de Mapa */
+    #radarControls {
+      position: absolute;
+      bottom: 65px;
+      right: 85px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 5;
+    }
+
+    .btn-radar-icon {
+      width: 44px; /* Zona táctil ideal para pulgares en pantalla táctil */
+      height: 44px;
+      border-radius: 50%;
+      background-color: #160d33;
+      border: 2px solid #25898f;
+      color: #25898f;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 2px 2px 0px #000000;
+      transition: transform 0.1s, background-color 0.2s;
+    }
+
+    .btn-radar-icon:hover, .btn-radar-icon:active {
+      background-color: #25898f;
+      color: #0b0719;
+      transform: scale(1.05);
+    }
+
+    /* Radar Canvas */
+    #radarContainer {
+      position: absolute;
+      bottom: 65px;
+      right: 10px;
+      width: 70px;
+      height: 70px;
+      background-color: rgba(22, 13, 51, 0.9);
+      border: 2px solid #25898f;
+      border-radius: 50%;
+      box-shadow: 2px 2px 0px #000000;
+      z-index: 5;
+      overflow: hidden;
+    }
+
+    #radarCanvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Panel de Rutas */
+    #extraBlueSpace {
+      background-color: #160d33;
+      border-top: 3px solid #25898f;
+      padding: 8px 10px;
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 8px;
+      align-items: center;
+      z-index: 10;
+      overflow-x: auto;
+      white-space: nowrap;
+      max-width: 100vw;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    #extraBlueSpace.hidden {
+      display: none;
+    }
+
+    .btn-retro {
+      background-color: #0b0719;
+      color: #25898f;
+      border: 2px solid #25898f;
+      padding: 8px 12px;
+      min-height: 44px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      cursor: pointer;
+      box-shadow: 2px 2px 0px #000000;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .btn-retro:hover, .btn-retro:active {
+      background-color: #25898f;
+      color: #0b0719;
+    }
+
+    .btn-retro.danger {
+      color: #ffffff;
+      background-color: #b80058;
+      border-color: #ffffff;
+    }
+
+    /* Custom InfoWindow Adaptable a móviles */
+    .gm-style .gm-style-iw-c {
+      padding: 12px !important;
+      max-width: 85vw !important;
+      min-width: 240px !important;
+      background-color: #160d33 !important;
+      border: 2px solid #25898f !important;
+      border-radius: 6px !important;
+      box-shadow: 3px 3px 0px #000000 !important;
+    }
+
+    /* -----------------------------------------------------------
+       MEDIA QUERIES (ADAPTACIÓN PARA PANTALLAS GRANDES Y ESCRITORIO)
+    ----------------------------------------------------------- */
+    @media (min-width: 768px) {
+      .header-title { font-size: 13px; }
+      .header-subtitle { font-size: 11px; }
+      #galloVideo { width: 75px; height: 75px; }
+      #galloSpeech { font-size: 9px; max-width: 260px; }
+      #radarContainer { width: 90px; height: 90px; }
+      #radarControls { right: 110px; }
+      .modal-title { font-size: 11px; }
+      .character-preview-video { width: 110px; height: 110px; }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- ENCABEZADO Y NAVEGACIÓN -->
-  <header class="header">
+  <!-- Introducción Estática Hacker + Mezcla con logotipo.jpg -->
+  <div id="hackerIntro">
+    <div class="crt-overlay"></div>
     <div class="logo-container">
-      <img src="ruta/de/tu-logotipo.png" alt="Quito Tracker Logo" class="logo-img">
-      <span class="logo-text">Quito Tracker</span>
+      <img src="./logotipo.jpg" alt="Logotipo Quito Tracker" onerror="this.style.display='none'">
+    </div>
+    <div style="width: 100%;">
+      <div class="glitch-header">> INITIALIZING CYBER_QUITO_NET v8.0</div>
+      <div id="hackerTerminal"></div><span class="cursor"></span>
+    </div>
+    <div style="color: #25898f; font-size: 8px; z-index: 10002;">[SYS_STATUS: INJECTING_MUTED_NODES...]</div>
+  </div>
+
+  <!-- Modal Pregunta: Selección de Acompañante -->
+  <div id="characterSelectionModal" class="hidden">
+    <div class="modal-box">
+      <div class="modal-title">¿CON QUIÉN TE GUSTARÍA CONOCER QUITO?</div>
+      
+      <div class="characters-grid">
+        <div class="character-card" onclick="seleccionarPersonaje('marco', './gallo.mp4')">
+          <video class="character-preview-video" src="./gallo.mp4" playsinline muted preload="metadata"></video>
+          <button class="character-btn">MARCO</button>
+        </div>
+
+        <div class="character-card" onclick="seleccionarPersonaje('andrea', './gallo_mujer.mp4')">
+          <video class="character-preview-video" src="./gallo_mujer.mp4" playsinline muted preload="metadata"></video>
+          <button class="character-btn">ANDREA</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="app-container">
+    <!-- Banner Superior -->
+    <div id="topHeader">
+      <div class="header-title">QUITO TRACKER 8-BIT</div>
+      <div class="header-subtitle">Quito, Ecuador</div>
     </div>
 
-    <!-- 4. MENÚ DE HAMBURGUESA PARA MÓVIL -->
-    <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menú">
-      ☰
-    </button>
+    <!-- El Mapa de Google -->
+    <div id="map"></div>
 
-    <nav class="nav-menu" id="nav-menu">
-      <a href="#inicio" class="nav-link">Inicio</a>
-      <a href="#mapa" class="nav-link">Mapa</a>
-      <a href="#contacto" class="nav-link">Contacto</a>
-    </nav>
-  </header>
+    <!-- Filtros de Categoría -->
+    <div id="filterControls">
+      <button class="btn-filter gratis" onclick="filtrarLugares('GRATIS')">
+        <span>🎁</span> <span style="font-size: 8px; color: #25898f;">GRATIS</span>
+      </button>
+      <button class="btn-filter pago" onclick="filtrarLugares('PAID')">
+        <span>🪙</span> <span style="font-size: 8px; color: #b80058;">PAGO</span>
+      </button>
+    </div>
 
-  <!-- CONTENIDO PRINCIPAL -->
-  <main class="main-content">
-    <section class="card">
-      <h1>Bienvenido a Quito Tracker</h1>
-      <p>Explora el mapa retro pixelado directamente desde tu teléfono o computadora.</p>
-    </section>
+    <!-- Personaje Seleccionado en Video -->
+    <div id="galloContainer">
+      <video id="galloVideo" src="./gallo.mp4" playsinline muted preload="metadata"></video>
+      <div id="galloSpeech">¡EXPLORA Y DESCUBRE LOS RINCONES MÁGICOS DE QUITO!</div>
+    </div>
 
-    <!-- 4. FORMULARIO CON TECLADOS Y BOTONES OPTIMIZADOS -->
-    <section class="card">
-      <h2>Iniciar Sesión</h2>
-      <form class="mobile-form">
-        <label for="email">Correo Electrónico:</label>
-        <input type="email" id="email" placeholder="ejemplo@correo.com" required>
+    <!-- Botones de Control de Vista al lado del Radar -->
+    <div id="radarControls">
+      <button class="btn-radar-icon" title="Vista Más Amplia" onclick="vistaAmplia()">🌐</button>
+      <button class="btn-radar-icon" title="Enfoque Quito" onclick="vistaQuito()">🎯</button>
+    </div>
 
-        <label for="phone">Teléfono:</label>
-        <input type="tel" id="phone" placeholder="0991234567">
+    <!-- Radar Canvas -->
+    <div id="radarContainer">
+      <canvas id="radarCanvas" width="90" height="90"></canvas>
+    </div>
 
-        <button type="submit" class="btn-primary">Ingresar</button>
-      </form>
-    </section>
-  </main>
+    <!-- Panel Deslizable de Botones (Rutas) -->
+    <div id="extraBlueSpace" class="hidden">
+      <button class="btn-retro" onclick="trazarRuta('driving')">🚗 CARRO</button>
+      <button class="btn-retro" onclick="trazarRuta('walking')">🚶 PIE</button>
+      <button class="btn-retro" onclick="trazarRuta('two-wheeler')">🛵 MOTO</button>
+      <button class="btn-retro" onclick="trazarRuta('transit')">🚌 BUS</button>
+      <button class="btn-retro danger" onclick="limpiarRuta()">❌ LIMPIAR</button>
+    </div>
+  </div>
 
-  <!-- LÓGICA DEL MENÚ INTERACTIVO EN MÓVIL -->
   <script>
-    const menuToggle = document.getElementById('menu-toggle');
-    const navMenu = document.getElementById('nav-menu');
+    let map;
+    let infoWindow;
+    let lugaresPuntos = [];
+    let destinoSeleccionado = null;
+    let markersMap = [];
+    let radarAngle = 0;
+    let personajeElegido = "Marco";
+    const QUITO_CENTER = { lat: -0.1807, lng: -78.4678 };
 
-    menuToggle.addEventListener('click', () => {
-      navMenu.classList.toggle('active');
-    });
+    /* -----------------------------------------------------------
+       SECUENCIA HACKER
+    ----------------------------------------------------------- */
+    const hackerCommands = [
+      "> CONNECTING TO QUITO_CORE_SERVER...",
+      "> BYPASSING SECURITY GATEWAY_0.2201...",
+      "> ACCESSING SATELLITE FEED... [OK]",
+      "> APPLYING RETRO_TEAL_PALETTE...",
+      "> LOADING LOGO OVERLAY...",
+      "> INITIALIZING CHARACTER_SELECTION...",
+      "> SYSTEM READY."
+    ];
+
+    function runHackerIntro() {
+      const terminal = document.getElementById("hackerTerminal");
+      let lineIndex = 0;
+
+      const interval = setInterval(() => {
+        if (lineIndex < hackerCommands.length) {
+          terminal.innerHTML += hackerCommands[lineIndex] + "<br>";
+          lineIndex++;
+        }
+      }, 600);
+
+      setTimeout(() => {
+        clearInterval(interval);
+        const intro = document.getElementById("hackerIntro");
+        intro.classList.add("fade-out");
+        
+        setTimeout(() => {
+          intro.style.display = "none";
+          const modal = document.getElementById("characterSelectionModal");
+          modal.classList.remove("hidden");
+          document.querySelectorAll('.character-preview-video').forEach(v => v.pause());
+        }, 500);
+      }, 5000);
+    }
+
+    /* -----------------------------------------------------------
+       SELECCIÓN DE PERSONAJE
+    ----------------------------------------------------------- */
+    function seleccionarPersonaje(nombre, videoSrc) {
+      personajeElegido = nombre === 'marco' ? 'MARCO' : 'ANDREA';
+      const mainVideo = document.getElementById("galloVideo");
+      mainVideo.src = videoSrc;
+      document.getElementById("characterSelectionModal").classList.add("hidden");
+      showGalloSpeech(`¡HOLA! SOY ${personajeElegido}, ¡VAMOS A EXPLORAR QUITO!`);
+    }
+
+    /* -----------------------------------------------------------
+       FUNCIONES DE VISTA DE MAPA (BOTONES DE RADAR)
+    ----------------------------------------------------------- */
+    function vistaAmplia() {
+      if (map) {
+        map.setCenter(QUITO_CENTER);
+        map.setZoom(9);
+        showGalloSpeech("VISTA AMPLIA DE LA REGIÓN");
+      }
+    }
+
+    function vistaQuito() {
+      if (map) {
+        map.setCenter(QUITO_CENTER);
+        map.setZoom(14);
+        showGalloSpeech("ENFOCANDO EN QUITO");
+      }
+    }
+
+    /* -----------------------------------------------------------
+       INICIALIZACIÓN DEL MAPA DE GOOGLE
+    ----------------------------------------------------------- */
+    function initMap() {
+      const PICHINCHA_BOUNDS = {
+        north: 0.3800,
+        south: -0.7000,
+        west: -79.3500,
+        east: -77.9000
+      };
+
+      const retroStyles = [
+        { elementType: "geometry", stylers: [{ color: "#0b0719" }] },
+        { elementType: "labels.text.stroke", stylers: [{ color: "#0b0719" }, { weight: 4 }] },
+        { elementType: "labels.text.fill", stylers: [{ color: "#e2e8f0" }] },
+        { featureType: "landscape", elementType: "geometry", stylers: [{ color: "#190f38" }] },
+        { featureType: "landscape.man_made", elementType: "geometry", stylers: [{ color: "#140c2e" }] },
+        { featureType: "poi.park", elementType: "geometry", stylers: [{ color: "#123b3e" }] },
+        { featureType: "landscape.natural", elementType: "geometry", stylers: [{ color: "#123b3e" }] },
+        { featureType: "poi", elementType: "geometry", stylers: [{ color: "#141636" }] },
+        { featureType: "poi", elementType: "labels.icon", stylers: [{ visibility: "off" }] },
+        { featureType: "transit", elementType: "labels.icon", stylers: [{ visibility: "off" }] },
+        { featureType: "water", elementType: "geometry", stylers: [{ color: "#071b29" }] },
+        { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#25898f" }] },
+        { featureType: "road", elementType: "geometry", stylers: [{ color: "#2d1b54" }] },
+        { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#b80058" }] },
+        { featureType: "road.highway", elementType: "geometry.stroke", stylers: [{ color: "#1a6b72" }, { weight: 1 }] },
+        { featureType: "road.arterial", elementType: "geometry", stylers: [{ color: "#6e0040" }] },
+        { featureType: "road.local", elementType: "geometry", stylers: [{ color: "#38123b" }] },
+        { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#25898f" }] }
+      ];
+
+      map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 12,
+        minZoom: 9,
+        maxZoom: 18,
+        center: QUITO_CENTER,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        disableDefaultUI: true,
+        zoomControl: false,
+        fullscreenControl: false,
+        streetViewControl: false,
+        mapTypeControl: false,
+        restriction: {
+          latLngBounds: PICHINCHA_BOUNDS,
+          strictBounds: false
+        },
+        styles: retroStyles
+      });
+
+      infoWindow = new google.maps.InfoWindow();
+      cargarLugares();
+      iniciarRadar();
+    }
+
+    async function cargarLugares() {
+      try {
+        const response = await fetch("./lugares.json");
+        if (!response.ok) throw new Error("No se pudo cargar lugares.json");
+        lugaresPuntos = await response.json();
+        renderizarMarcadores(lugaresPuntos);
+      } catch (error) {
+        console.error("Error al cargar los datos:", error);
+        showGalloSpeech("ERROR CARGANDO DATOS DEL SERVIDOR");
+      }
+    }
+
+    function renderizarMarcadores(lugares) {
+      limpiarMarcadores();
+
+      lugares.forEach((lugar) => {
+        const marker = new google.maps.Marker({
+          position: { lat: lugar.lat, lng: lugar.lng },
+          map: map,
+          title: lugar.nombre,
+          label: {
+            text: lugar.sticker || "📍",
+            fontSize: "18px"
+          }
+        });
+
+        markersMap.push(marker);
+
+        marker.addListener("click", (e) => {
+          if (e && e.stop) e.stop();
+          destinoSeleccionado = lugar;
+          
+          const panelRutas = document.getElementById("extraBlueSpace");
+          if (panelRutas) {
+            panelRutas.classList.remove("hidden");
+            panelRutas.scrollLeft = 0;
+          }
+
+          let listaActividadesHtml = '';
+          if (lugar.actividades && Array.isArray(lugar.actividades) && lugar.actividades.length > 0) {
+            listaActividadesHtml = `
+              <div style="margin-top: 10px;">
+                <strong style="color: #25898f; font-size: 10px; font-family: 'Press Start 2P', monospace;">ACTIVIDADES:</strong>
+                <ul style="margin: 6px 0 0 14px; padding: 0; font-family: system-ui, -apple-system, sans-serif; font-size: 12px; color: #ffffff; line-height: 1.4;">
+                  ${lugar.actividades.map(act => `<li style="margin-bottom: 4px;">${act}</li>`).join('')}
+                </ul>
+              </div>
+            `;
+          }
+
+          const contentString = `
+            <div style="padding: 2px; color: #ffffff;">
+              <h3 style="font-family: 'Press Start 2P', monospace; font-size: 11px; color: #25898f; margin: 0 0 8px 0; line-height: 1.4;">
+                ${lugar.sticker || ''} ${lugar.nombre}
+              </h3>
+              
+              <div style="font-size: 11px; color: #b80058; margin-bottom: 8px; font-family: system-ui, -apple-system, sans-serif; font-weight: bold;">
+                💵 ${lugar.info || lugar.categoria || ''}
+              </div>
+
+              ${lugar.descripcion ? `
+                <p style="font-size: 12px; font-family: system-ui, -apple-system, sans-serif; color: #e2e8f0; margin: 8px 0; line-height: 1.4;">
+                  ${lugar.descripcion}
+                </p>
+              ` : ''}
+
+              ${listaActividadesHtml}
+
+              ${lugar.recomendacion ? `
+                <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed #b80058; font-size: 11px; font-family: system-ui, -apple-system, sans-serif; color: #25898f; line-height: 1.3;">
+                  💡 <strong>Tip:</strong> ${lugar.recomendacion}
+                </div>
+              ` : ''}
+            </div>`;
+
+          infoWindow.setContent(contentString);
+          infoWindow.open(map, marker);
+          showGalloSpeech(`DESTINO: ${lugar.nombre.toUpperCase()}`);
+        });
+      });
+    }
+
+    function limpiarMarcadores() {
+      markersMap.forEach(m => m.setMap(null));
+      markersMap = [];
+    }
+
+    window.filtrarLugares = function(tipo) {
+      if (tipo === 'GRATIS') {
+        const gratis = lugaresPuntos.filter(l => l.categoria && l.categoria.toUpperCase().includes('GRATIS'));
+        renderizarMarcadores(gratis);
+        showGalloSpeech("MOSTRANDO LUGARES GRATUITOS");
+      } else if (tipo === 'PAID') {
+        const pago = lugaresPuntos.filter(l => l.categoria && !l.categoria.toUpperCase().includes('GRATIS'));
+        renderizarMarcadores(pago);
+        showGalloSpeech("MOSTRANDO LUGARES DE PAGO");
+      }
+    };
+
+    function iniciarRadar() {
+      const canvas = document.getElementById("radarCanvas");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+
+      function drawRadar() {
+        ctx.clearRect(0, 0, 90, 90);
+
+        ctx.strokeStyle = "rgba(37, 137, 143, 0.4)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(45, 45, 20, 0, Math.PI * 2);
+        ctx.arc(45, 45, 38, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.strokeStyle = "#b80058";
+        ctx.beginPath();
+        ctx.moveTo(45, 45);
+        ctx.lineTo(45 + 40 * Math.cos(radarAngle), 45 + 40 * Math.sin(radarAngle));
+        ctx.stroke();
+
+        if (lugaresPuntos.length > 0) {
+          ctx.fillStyle = "#25898f";
+          ctx.fillRect(35, 30, 4, 4);
+          ctx.fillRect(55, 60, 4, 4);
+          ctx.fillStyle = "#b80058";
+          ctx.fillRect(40, 55, 4, 4);
+        }
+
+        radarAngle += 0.05;
+        requestAnimationFrame(drawRadar);
+      }
+      drawRadar();
+    }
+
+    window.trazarRuta = function(modo) {
+      if (!destinoSeleccionado) {
+        showGalloSpeech("SELECCIONA UN LUGAR EN EL MAPA");
+        return;
+      }
+
+      showGalloSpeech("ABRIENDO GOOGLE MAPS...");
+
+      const lat = destinoSeleccionado.lat;
+      const lng = destinoSeleccionado.lng;
+      const nombreLugar = encodeURIComponent(destinoSeleccionado.nombre || "Destino");
+      
+      const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&destination_place_id=${nombreLugar}&travelmode=${modo}`;
+
+      window.open(mapsUrl, "_blank");
+    };
+
+    window.limpiarRuta = function() {
+      document.getElementById("extraBlueSpace").classList.add("hidden");
+      infoWindow.close();
+      destinoSeleccionado = null;
+      showGalloSpeech("SELECCIÓN LIMPIADA");
+    };
+
+    function showGalloSpeech(texto) {
+      const speechBox = document.getElementById("galloSpeech");
+      if (speechBox) speechBox.textContent = texto;
+
+      const video = document.getElementById("galloVideo");
+      if (video) {
+        video.muted = true;
+        video.currentTime = 0;
+        video.play().catch(e => console.log("La reproducción del video requiere interacción previa."));
+      }
+    }
+
+    function loadGoogleMapsScript() {
+      const script = document.createElement("script");
+      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyD7yh3TteD4adDL8pAVXIEGr6RXksDKGLo&callback=initMap`;
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+    }
+
+    window.onload = function() {
+      runHackerIntro();
+      loadGoogleMapsScript();
+    };
   </script>
 </body>
 </html>
