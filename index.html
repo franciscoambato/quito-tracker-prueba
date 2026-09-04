@@ -62,32 +62,33 @@
       pointer-events: none;
     }
 
+    /* CAMBIO 2: Logo ampliado */
     .logo-container {
       position: absolute;
-      top: 50%;
+      top: 45%;
       left: 50%;
       transform: translate(-50%, -50%);
       z-index: 10001;
       text-align: center;
       pointer-events: none;
-      width: 85%;
-      max-width: 320px;
+      width: 95%;
+      max-width: 480px; /* Aumentado de 320px */
     }
 
     .logo-container img {
       width: 100%;
       height: auto;
-      max-width: 280px;
-      opacity: 0.9;
+      max-width: 420px; /* Aumentado de 280px */
+      opacity: 0.95;
       mix-blend-mode: screen;
-      filter: drop-shadow(0 0 16px #00f0ff);
+      filter: drop-shadow(0 0 22px #00f0ff);
       animation: glitchLogo 0.3s infinite alternate;
     }
 
     @keyframes glitchLogo {
-      0% { transform: translate(0, 0) scale(1); filter: drop-shadow(0 0 10px #00f0ff); }
-      50% { transform: translate(-3px, 3px) scale(1.03); filter: drop-shadow(0 0 18px #ff007f); }
-      100% { transform: translate(3px, -2px) scale(0.98); filter: drop-shadow(0 0 12px #00f0ff); }
+      0% { transform: translate(0, 0) scale(1); filter: drop-shadow(0 0 14px #00f0ff); }
+      50% { transform: translate(-3px, 3px) scale(1.02); filter: drop-shadow(0 0 24px #ff007f); }
+      100% { transform: translate(3px, -2px) scale(0.99); filter: drop-shadow(0 0 16px #00f0ff); }
     }
 
     .crt-overlay {
@@ -127,7 +128,7 @@
     }
 
     .glitch-header {
-      color: #ff007f; /* Fucsia neón */
+      color: #ff007f;
       margin-bottom: 15px;
       font-size: 11px;
       text-shadow: 2px 2px #00a8b3, -2px -2px #2d0a4e;
@@ -219,22 +220,26 @@
       color: #0d0718;
     }
 
-    /* HEADER */
+    /* CAMBIO 1: HEADER CENTRADO Y MÁS GRANDE */
     #topHeader {
       background-color: #1a0b2e;
       border-bottom: 3px solid #ff007f;
-      padding: 10px 12px;
+      padding: 12px 15px;
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
+      justify-content: center;
       align-items: center;
+      text-align: center;
       z-index: 10;
       box-shadow: 0 4px 0 #000000;
     }
 
     .header-title {
-      font-size: 10px;
+      font-size: 14px; /* Aumentado */
       color: #00f0ff;
       text-shadow: 2px 2px #000000;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
     }
 
     .header-subtitle {
@@ -252,7 +257,7 @@
     /* BOTONES OVALADOS Y DE CATEGORÍA */
     #filterControls {
       position: absolute;
-      top: 55px;
+      top: 65px;
       left: 10px;
       display: flex;
       flex-direction: column;
@@ -274,7 +279,7 @@
       gap: 8px;
       box-shadow: 2px 2px 0px #000000;
       transition: transform 0.1s, background-color 0.2s;
-      border-radius: 20px; /* Bordes ovalados */
+      border-radius: 20px;
     }
 
     .btn-filter span {
@@ -442,7 +447,7 @@
     }
 
     @media (min-width: 768px) {
-      .header-title { font-size: 13px; }
+      .header-title { font-size: 18px; }
       .header-subtitle { font-size: 11px; }
       #galloVideo { width: 75px; height: 75px; }
       #galloSpeech { font-size: 9px; max-width: 260px; }
@@ -450,6 +455,8 @@
       #radarControls { right: 110px; }
       .modal-title { font-size: 11px; }
       .character-preview-video { width: 110px; height: 110px; }
+      .logo-container { max-width: 520px; }
+      .logo-container img { max-width: 480px; }
     }
   </style>
 </head>
@@ -890,45 +897,49 @@
 
     function filtrarLugares(categoria) {
       console.log("Filtrando por:", categoria);
-      // Lógica de filtrado de lugares en el mapa
     }
 
-    function vistaAmplia() {
-      // Ajuste de zoom amplio
-    }
+    function vistaAmplia() {}
 
-    function vistaQuito() {
-      // Ajuste de zoom enfocado en Quito
-    }
+    function vistaQuito() {}
 
-    function trazarRuta(modo) {
-      // Lógica para trazar rutas
-    }
+    function trazarRuta(modo) {}
 
-    function limpiarRuta() {
-      // Lógica para limpiar la ruta actual
-    }
+    function limpiarRuta() {}
 
-    // Efecto Hacker intro
+    /* CAMBIO 3: ESCRITURA HUMANA CON TIEMPOS ALEATORIOS Y PAUSAS */
     window.addEventListener('load', () => {
       const terminal = document.getElementById('hackerTerminal');
       const texto = "Cargando nodos retro...\nInicializando mapa de Quito 8-Bit...\nConectando datos geográficos...\n¡Sistema listo!";
       let idx = 0;
 
-      function escribir() {
+      function escribirSimulacionHumana() {
         if (idx < texto.length) {
-          terminal.textContent += texto.charAt(idx);
+          const char = texto.charAt(idx);
+          terminal.textContent += char;
           idx++;
-          setTimeout(escribir, 25);
+
+          // Genera un retardo humano natural entre 20ms y 90ms
+          let delay = Math.floor(Math.random() * 70) + 20;
+
+          // Pausas naturales en saltos de línea o puntos
+          if (char === '\n') {
+            delay = Math.floor(Math.random() * 200) + 250;
+          } else if (char === '.' || char === '!') {
+            delay = Math.floor(Math.random() * 150) + 120;
+          }
+
+          setTimeout(escribirSimulacionHumana, delay);
         } else {
           setTimeout(() => {
             const hackerIntro = document.getElementById('hackerIntro');
             hackerIntro.classList.add('fade-out');
             document.getElementById('characterSelectionModal').classList.remove('hidden');
-          }, 1000);
+          }, 800);
         }
       }
-      escribir();
+
+      escribirSimulacionHumana();
     });
   </script>
 </body>
