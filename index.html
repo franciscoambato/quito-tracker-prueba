@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quito Tracker - Retro Frame</title>
+  <title>Quito Tracker - Edición Blaugrana</title>
   
   <link rel="icon" type="image/jpeg" href="./logotipo.jpg">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -11,91 +11,80 @@
   <style>
     * {
       box-sizing: border-box;
-      image-rendering: pixelated;
+      margin: 0;
+      padding: 0;
     }
 
     body, html {
-      margin: 0;
-      padding: 0;
       width: 100%;
       height: 100%;
-      background-color: #0d0718;
-      font-family: 'Press Start 2P', monospace;
+      background-color: #050a14;
+      font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
       color: #ffffff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       overflow: hidden;
     }
 
-    /* CONTENEDOR TIPO MARCO RETRO */
-    #device-frame {
-      position: relative;
-      width: 96vw;
-      height: 94vh;
-      max-width: 1200px;
-      max-height: 700px;
-      background-color: #1a71b8; /* Azul del marco exterior */
-      border: 8px solid #0f4471;
-      border-radius: 18px;
-      padding: 12px;
-      box-shadow: 0 0 25px rgba(0, 240, 255, 0.3), inset 0 0 10px #000000;
+    /* CONTENEDOR PRINCIPAL PANTALLA COMPLETA */
+    #main-app {
       display: flex;
       flex-direction: column;
+      width: 100vw;
+      height: 100vh;
+      background-color: #081326;
+      position: relative;
     }
 
-    /* BARRA SUPERIOR */
-    #frame-top-bar {
-      height: 45px;
+    /* BARRA SUPERIOR BLAUGRANA */
+    #top-header {
+      height: 52px;
+      background: linear-gradient(90deg, #0b1d3a 0%, #15294a 50%, #800032 100%);
+      border-bottom: 3px solid #a50044;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0 10px;
-      position: relative;
+      padding: 0 16px;
+      z-index: 20;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     }
 
-    /* BOTÓN AMARILLO (SEÑALADO EN AMARILLO Y AMARILLO/ROJO) */
-    #btnBanderaQuito {
-      width: 38px;
-      height: 38px;
+    /* BOTÓN TIPO MONEDA / MENÚ */
+    #btnMenuToggle {
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      border: 3px solid #ffea00;
-      background-color: #1a0b2e;
-      background-image: url('./bandera_quito.jpg');
+      border: 3px solid #e2b041;
+      background-color: #0b1d3a;
+      background-image: url('./image_8ff343.png');
       background-size: cover;
       background-position: center;
       cursor: pointer;
-      box-shadow: 0 0 8px #ffea00;
+      box-shadow: 0 0 10px rgba(226, 176, 65, 0.5);
       transition: transform 0.2s;
-      z-index: 20;
     }
 
-    #btnBanderaQuito:hover {
-      transform: scale(1.1);
+    #btnMenuToggle:hover {
+      transform: scale(1.08);
     }
 
-    /* TÍTULO CENTRAL (SEÑALADO EN ROJO) */
-    #title-banner {
-      background-color: #0f4471;
-      border: 2px solid #00f0ff;
-      border-radius: 12px;
-      padding: 6px 16px;
-      color: #00f0ff;
+    #header-title-box {
+      background-color: #a50044;
+      border: 2px solid #e2b041;
+      border-radius: 20px;
+      padding: 6px 20px;
+      color: #ffffff;
+      font-family: 'Press Start 2P', monospace;
       font-size: 11px;
-      text-shadow: 2px 2px #000000;
       letter-spacing: 1px;
-      box-shadow: inset 0 0 6px #000000;
+      box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.4);
     }
 
-    /* ÁREA PANTALLA PRINCIPAL CON MAPA Y ESTÁTICA */
-    #screen-area {
+    /* ÁREA DEL MAPA */
+    #map-container {
       flex: 1;
+      width: 100%;
+      height: 100%;
       position: relative;
-      background-color: #05020a;
-      border: 4px solid #0a2c4a;
-      border-radius: 8px;
-      overflow: hidden;
-      margin: 6px 0;
+      background-color: #0b1320;
     }
 
     #map {
@@ -103,276 +92,280 @@
       height: 100%;
     }
 
-    /* ESTÁTICA Y EFECTO CRT SOBRE EL MAPA */
-    .screen-crt-overlay {
+    /* ESTÁTICA Y CARGA (BOMBA NEGRA / PANTALLA INICIAL) */
+    #hackerIntro {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
-                  radial-gradient(circle, transparent 60%, rgba(0,0,0,0.6) 100%);
-      background-size: 100% 4px, 100% 100%;
-      pointer-events: none;
-      z-index: 2;
-    }
-
-    /* MENÚ DESPLEGABLE DE CATEGORÍAS (AL DAR CLICK A LA BANDERA) */
-    #filterMenuModal {
-      position: absolute;
-      top: 50px;
-      left: 10px;
-      background-color: #1a0b2e;
-      border: 3px solid #ffea00;
-      border-radius: 10px;
-      padding: 10px;
+      background-color: #050a14;
+      z-index: 100;
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      z-index: 30;
-      box-shadow: 4px 4px 0px #000000;
+      justify-content: space-between;
+      padding: 24px;
     }
 
-    #filterMenuModal.hidden {
-      display: none;
+    .crt-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%),
+                  radial-gradient(circle, transparent 60%, rgba(0,0,0,0.8) 100%);
+      background-size: 100% 4px, 100% 100%;
+      pointer-events: none;
     }
 
-    .btn-filter {
-      background-color: #0d0718;
-      border: 2px solid #00f0ff;
+    #terminalText {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
       color: #00f0ff;
-      padding: 8px 10px;
+      line-height: 1.8;
+      text-shadow: 0 0 5px #00a8b3;
+      white-space: pre-wrap;
+      z-index: 101;
+    }
+
+    /* BARRA INFERIOR */
+    #bottom-header {
+      height: 75px;
+      background-color: #0b1d3a;
+      border-top: 3px solid #a50044;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 16px;
+      z-index: 20;
+    }
+
+    /* CONTENEDOR DE AVATAR AUMENTADO */
+    #companion-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    #galloVideo {
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      border: 3px solid #e2b041;
+      background-color: #050a14;
+      object-fit: cover;
+      object-position: center top;
+      box-shadow: 0 0 10px rgba(226, 176, 65, 0.4);
+    }
+
+    #galloSpeech {
+      background-color: #15294a;
+      border: 2px solid #a50044;
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #ffffff;
+      max-width: 45vw;
+    }
+
+    /* TEXTO SEÑALADO EN AMARILLO EN LA BARRA DE ESTADO */
+    #status-yellow-text {
+      background-color: #15294a;
+      border: 2px solid #e2b041;
+      border-radius: 20px;
+      padding: 8px 18px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      color: #ffea00;
+      text-align: center;
+    }
+
+    /* MENÚ LATERAL DESPLEGABLE CON VENTANILLA BLAUGRANA */
+    #sideMenuModal {
+      position: absolute;
+      top: 52px;
+      left: 0;
+      width: 280px;
+      height: calc(100% - 127px);
+      background-color: rgba(11, 29, 58, 0.96);
+      border-right: 3px solid #a50044;
+      padding: 20px 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 40;
+      box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5);
+      transition: transform 0.3s ease-in-out;
+    }
+
+    #sideMenuModal.hidden {
+      transform: translateX(-100%);
+    }
+
+    .menu-item-btn {
+      background: linear-gradient(90deg, #15294a 0%, #a50044 100%);
+      border: 1px solid #e2b041;
+      color: #ffffff;
+      padding: 12px 14px;
       font-family: 'Press Start 2P', monospace;
       font-size: 8px;
       cursor: pointer;
       text-align: left;
-      border-radius: 12px;
-      transition: background-color 0.2s;
+      border-radius: 6px;
+      transition: background 0.2s, transform 0.1s;
     }
 
-    .btn-filter:hover {
-      background-color: #00f0ff;
-      color: #0d0718;
+    .menu-item-btn:hover {
+      background: linear-gradient(90deg, #a50044 0%, #15294a 100%);
+      transform: translateX(4px);
     }
 
-    /* BARRA INFERIOR */
-    #frame-bottom-bar {
-      height: 55px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 10px;
-      position: relative;
-    }
-
-    /* ACOMPAÑANTE / AVATAR (SEÑALADO EN MORADO) */
-    #companion-container {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      z-index: 20;
-    }
-
-    #galloVideo {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      border: 2px solid #ff007f;
-      background-color: #0d0718;
-      object-fit: cover;
-      object-position: center top;
-      box-shadow: 0 0 8px #ff007f;
-    }
-
-    #galloSpeech {
-      background-color: #0f4471;
-      border: 2px solid #00f0ff;
-      border-radius: 8px;
-      padding: 6px 10px;
-      font-size: 7px;
-      color: #ffffff;
-      max-width: 50vw;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    /* BARRAS DE ESTADO Y RUTAS */
-    #status-bar {
-      background-color: #0a2c4a;
-      border: 2px solid #00f0ff;
-      border-radius: 12px;
-      padding: 6px 16px;
-      font-size: 8px;
-      color: #00f0ff;
-    }
-
-    /* MODAL DE SELECCIÓN DE PERSONAJE INICIAL */
-    #characterSelectionModal {
+    /* MODAL DE SELECCIÓN DE PERSONAJES */
+    #characterModal {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(13, 7, 24, 0.95);
-      z-index: 100;
+      background-color: rgba(5, 10, 20, 0.92);
+      z-index: 90;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      border-radius: 12px;
     }
 
-    #characterSelectionModal.hidden {
+    #characterModal.hidden {
       display: none;
     }
 
-    .modal-box {
-      background-color: #1a0b2e;
-      border: 3px solid #00f0ff;
-      padding: 20px;
-      text-align: center;
+    .character-card-box {
+      background-color: #0b1d3a;
+      border: 3px solid #a50044;
       border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(165, 0, 68, 0.4);
     }
 
     .characters-grid {
       display: flex;
-      gap: 20px;
-      margin-top: 15px;
+      gap: 24px;
+      margin-top: 20px;
     }
 
-    .character-card {
+    .char-option {
       cursor: pointer;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
-    .character-preview-video {
-      width: 70px;
-      height: 70px;
+    .char-video-preview {
+      width: 80px;
+      height: 80px;
       border-radius: 50%;
-      border: 2px solid #ff007f;
+      border: 3px solid #e2b041;
       object-fit: cover;
     }
 
-    .character-btn {
-      margin-top: 8px;
-      background-color: #0d0718;
-      color: #00f0ff;
-      border: 1px solid #00f0ff;
-      padding: 6px 10px;
+    .char-btn-label {
+      margin-top: 10px;
+      background-color: #a50044;
+      color: #ffffff;
+      border: 1px solid #e2b041;
+      padding: 8px 12px;
       font-family: 'Press Start 2P', monospace;
-      font-size: 8px;
-      cursor: pointer;
-    }
-
-    /* RUTAS POPUP INTERIOR */
-    #extraBlueSpace {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      background-color: #1a0b2e;
-      border: 2px solid #00f0ff;
-      border-radius: 8px;
-      padding: 6px;
-      display: flex;
-      gap: 6px;
-      z-index: 25;
-    }
-
-    #extraBlueSpace.hidden {
-      display: none;
-    }
-
-    .btn-retro {
-      background-color: #0d0718;
-      color: #00f0ff;
-      border: 1px solid #00f0ff;
-      padding: 6px 8px;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 7px;
-      cursor: pointer;
+      font-size: 9px;
       border-radius: 4px;
     }
 
-    .btn-retro.danger {
-      color: #ffffff;
-      background-color: #ff007f;
-      border-color: #ffffff;
+    /* VENTANA INFOWINDOW MAPA PERSONALIZADA CON COLORES BLAUGRANAS */
+    .gm-style .gm-style-iw-c {
+      background-color: #0b1d3a !important;
+      border: 2px solid #a50044 !important;
+      border-radius: 10px !important;
+      padding: 14px !important;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6) !important;
+    }
+
+    .gm-style .gm-style-iw-d {
+      overflow: auto !important;
+      color: #ffffff !important;
+      font-family: 'Trebuchet MS', 'Segoe UI', sans-serif !important;
+      font-size: 13px !important;
+      line-height: 1.5 !important;
+    }
+
+    .gm-style .gm-style-iw-tc::after {
+      background-color: #a50044 !important;
     }
   </style>
 </head>
 <body>
 
-  <!-- MARCO DIGITAL DE LA PANTALLA -->
-  <div id="device-frame">
-    
-    <!-- PARTE SUPERIOR DEL MARCO -->
-    <div id="frame-top-bar">
-      <!-- BOTÓN AMARILLO / BANDERA QUITO -->
-      <div id="btnBanderaQuito" onclick="toggleFiltros()" title="Seleccionar Tipo de Lugar"></div>
-
-      <!-- TÍTULO CENTRAL EN ROJO -->
-      <div id="title-banner">QUITO TRACKER</div>
-
+  <div id="main-app">
+    <!-- BARRA SUPERIOR -->
+    <div id="top-header">
+      <div id="btnMenuToggle" onclick="toggleMenu()" title="Abrir Registros"></div>
+      <div id="header-title-box">QUITO TRACKER</div>
       <div></div>
     </div>
 
-    <!-- PANTALLA DEL MAPA CON ESTÁTICA -->
-    <div id="screen-area">
-      <div class="screen-crt-overlay"></div>
+    <!-- MAPA PRINCIPAL -->
+    <div id="map-container">
       <div id="map"></div>
 
-      <!-- MENÚ DE TIPOS DE LUGARES (DESPLEGABLE DESDE LA BANDERA) -->
-      <div id="filterMenuModal" class="hidden">
-        <button class="btn-filter" onclick="filtrarLugares('TODOS')">🌐 TODOS</button>
-        <button class="btn-filter" onclick="filtrarLugares('PLANES DESTACADOS PARA JÓVENES')">🎨 JÓVENES</button>
-        <button class="btn-filter" onclick="filtrarLugares('MUSEOS')">🏺 MUSEOS</button>
-        <button class="btn-filter" onclick="filtrarLugares('PARQUES')">🌳 PARQUES</button>
-        <button class="btn-filter" onclick="filtrarLugares('LUGARES DE HISTORIAS Y LEYENDAS')">📜 LEYENDAS</button>
-        <button class="btn-filter" onclick="filtrarLugares('GRATIS')">🎁 GRATIS</button>
-        <button class="btn-filter" onclick="filtrarLugares('PAID')">🪙 PAGO</button>
+      <!-- PANTALLA INICIAL DE CARGA / ESTÁTICA -->
+      <div id="hackerIntro">
+        <div class="crt-overlay"></div>
+        <div id="terminalText"></div>
       </div>
 
-      <!-- PANEL DE RUTAS -->
-      <div id="extraBlueSpace" class="hidden">
-        <button class="btn-retro" onclick="trazarRuta('driving')">🚗 CARRO</button>
-        <button class="btn-retro" onclick="trazarRuta('walking')">🚶 PIE</button>
-        <button class="btn-retro" onclick="trazarRuta('two-wheeler')">🛵 MOTO</button>
-        <button class="btn-retro" onclick="trazarRuta('transit')">🚌 BUS</button>
-        <button class="btn-retro danger" onclick="limpiarRuta()">❌</button>
+      <!-- MENÚ LATERAL DESPLEGABLE DE ACTIVIDADES Y FILTROS -->
+      <div id="sideMenuModal" class="hidden">
+        <div style="font-family:'Press Start 2P', monospace; font-size:9px; color:#e2b041; margin-bottom:8px;">
+          REGISTRO DE LUGARES
+        </div>
+        <button class="menu-item-btn" onclick="filtrarLugares('TODOS')">🌐 TODOS LOS LUGARES</button>
+        <button class="menu-item-btn" onclick="filtrarLugares('CENTRO HISTÓRICO')">🏛️ CENTRO HISTÓRICO</button>
+        <button class="menu-item-btn" onclick="filtrarLugares('SUR DE QUITO')">🚌 SUR DE QUITO</button>
+        <button class="menu-item-btn" onclick="filtrarLugares('SALIENDO DEL SUR / PERIFERIA')">⛰️ SALIDA SUR / PERIFERIA</button>
+        <button class="menu-item-btn" onclick="filtrarLugares('GRATIS')">🎁 LUGARES GRATUITOS</button>
+        <button class="menu-item-btn" onclick="filtrarLugares('PAID')">🪙 LUGARES DE PAGO</button>
       </div>
 
-      <!-- MODAL SELECCIÓN DE PERSONAJE -->
-      <div id="characterSelectionModal">
-        <div class="modal-box">
-          <div style="font-size: 9px; color: #00f0ff;">SELECCIONA TU GUÍA</div>
+      <!-- MODAL SELECCIÓN DE GUÍA -->
+      <div id="characterModal" class="hidden">
+        <div class="character-card-box">
+          <div style="font-family:'Press Start 2P', monospace; font-size:10px; color:#e2b041;">
+            ¿CON QUIÉN QUIERES CONOCER QUITO?
+          </div>
           <div class="characters-grid">
-            <div class="character-card" onclick="seleccionarPersonaje('MARCO', './gallo.mp4')">
-              <video class="character-preview-video" src="./gallo.mp4" playsinline muted></video>
-              <button class="character-btn">MARCO</button>
+            <div class="char-option" onclick="seleccionarPersonaje('MARCO', './gallo.mp4')">
+              <video class="char-video-preview" src="./gallo.mp4" playsinline muted></video>
+              <button class="char-btn-label">MARCO</button>
             </div>
-            <div class="character-card" onclick="seleccionarPersonaje('ANDREA', './gallo_mujer.mp4')">
-              <video class="character-preview-video" src="./gallo_mujer.mp4" playsinline muted></video>
-              <button class="character-btn">ANDREA</button>
+            <div class="char-option" onclick="seleccionarPersonaje('LUCÍA', './gallo_mujer.mp4')">
+              <video class="char-video-preview" src="./gallo_mujer.mp4" playsinline muted></video>
+              <button class="char-btn-label">LUCÍA</button>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- PARTE INFERIOR DEL MARCO -->
-    <div id="frame-bottom-bar">
-      <!-- PERSONAJE SELECCIONADO EN MORADO -->
-      <div id="companion-container">
+    <!-- BARRA INFERIOR -->
+    <div id="bottom-header">
+      <div id="companion-box">
         <video id="galloVideo" src="./gallo.mp4" playsinline muted loop autoplay></video>
-        <div id="galloSpeech">¡BIENVENIDO A QUITO!</div>
+        <div id="galloSpeech">Iniciando sistema...</div>
       </div>
 
-      <div id="status-bar">MODO MAPA RETRO</div>
+      <!-- TEXTO SEÑALADO EN AMARILLO -->
+      <div id="status-yellow-text">GUÍA: MARCO O LUCÍA</div>
     </div>
-
   </div>
 
   <script src="./script.js"></script>
