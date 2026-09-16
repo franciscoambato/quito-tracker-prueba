@@ -1,102 +1,138 @@
 let map;
 let infoWindow;
 let markersList = [];
-let lugaresPuntos = [];
-let personajeActual = { nombre: 'MARCO O LUCÍA', video: './gallo.mp4' };
+let puntoSeleccionado = null;
+let personajeActual = { nombre: 'MARCO', video: './gallo.mp4' };
 
-// Clave de API provista
-const GOOGLE_MAPS_API_KEY = "AIzaSyD7yh3TteD4adDL8pAVXIEGr6RXksDKGLo";
-
-// Límites geográficos: Tambillo a Mitad del Mundo / Mindo a Tumbaco
+// LÍMITES SOLICITADOS: Tambillo hasta Mitad del Mundo / Mindo hasta Tumbaco
 const MAP_BOUNDS = {
-  north: -0.0010,
-  south: -0.5500,
-  west: -78.7800,
-  east: -78.3900
+  north: -0.0010, // Mitad del Mundo / San Antonio
+  south: -0.4100, // Tambillo
+  west: -78.7800,  // Mindo
+  east: -78.3900   // Tumbaco
 };
+
+let lugaresPuntos = [
+  {
+    "etiqueta": "PLANES DESTACADOS PARA JÓVENES",
+    "nombre": "Di Pinto (Café & Taller de Arte)",
+    "lat": -0.1785,
+    "lng": -78.4812,
+    "categoria": "HASTA $15 USD",
+    "zona": "NORTE",
+    "tipo": "Plan Jóvenes 1 / Arte & Café",
+    "sticker": "🎨",
+    "info": "Kits de pintura y cerámica desde $12.00 USD.",
+    "descripcion": "Concepto de café-taller para personalizar cerámica, macetas o lienzos.",
+    "recomendacion": "Ideal para ir en pareja o con amigos."
+  },
+  {
+    "etiqueta": "PLANES DESTACADOS PARA JÓVENES",
+    "nombre": "Cafetería Roca Roja",
+    "lat": -0.1812,
+    "lng": -78.4795,
+    "categoria": "HASTA $20 USD",
+    "zona": "NORTE",
+    "tipo": "Plan Jóvenes 2 / Cerámica & Café",
+    "sticker": "🪴",
+    "info": "Kits de arcilla y pintura.",
+    "descripcion": "Espacio acogedor diseñado para amantes del arte en arcilla y cerámica.",
+    "recomendacion": "Muy popular en redes sociales."
+  },
+  {
+    "etiqueta": "PLANES DESTACADOS PARA JÓVENES",
+    "nombre": "CelebrART (Galería & Gastronomía)",
+    "lat": -0.1985,
+    "lng": -78.4358,
+    "categoria": "HASTA $15 USD",
+    "zona": "CUMBAYÁ / NORTE",
+    "tipo": "Plan Jóvenes 3 / Arte & Cerveza",
+    "sticker": "🍷",
+    "info": "Talleres de pintura en vivo.",
+    "descripcion": "Centro cultural que combina arte con tapas y cerveza artesanal.",
+    "recomendacion": "Revisa su agenda de eventos nocturnos."
+  },
+  {
+    "etiqueta": "MUSEOS",
+    "nombre": "Museo de la Ciudad",
+    "lat": -0.2251,
+    "lng": -78.5152,
+    "categoria": "HASTA $10 USD",
+    "zona": "CENTRO",
+    "tipo": "Museo / Historia",
+    "sticker": "📜",
+    "info": "Adultos: $4.00, Estudiantes: $2.00.",
+    "descripcion": "Recorrido sobre la historia de Quito desde la era precolombina.",
+    "recomendacion": "Ubicado en el antiguo Hospital San Juan de Dios."
+  },
+  {
+    "etiqueta": "PARQUES",
+    "nombre": "Parque La Carolina",
+    "lat": -0.1825,
+    "lng": -78.4845,
+    "categoria": "GRATIS",
+    "zona": "NORTE",
+    "tipo": "Parque Recreativo",
+    "sticker": "🌳",
+    "info": "Acceso libre.",
+    "descripcion": "El parque urbano más activo en el corazón financiero de Quito.",
+    "recomendacion": "Ideal para deporte o paseo familiar."
+  },
+  {
+    "etiqueta": "LUGARES DE HISTORIAS Y LEYENDAS",
+    "nombre": "Mitad del Mundo",
+    "lat": -0.0022,
+    "lng": -78.4558,
+    "categoria": "HASTA $10 USD",
+    "zona": "NORTE EXTREMO",
+    "tipo": "Historia / Latitud 0",
+    "sticker": "🌐",
+    "info": "Entrada general $5.00 USD.",
+    "descripcion": "Monumento ecuatorial histórico en la latitud 0°0'0\".",
+    "recomendacion": "Límite norte de la travesía."
+  }
+];
 
 window.onload = function() {
-  cargarDatosJSON();
-  iniciarEstaticaTerminal();
+  cargarMapaScript();
 };
-
-// Carga asíncrona de datos desde lugares.json
-function cargarDatosJSON() {
-  fetch('./lugares.json')
-    .then(response => {
-      if (!response.ok) throw new Error("Error al cargar lugares.json");
-      return response.json();
-    })
-    .then(data => {
-      lugaresPuntos = data;
-    })
-    .catch(err => console.error("Error leyendo lugares.json:", err));
-}
-
-function iniciarEstaticaTerminal() {
-  const lineas = [
-    "> INITIALIZING CYBER_QUITO_NET...",
-    "[OK] Cargando nodos geográficos de Quito...",
-    "[OK] Google Maps API conectada.",
-    "[OK] Sistema listo."
-  ];
-  const terminal = document.getElementById('terminalText');
-  let l = 0, c = 0;
-
-  function escribir() {
-    if (l < lineas.length) {
-      if (c < lineas[l].length) {
-        terminal.innerHTML += lineas[l].charAt(c);
-        c++;
-        setTimeout(escribir, 20);
-      } else {
-        terminal.innerHTML += '\n';
-        l++;
-        c = 0;
-        setTimeout(escribir, 150);
-      }
-    } else {
-      setTimeout(() => {
-        document.getElementById('hackerIntro').style.display = 'none';
-        document.getElementById('characterModal').classList.remove('hidden');
-      }, 500);
-    }
-  }
-  escribir();
-}
 
 function seleccionarPersonaje(nombre, videoSrc) {
   personajeActual = { nombre: nombre, video: videoSrc };
-  document.getElementById('characterModal').classList.add('hidden');
-
+  document.getElementById('characterSelectionModal').classList.add('hidden');
+  
   const video = document.getElementById('galloVideo');
   video.src = videoSrc;
   video.play().catch(e => console.log(e));
 
-  document.getElementById('status-yellow-text').innerText = `GUÍA SELECCIONADO: ${personajeActual.nombre}`;
-  document.getElementById('galloSpeech').innerText = `¡Hola, soy ${personajeActual.nombre}! Vamos a explorar Quito.`;
-
-  cargarGoogleMapsScript();
+  document.getElementById('galloSpeech').innerText = `${personajeActual.nombre}: ¡LISTO PARA VIAJAR!`;
 }
 
-function cargarGoogleMapsScript() {
+function toggleFiltros() {
+  const menu = document.getElementById('filterMenuModal');
+  menu.classList.toggle('hidden');
+}
+
+function cargarMapaScript() {
   if (window.google && window.google.maps) {
     initMap();
     return;
   }
-
   const script = document.createElement('script');
-  script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&callback=initMap`;
+  script.src = `https://maps.googleapis.com/maps/api/js?key=&callback=initMap`;
   script.async = true;
   script.defer = true;
+  script.onerror = () => {
+    console.warn("API de Google Maps no detectada.");
+  };
   document.head.appendChild(script);
 }
 
 function initMap() {
-  const quitoCenter = { lat: -0.2300, lng: -78.5100 };
+  const quitoCenter = { lat: -0.2000, lng: -78.4900 };
 
   map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 12,
+    zoom: 11,
     center: quitoCenter,
     disableDefaultUI: true,
     restriction: {
@@ -104,12 +140,12 @@ function initMap() {
       strictBounds: true
     },
     styles: [
-      { elementType: "geometry", stylers: [{ color: "#0b1d3a" }] },
-      { elementType: "labels.text.stroke", stylers: [{ color: "#0b1d3a" }] },
-      { elementType: "labels.text.fill", stylers: [{ color: "#e2b041" }] },
-      { featureType: "road", elementType: "geometry", stylers: [{ color: "#15294a" }] },
-      { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#a50044" }] },
-      { featureType: "water", elementType: "geometry", stylers: [{ color: "#050a14" }] }
+      { elementType: "geometry", stylers: [{ color: "#1a0b2e" }] },
+      { elementType: "labels.text.stroke", stylers: [{ color: "#1a0b2e" }] },
+      { elementType: "labels.text.fill", stylers: [{ color: "#00f0ff" }] },
+      { featureType: "road", elementType: "geometry", stylers: [{ color: "#2d0a4e" }] },
+      { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#ff007f" }] },
+      { featureType: "water", elementType: "geometry", stylers: [{ color: "#002b36" }] }
     ]
   });
 
@@ -128,11 +164,11 @@ function renderizarMarcadores(puntos) {
       title: lugar.nombre,
       icon: {
         path: google.maps.SymbolPath.CIRCLE,
-        scale: 8,
-        fillColor: "#a50044",
-        fillOpacity: 0.95,
+        scale: 7,
+        fillColor: obtenerColorPorEtiqueta(lugar.etiqueta),
+        fillOpacity: 0.9,
         strokeWeight: 2,
-        strokeColor: "#e2b041"
+        strokeColor: "#ffffff"
       }
     });
 
@@ -144,43 +180,37 @@ function renderizarMarcadores(puntos) {
   });
 }
 
+function obtenerColorPorEtiqueta(etiqueta) {
+  switch (etiqueta) {
+    case 'PLANES DESTACADOS PARA JÓVENES': return '#ffea00';
+    case 'MUSEOS': return '#b537f2';
+    case 'PARQUES': return '#00ff66';
+    case 'LUGARES DE HISTORIAS Y LEYENDAS': return '#ff7700';
+    default: return '#00f0ff';
+  }
+}
+
 function limpiarMarcadores() {
   markersList.forEach(m => m.setMap(null));
   markersList = [];
 }
 
 function seleccionarLugar(lugar, marker) {
-  let actividadesHTML = "";
-  if (lugar.actividades) {
-    actividadesHTML = "<ul>" + lugar.actividades.map(a => `<li>${a}</li>`).join('') + "</ul>";
-  }
-
+  puntoSeleccionado = lugar;
+  
   const contenidoIW = `
-    <div style="font-family:'Trebuchet MS', sans-serif; color:#ffffff; padding:4px;">
-      <div style="font-weight:bold; color:#e2b041; font-size:14px; margin-bottom:4px;">
-        ${lugar.sticker} ${lugar.nombre}
-      </div>
-      <div style="color:#a50044; font-weight:bold; font-size:11px; margin-bottom:6px;">
-        PRECIO: ${lugar.categoria} | ZONA: ${lugar.zona}
-      </div>
-      <p style="margin-bottom:6px; font-size:12px;">${lugar.descripcion}</p>
-      <div style="font-size:11px; color:#e2b041;"><strong>Actividades:</strong></div>
-      <div style="font-size:11px; margin-bottom:6px;">${actividadesHTML}</div>
-      <div style="font-size:11px; color:#ffffff; background-color:#15294a; padding:6px; border-radius:4px;">
-        💡 <strong>Recomendación:</strong> ${lugar.recomendacion}
-      </div>
+    <div style="font-family:'Press Start 2P', monospace; font-size:8px; color:#ffffff;">
+      <div style="color:#00f0ff; margin-bottom:4px;">${lugar.sticker} ${lugar.nombre}</div>
+      <div style="color:#ff007f; margin-bottom:4px;">${lugar.categoria}</div>
+      <p style="margin:2px 0;">${lugar.descripcion}</p>
     </div>
   `;
 
   infoWindow.setContent(contenidoIW);
   infoWindow.open(map, marker);
 
-  document.getElementById('galloSpeech').innerText = `${personajeActual.nombre}: ¡${lugar.nombre}! ${lugar.info}`;
-}
-
-function toggleMenu() {
-  const menu = document.getElementById('sideMenuModal');
-  menu.classList.toggle('hidden');
+  document.getElementById('galloSpeech').innerText = `${personajeActual.nombre}: ${lugar.nombre}`;
+  document.getElementById('extraBlueSpace').classList.remove('hidden');
 }
 
 function filtrarLugares(categoria) {
@@ -196,6 +226,18 @@ function filtrarLugares(categoria) {
   }
 
   renderizarMarcadores(filtrados);
-  toggleMenu();
-  document.getElementById('galloSpeech').innerText = `${personajeActual.nombre}: Mostrando ${filtrados.length} lugares para ${categoria}.`;
+  toggleFiltros();
+  document.getElementById('galloSpeech').innerText = `${personajeActual.nombre}: ${filtrados.length} LUGARES`;
+}
+
+function trazarRuta(modo) {
+  if (!puntoSeleccionado) return;
+  const url = `https://www.google.com/maps/dir/?api=1&destination=${puntoSeleccionado.lat},${puntoSeleccionado.lng}&travelmode=${modo}`;
+  window.open(url, '_blank');
+}
+
+function limpiarRuta() {
+  if (infoWindow) infoWindow.close();
+  document.getElementById('extraBlueSpace').classList.add('hidden');
+  puntoSeleccionado = null;
 }
