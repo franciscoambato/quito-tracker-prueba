@@ -114,6 +114,47 @@
       z-index: 2;
     }
 
+    /* PANEL LATERAL DE INFORMACIÓN (UBICADO A LA DERECHA) */
+    #infoSidebar {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 300px;
+      max-height: calc(100% - 20px);
+      background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 60%, #800020 100%);
+      border: 3px solid #a51c30;
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: -4px 4px 15px rgba(0, 0, 0, 0.6);
+      z-index: 25;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #ffffff;
+      overflow-y: auto;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    #infoSidebar.hidden {
+      display: none;
+    }
+
+    #infoSidebar .close-btn {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      background: #800020;
+      color: #ffffff;
+      border: 1px solid #ffcc00;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      font-weight: bold;
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     /* MENÚ DESPLEGABLE DE CATEGORÍAS */
     #filterMenuModal {
       position: absolute;
@@ -263,24 +304,6 @@
       font-size: 8px;
       cursor: pointer;
     }
-
-    /* SOBREESCRIBIR ESTILOS DE INFO WINDOW DE GOOGLE MAPS */
-    .gm-style .gm-style-iw-c {
-      padding: 0 !important;
-      border-radius: 10px !important;
-      background-color: #ffffff !important;
-      border: 3px solid #800020 !important;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.4) !important;
-    }
-
-    .gm-style .gm-style-iw-d {
-      overflow: hidden !important;
-      max-height: none !important;
-    }
-
-    .gm-style .gm-style-iw-tc::after {
-      background-color: #800020 !important;
-    }
   </style>
 </head>
 <body>
@@ -295,6 +318,12 @@
     <div id="screen-area">
       <div class="screen-crt-overlay"></div>
       <div id="map"></div>
+
+      <!-- PANEL LATERAL DERECHO DE INFORMACIÓN -->
+      <div id="infoSidebar" class="hidden">
+        <button class="close-btn" onclick="cerrarSidebar()">✕</button>
+        <div id="sidebarContent"></div>
+      </div>
 
       <div id="filterMenuModal" class="hidden">
         <button class="btn-filter" onclick="filtrarLugares('TODOS')">🌐 TODOS</button>
