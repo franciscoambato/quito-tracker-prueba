@@ -1,6 +1,7 @@
 let map;
 let markersList = [];
 let userLocationMarker = null;
+let userCoords = null;
 let personajeActual = { nombre: 'MARCO', video: './gallo.mp4' };
 let lugaresPuntos = [];
 
@@ -84,12 +85,12 @@ function initMap() {
   obtenerUbicacionUsuario();
 }
 
-// OBTENER Y MARCAR LA UBICACIÓN EN PUNTO ROJO
+// OBTENER Y CREAR EL MARCADOR DE UBICACIÓN
 function obtenerUbicacionUsuario() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        const pos = {
+        userCoords = {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
@@ -97,28 +98,28 @@ function obtenerUbicacionUsuario() {
         if (userLocationMarker) userLocationMarker.setMap(null);
 
         userLocationMarker = new google.maps.Marker({
-          position: pos,
+          position: userCoords,
           map: map,
           title: "¡Tu ubicación actual!",
           zIndex: 999,
           icon: {
             path: google.maps.SymbolPath.CIRCLE,
-            scale: 9,
+            scale: 14, // Círculo de tamaño destacado
             fillColor: "#FF0000",
             fillOpacity: 1,
-            strokeWeight: 3,
+            strokeWeight: 4,
             strokeColor: "#FFFFFF"
           }
         });
 
         userLocationMarker.addListener("click", () => {
-          mostrarEnSidebar({
+          mostrarEnFullScreen({
             sticker: "📍",
             nombre: "Tu Ubicación Actual",
             categoria: "GEOLOCALIZACIÓN",
             zona: "AQUÍ EN QUITO",
-            descripcion: "Te encuentras actualmente en estas coordenadas geográficas.",
-            recomendacion: "¡Usa este punto para calcular tus recorridos por la ciudad!"
+            descripcion: "Te encuentras actualmente en esta posición dentro del mapa.",
+            recomendacion: "Aprovecha este punto para organizar tu ruta hacia los lugares cercanos."
           });
         });
       },
@@ -127,6 +128,31 @@ function obtenerUbicacionUsuario() {
       }
     );
   }
+}
+
+// BOTÓN "TU UBICACIÓN": CENTRA Y HACE AÚN MÁS GRANDE EL CÍRCULO ROJO
+function enfocarTuUbicacion() {
+  if (!userCoords || !userLocationMarker) {
+    alert("Buscando tu ubicación... asegúrate de otorgar los permisos en tu navegador.");
+    obtenerUbicacionUsuario();
+    return;
+  }
+
+  cerrarFullScreen();
+  map.setCenter(userCoords);
+  map.setZoom(14);
+
+  // EFECTO DE AGRANDAMIENTO DEL CÍRCULO ROJO
+  userLocationMarker.setIcon({
+    path: google.maps.SymbolPath.CIRCLE,
+    scale: 22, // Tamaño más grande al presionar el botón
+    fillColor: "#FF0000",
+    fillOpacity: 1,
+    strokeWeight: 5,
+    strokeColor: "#FFEA00"
+  });
+
+  document.getElementById('galloSpeech').innerText = `${personajeActual.nombre}: ¡AQUÍ ESTÁS TÚ!`;
 }
 
 function renderizarMarcadores(puntos) {
@@ -149,7 +175,7 @@ function renderizarMarcadores(puntos) {
     });
 
     marker.addListener("click", () => {
-      mostrarEnSidebar(lugar);
+      mostrarEnFullScreen(lugar);
     });
 
     markersList.push(marker);
@@ -175,48 +201,48 @@ function limpiarMarcadores() {
   markersList = [];
 }
 
-// MOSTRAR INFORMACIÓN EN EL PANEL LATERAL DERECHO
-function mostrarEnSidebar(lugar) {
-  const sidebar = document.getElementById('infoSidebar');
-  const sidebarContent = document.getElementById('sidebarContent');
+// DESPLEGAR INFORMACIÓN A PANTALLA COMPLETA SOBRE EL MAPA
+function mostrarEnFullScreen(lugar) {
+  const fullScreenModal = document.getElementById('infoFullScreen');
+  const fullScreenCard = document.getElementById('fullScreenCard');
 
-  sidebarContent.innerHTML = `
-    <div style="font-size: 16px; font-weight: bold; color: #ffcc00; margin-bottom: 8px; border-bottom: 2px solid #a51c30; padding-bottom: 6px;">
+  fullScreenCard.innerHTML = `
+    <div style="font-size: 22px; font-weight: bold; color: #ffea00; margin-bottom: 12px; border-bottom: 3px solid #00f0ff; padding-bottom: 8px;">
       ${lugar.sticker || '📍'} ${lugar.nombre}
     </div>
     
-    <div style="display: flex; gap: 6px; margin-bottom: 10px; font-size: 11px;">
-      <span style="background-color: #a51c30; color: #ffffff; padding: 3px 6px; border-radius: 4px; font-weight: bold;">
+    <div style="display: flex; gap: 10px; margin-bottom: 16px; font-size: 13px;">
+      <span style="background-color: #800020; color: #ffffff; padding: 6px 12px; border-radius: 6px; font-weight: bold;">
         ${lugar.categoria}
       </span>
-      <span style="background-color: #003366; color: #ffcc00; padding: 3px 6px; border-radius: 4px; font-weight: bold;">
+      <span style="background-color: #0f4471; color: #00f0ff; padding: 6px 12px; border-radius: 6px; font-weight: bold; border: 1px solid #00f0ff;">
         ${lugar.zona}
       </span>
     </div>
 
-    <p style="margin: 0 0 10px 0; color: #f0f4f8; font-size: 13px; line-height: 1.4;">
+    <p style="margin: 0 0 16px 0; color: #f0f4f8; font-size: 16px; line-height: 1.6;">
       ${lugar.descripcion}
     </p>
 
     ${lugar.info ? `
-      <div style="margin-bottom: 8px; font-size: 12px; color: #00f0ff;">
-        💵 <strong>Precio/Info:</strong> ${lugar.info}
+      <div style="margin-bottom: 14px; font-size: 15px; color: #00f0ff;">
+        💵 <strong>Detalle / Precio:</strong> ${lugar.info}
       </div>
     ` : ''}
 
     ${lugar.recomendacion ? `
-      <div style="background-color: rgba(128, 0, 32, 0.4); padding: 8px; border-left: 3px solid #ffcc00; border-radius: 4px; font-size: 11px; color: #e0e6ed;">
-        💡 <strong>Tip:</strong> ${lugar.recomendacion}
+      <div style="background-color: rgba(128, 0, 32, 0.5); padding: 12px 16px; border-left: 4px solid #ffea00; border-radius: 6px; font-size: 14px; color: #ffffff; margin-top: 10px;">
+        💡 <strong>Recomendación:</strong> ${lugar.recomendacion}
       </div>
     ` : ''}
   `;
 
-  sidebar.classList.remove('hidden');
+  fullScreenModal.classList.remove('hidden');
   document.getElementById('galloSpeech').innerText = `${personajeActual.nombre}: ${lugar.nombre}`;
 }
 
-function cerrarSidebar() {
-  document.getElementById('infoSidebar').classList.add('hidden');
+function cerrarFullScreen() {
+  document.getElementById('infoFullScreen').classList.add('hidden');
 }
 
 function filtrarLugares(categoria) {
@@ -233,6 +259,6 @@ function filtrarLugares(categoria) {
 
   renderizarMarcadores(filtrados);
   toggleFiltros();
-  cerrarSidebar();
+  cerrarFullScreen();
   document.getElementById('galloSpeech').innerText = `${personajeActual.nombre}: ${filtrados.length} LUGARES`;
 }
