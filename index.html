@@ -107,8 +107,8 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
-                  radial-gradient(circle, transparent 60%, rgba(0,0,0,0.6) 100%);
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%),
+                  radial-gradient(circle, transparent 60%, rgba(0,0,0,0.5) 100%);
       background-size: 100% 4px, 100% 100%;
       pointer-events: none;
       z-index: 2;
@@ -264,39 +264,22 @@
       cursor: pointer;
     }
 
-    /* PANEL RUTAS INTERIOR */
-    #extraBlueSpace {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      background-color: #1a0b2e;
-      border: 2px solid #00f0ff;
-      border-radius: 8px;
-      padding: 6px;
-      display: flex;
-      gap: 6px;
-      z-index: 25;
+    /* SOBREESCRIBIR ESTILOS DE INFO WINDOW DE GOOGLE MAPS */
+    .gm-style .gm-style-iw-c {
+      padding: 0 !important;
+      border-radius: 10px !important;
+      background-color: #ffffff !important;
+      border: 3px solid #800020 !important;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.4) !important;
     }
 
-    #extraBlueSpace.hidden {
-      display: none;
+    .gm-style .gm-style-iw-d {
+      overflow: hidden !important;
+      max-height: none !important;
     }
 
-    .btn-retro {
-      background-color: #0d0718;
-      color: #00f0ff;
-      border: 1px solid #00f0ff;
-      padding: 6px 8px;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 7px;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-
-    .btn-retro.danger {
-      color: #ffffff;
-      background-color: #ff007f;
-      border-color: #ffffff;
+    .gm-style .gm-style-iw-tc::after {
+      background-color: #800020 !important;
     }
   </style>
 </head>
@@ -325,14 +308,6 @@
         <button class="btn-filter" onclick="filtrarLugares('RUTA DE LOS VOLCANES Y ALREDEDORES')">🌋 VOLCANES</button>
         <button class="btn-filter" onclick="filtrarLugares('GRATIS')">🎁 GRATIS</button>
         <button class="btn-filter" onclick="filtrarLugares('PAID')">🪙 PAGO</button>
-      </div>
-
-      <div id="extraBlueSpace" class="hidden">
-        <button class="btn-retro" onclick="trazarRuta('driving')">🚗 CARRO</button>
-        <button class="btn-retro" onclick="trazarRuta('walking')">🚶 PIE</button>
-        <button class="btn-retro" onclick="trazarRuta('two-wheeler')">🛵 MOTO</button>
-        <button class="btn-retro" onclick="trazarRuta('transit')">🚌 BUS</button>
-        <button class="btn-retro danger" onclick="limpiarRuta()">❌</button>
       </div>
 
       <div id="characterSelectionModal">
