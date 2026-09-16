@@ -1,5 +1,83 @@
 [
   {
+    "etiqueta": "PLANES DESTACADOS PARA JÓVENES",
+    "nombre": "Di Pinto (Café & Taller de Arte)",
+    "lat": -0.1785,
+    "lng": -78.4812,
+    "categoria": "HASTA $15 USD",
+    "zona": "NORTE",
+    "tipo": "Plan Jóvenes 1 / Arte & Café",
+    "sticker": "🎨",
+    "info": "Kits de pintura y cerámica desde $12.00 USD.",
+    "descripcion": "Concepto de café-taller para personalizar cerámica, macetas o lienzos.",
+    "recomendacion": "Ideal para ir en pareja o con amigos."
+  },
+  {
+    "etiqueta": "PLANES DESTACADOS PARA JÓVENES",
+    "nombre": "Cafetería Roca Roja",
+    "lat": -0.1812,
+    "lng": -78.4795,
+    "categoria": "HASTA $20 USD",
+    "zona": "NORTE",
+    "tipo": "Plan Jóvenes 2 / Cerámica & Café",
+    "sticker": "🪴",
+    "info": "Kits de arcilla y pintura.",
+    "descripcion": "Espacio acogedor diseñado para amantes del arte en arcilla y cerámica.",
+    "recomendacion": "Muy popular en redes sociales."
+  },
+  {
+    "etiqueta": "PLANES DESTACADOS PARA JÓVENES",
+    "nombre": "CelebrART (Galería & Gastronomía)",
+    "lat": -0.1985,
+    "lng": -78.4358,
+    "categoria": "HASTA $15 USD",
+    "zona": "CUMBAYÁ / NORTE",
+    "tipo": "Plan Jóvenes 3 / Arte & Cerveza",
+    "sticker": "🍷",
+    "info": "Talleres de pintura en vivo.",
+    "descripcion": "Centro cultural que combina arte con tapas y cerveza artesanal.",
+    "recomendacion": "Revisa su agenda de eventos nocturnos."
+  },
+  {
+    "etiqueta": "MUSEOS",
+    "nombre": "Museo de la Ciudad",
+    "lat": -0.2251,
+    "lng": -78.5152,
+    "categoria": "HASTA $10 USD",
+    "zona": "CENTRO",
+    "tipo": "Museo / Historia",
+    "sticker": "📜",
+    "info": "Adultos: $4.00, Estudiantes: $2.00.",
+    "descripcion": "Recorrido sobre la historia de Quito desde la era precolombina.",
+    "recomendacion": "Ubicado en el antiguo Hospital San Juan de Dios."
+  },
+  {
+    "etiqueta": "PARQUES",
+    "nombre": "Parque La Carolina",
+    "lat": -0.1825,
+    "lng": -78.4845,
+    "categoria": "GRATIS",
+    "zona": "NORTE",
+    "tipo": "Parque Recreativo",
+    "sticker": "🌳",
+    "info": "Acceso libre.",
+    "descripcion": "El parque urbano más activo en el corazón financiero de Quito.",
+    "recomendacion": "Ideal para deporte o paseo familiar."
+  },
+  {
+    "etiqueta": "LUGARES DE HISTORIAS Y LEYENDAS",
+    "nombre": "Mitad del Mundo",
+    "lat": -0.0022,
+    "lng": -78.4558,
+    "categoria": "HASTA $10 USD",
+    "zona": "NORTE EXTREMO",
+    "tipo": "Historia / Latitud 0",
+    "sticker": "🌐",
+    "info": "Entrada general $5.00 USD.",
+    "descripcion": "Monumento ecuatorial histórico en la latitud 0°0'0\".",
+    "recomendacion": "Límite norte de la travesía."
+  },
+  {
     "etiqueta": "SUR DE QUITO",
     "nombre": "Mercado Mayorista de Quito",
     "lat": -0.2785,
@@ -415,7 +493,7 @@
     "tipo": "Frontera Urbana",
     "sticker": "🌄",
     "info": "Acceso libre.",
-    "descripcion": "Poblado que marca el límite exacto entre el cantón Quito y el cantón Mejía. Mantiene vivas las tradiciones del trueque e intercambios agrícolas.",
+    "descripcion": "Poblado que marca el límite exacto entre el cantón Quito y el cantón Mejía. Mantiene vivas las traditions del trueque e intercambios agrícolas.",
     "actividades": ["Recorrer sus ferias populares de fin de semana", "Probar gastronomía andina auténtica (fritadas y morcillas)", "Fotografía de vida rural andina"],
     "recomendacion": "Visítalo durante la mañana de un día sábado o domingo."
   }
