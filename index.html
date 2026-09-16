@@ -35,7 +35,7 @@
       height: 94vh;
       max-width: 1200px;
       max-height: 700px;
-      background-color: #1a71b8; /* Azul del marco exterior */
+      background-color: #1a71b8;
       border: 8px solid #0f4471;
       border-radius: 18px;
       padding: 12px;
@@ -54,7 +54,6 @@
       position: relative;
     }
 
-    /* BOTÓN AMARILLO (SEÑALADO EN AMARILLO Y AMARILLO/ROJO) */
     #btnBanderaQuito {
       width: 38px;
       height: 38px;
@@ -74,7 +73,6 @@
       transform: scale(1.1);
     }
 
-    /* TÍTULO CENTRAL (SEÑALADO EN ROJO) */
     #title-banner {
       background-color: #0f4471;
       border: 2px solid #00f0ff;
@@ -87,7 +85,7 @@
       box-shadow: inset 0 0 6px #000000;
     }
 
-    /* ÁREA PANTALLA PRINCIPAL CON MAPA Y ESTÁTICA */
+    /* ÁREA PANTALLA PRINCIPAL CON MAPA */
     #screen-area {
       flex: 1;
       position: relative;
@@ -103,7 +101,6 @@
       height: 100%;
     }
 
-    /* ESTÁTICA Y EFECTO CRT SOBRE EL MAPA */
     .screen-crt-overlay {
       position: absolute;
       top: 0;
@@ -117,7 +114,7 @@
       z-index: 2;
     }
 
-    /* MENÚ DESPLEGABLE DE CATEGORÍAS (AL DAR CLICK A LA BANDERA) */
+    /* MENÚ DESPLEGABLE DE CATEGORÍAS */
     #filterMenuModal {
       position: absolute;
       top: 50px;
@@ -131,6 +128,8 @@
       gap: 6px;
       z-index: 30;
       box-shadow: 4px 4px 0px #000000;
+      max-height: 80%;
+      overflow-y: auto;
     }
 
     #filterMenuModal.hidden {
@@ -165,7 +164,6 @@
       position: relative;
     }
 
-    /* ACOMPAÑANTE / AVATAR (SEÑALADO EN MORADO) */
     #companion-container {
       display: flex;
       align-items: center;
@@ -197,7 +195,6 @@
       text-overflow: ellipsis;
     }
 
-    /* BARRAS DE ESTADO Y RUTAS */
     #status-bar {
       background-color: #0a2c4a;
       border: 2px solid #00f0ff;
@@ -207,7 +204,7 @@
       color: #00f0ff;
     }
 
-    /* MODAL DE SELECCIÓN DE PERSONAJE INICIAL */
+    /* MODAL SELECCIÓN PERSONAJE */
     #characterSelectionModal {
       position: absolute;
       top: 0;
@@ -267,7 +264,7 @@
       cursor: pointer;
     }
 
-    /* RUTAS POPUP INTERIOR */
+    /* PANEL RUTAS INTERIOR */
     #extraBlueSpace {
       position: absolute;
       bottom: 10px;
@@ -305,37 +302,31 @@
 </head>
 <body>
 
-  <!-- MARCO DIGITAL DE LA PANTALLA -->
   <div id="device-frame">
-    
-    <!-- PARTE SUPERIOR DEL MARCO -->
     <div id="frame-top-bar">
-      <!-- BOTÓN AMARILLO / BANDERA QUITO -->
       <div id="btnBanderaQuito" onclick="toggleFiltros()" title="Seleccionar Tipo de Lugar"></div>
-
-      <!-- TÍTULO CENTRAL EN ROJO -->
       <div id="title-banner">QUITO TRACKER</div>
-
       <div></div>
     </div>
 
-    <!-- PANTALLA DEL MAPA CON ESTÁTICA -->
     <div id="screen-area">
       <div class="screen-crt-overlay"></div>
       <div id="map"></div>
 
-      <!-- MENÚ DE TIPOS DE LUGARES (DESPLEGABLE DESDE LA BANDERA) -->
       <div id="filterMenuModal" class="hidden">
         <button class="btn-filter" onclick="filtrarLugares('TODOS')">🌐 TODOS</button>
         <button class="btn-filter" onclick="filtrarLugares('PLANES DESTACADOS PARA JÓVENES')">🎨 JÓVENES</button>
         <button class="btn-filter" onclick="filtrarLugares('MUSEOS')">🏺 MUSEOS</button>
         <button class="btn-filter" onclick="filtrarLugares('PARQUES')">🌳 PARQUES</button>
         <button class="btn-filter" onclick="filtrarLugares('LUGARES DE HISTORIAS Y LEYENDAS')">📜 LEYENDAS</button>
+        <button class="btn-filter" onclick="filtrarLugares('SUR DE QUITO')">🍎 SUR QUITO</button>
+        <button class="btn-filter" onclick="filtrarLugares('AMAGUAÑA Y PERIFERIA SUR')">🎭 AMAGUAÑA</button>
+        <button class="btn-filter" onclick="filtrarLugares('MACHACHI Y CANTON MEJÍA')">🧀 MACHACHI</button>
+        <button class="btn-filter" onclick="filtrarLugares('RUTA DE LOS VOLCANES Y ALREDEDORES')">🌋 VOLCANES</button>
         <button class="btn-filter" onclick="filtrarLugares('GRATIS')">🎁 GRATIS</button>
         <button class="btn-filter" onclick="filtrarLugares('PAID')">🪙 PAGO</button>
       </div>
 
-      <!-- PANEL DE RUTAS -->
       <div id="extraBlueSpace" class="hidden">
         <button class="btn-retro" onclick="trazarRuta('driving')">🚗 CARRO</button>
         <button class="btn-retro" onclick="trazarRuta('walking')">🚶 PIE</button>
@@ -344,17 +335,16 @@
         <button class="btn-retro danger" onclick="limpiarRuta()">❌</button>
       </div>
 
-      <!-- MODAL SELECCIÓN DE PERSONAJE -->
       <div id="characterSelectionModal">
         <div class="modal-box">
           <div style="font-size: 9px; color: #00f0ff;">SELECCIONA TU GUÍA</div>
           <div class="characters-grid">
             <div class="character-card" onclick="seleccionarPersonaje('MARCO', './gallo.mp4')">
-              <video class="character-preview-video" src="./gallo.mp4" playsinline muted></video>
+              <video class="character-preview-video" src="./gallo.mp4" playsinline muted autoplay loop></video>
               <button class="character-btn">MARCO</button>
             </div>
             <div class="character-card" onclick="seleccionarPersonaje('ANDREA', './gallo_mujer.mp4')">
-              <video class="character-preview-video" src="./gallo_mujer.mp4" playsinline muted></video>
+              <video class="character-preview-video" src="./gallo_mujer.mp4" playsinline muted autoplay loop></video>
               <button class="character-btn">ANDREA</button>
             </div>
           </div>
@@ -362,17 +352,13 @@
       </div>
     </div>
 
-    <!-- PARTE INFERIOR DEL MARCO -->
     <div id="frame-bottom-bar">
-      <!-- PERSONAJE SELECCIONADO EN MORADO -->
       <div id="companion-container">
         <video id="galloVideo" src="./gallo.mp4" playsinline muted loop autoplay></video>
         <div id="galloSpeech">¡BIENVENIDO A QUITO!</div>
       </div>
-
       <div id="status-bar">MODO MAPA RETRO</div>
     </div>
-
   </div>
 
   <script src="./script.js"></script>
