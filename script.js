@@ -1,13 +1,19 @@
 let map;
-let markersGroup;
+let infoWindow;
+let markersList = [];
 let lugaresPuntos = [];
 let personajeActual = { nombre: 'MARCO O LUCÍA', video: './gallo.mp4' };
 
+// Clave de API provista
+const GOOGLE_MAPS_API_KEY = "AIzaSyD7yh3TteD4adDL8pAVXIEGr6RXksDKGLo";
+
 // Límites geográficos: Tambillo a Mitad del Mundo / Mindo a Tumbaco
-const MAP_BOUNDS = L.latLngBounds(
-  [-0.5500, -78.7800], // Suroeste (Tambillo / Mindo)
-  [-0.0010, -78.3900]  // Noreste (Mitad del Mundo / Tumbaco)
-);
+const MAP_BOUNDS = {
+  north: -0.0010,
+  south: -0.5500,
+  west: -78.7800,
+  east: -78.3900
+};
 
 window.onload = function() {
   cargarDatosJSON();
@@ -24,13 +30,14 @@ function cargarDatosJSON() {
     .then(data => {
       lugaresPuntos = data;
     })
-    .catch(err => console.error("Error Leyendo JSON:", err));
+    .catch(err => console.error("Error leyendo lugares.json:", err));
 }
 
 function iniciarEstaticaTerminal() {
   const lineas = [
     "> INITIALIZING CYBER_QUITO_NET...",
-    "[OK] Cargando nodos geográficos...",
+    "[OK] Cargando nodos geográficos de Quito...",
+    "[OK] Google Maps API conectada.",
     "[OK] Sistema listo."
   ];
   const terminal = document.getElementById('terminalText');
@@ -69,73 +76,106 @@ function seleccionarPersonaje(nombre, videoSrc) {
   document.getElementById('status-yellow-text').innerText = `GUÍA SELECCIONADO: ${personajeActual.nombre}`;
   document.getElementById('galloSpeech').innerText = `¡Hola, soy ${personajeActual.nombre}! Vamos a explorar Quito.`;
 
-  inicializarMapa();
+  cargarGoogleMapsScript();
 }
 
-function inicializarMapa() {
-  if (map) return;
+function cargarGoogleMapsScript() {
+  if (window.google && window.google.maps) {
+    initMap();
+    return;
+  }
 
-  map = L.map('map', {
-    center: [-0.2300, -78.5100],
+  const script = document.createElement('script');
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&callback=initMap`;
+  script.async = true;
+  script.defer = true;
+  document.head.appendChild(script);
+}
+
+function initMap() {
+  const quitoCenter = { lat: -0.2300, lng: -78.5100 };
+
+  map = new google.maps.Map(document.getElementById("map"), {
     zoom: 12,
-    maxBounds: MAP_BOUNDS,
-    maxBoundsViscosity: 1.0
+    center: quitoCenter,
+    disableDefaultUI: true,
+    restriction: {
+      latLngBounds: MAP_BOUNDS,
+      strictBounds: true
+    },
+    styles: [
+      { elementType: "geometry", stylers: [{ color: "#0b1d3a" }] },
+      { elementType: "labels.text.stroke", stylers: [{ color: "#0b1d3a" }] },
+      { elementType: "labels.text.fill", stylers: [{ color: "#e2b041" }] },
+      { featureType: "road", elementType: "geometry", stylers: [{ color: "#15294a" }] },
+      { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#a50044" }] },
+      { featureType: "water", elementType: "geometry", stylers: [{ color: "#050a14" }] }
+    ]
   });
 
-  // Capa oscura estilo Blaugrana
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-    maxZoom: 18,
-    attribution: '&copy; OpenStreetMap &copy; CARTO'
-  }).addTo(map);
-
-  markersGroup = L.layerGroup().addTo(map);
+  infoWindow = new google.maps.InfoWindow();
   renderizarMarcadores(lugaresPuntos);
 }
 
 function renderizarMarcadores(puntos) {
-  if (!markersGroup) return;
-  markersGroup.clearLayers();
+  if (!map) return;
+  limpiarMarcadores();
 
   puntos.forEach(lugar => {
-    const marker = L.circleMarker([lugar.lat, lugar.lng], {
-      radius: 8,
-      fillColor: '#a50044',
-      color: '#e2b041',
-      weight: 2,
-      opacity: 1,
-      fillOpacity: 0.9
+    const marker = new google.maps.Marker({
+      position: { lat: lugar.lat, lng: lugar.lng },
+      map: map,
+      title: lugar.nombre,
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: 8,
+        fillColor: "#a50044",
+        fillOpacity: 0.95,
+        strokeWeight: 2,
+        strokeColor: "#e2b041"
+      }
     });
 
-    let actividadesHTML = "";
-    if (lugar.actividades) {
-      actividadesHTML = "<ul>" + lugar.actividades.map(a => `<li>${a}</li>`).join('') + "</ul>";
-    }
-
-    const popupContent = `
-      <div style="font-family: 'Trebuchet MS', sans-serif; color: #ffffff;">
-        <div style="font-weight: bold; color: #e2b041; font-size: 14px; margin-bottom: 4px;">
-          ${lugar.sticker} ${lugar.nombre}
-        </div>
-        <div style="color: #a50044; font-weight: bold; font-size: 11px; margin-bottom: 6px;">
-          PRECIO: ${lugar.categoria} | ZONA: ${lugar.zona}
-        </div>
-        <p style="margin-bottom: 6px; font-size: 12px;">${lugar.descripcion}</p>
-        <div style="font-size: 11px; color: #e2b041;"><strong>Actividades:</strong></div>
-        <div style="font-size: 11px; margin-bottom: 6px;">${actividadesHTML}</div>
-        <div style="font-size: 11px; background-color: #15294a; padding: 6px; border-radius: 4px; color: #ffffff;">
-          💡 <strong>Recomendación:</strong> ${lugar.recomendacion}
-        </div>
-      </div>
-    `;
-
-    marker.bindPopup(popupContent);
-
-    marker.on('click', () => {
-      document.getElementById('galloSpeech').innerText = `${personajeActual.nombre}: ¡${lugar.nombre}! ${lugar.info}`;
+    marker.addListener("click", () => {
+      seleccionarLugar(lugar, marker);
     });
 
-    markersGroup.addLayer(marker);
+    markersList.push(marker);
   });
+}
+
+function limpiarMarcadores() {
+  markersList.forEach(m => m.setMap(null));
+  markersList = [];
+}
+
+function seleccionarLugar(lugar, marker) {
+  let actividadesHTML = "";
+  if (lugar.actividades) {
+    actividadesHTML = "<ul>" + lugar.actividades.map(a => `<li>${a}</li>`).join('') + "</ul>";
+  }
+
+  const contenidoIW = `
+    <div style="font-family:'Trebuchet MS', sans-serif; color:#ffffff; padding:4px;">
+      <div style="font-weight:bold; color:#e2b041; font-size:14px; margin-bottom:4px;">
+        ${lugar.sticker} ${lugar.nombre}
+      </div>
+      <div style="color:#a50044; font-weight:bold; font-size:11px; margin-bottom:6px;">
+        PRECIO: ${lugar.categoria} | ZONA: ${lugar.zona}
+      </div>
+      <p style="margin-bottom:6px; font-size:12px;">${lugar.descripcion}</p>
+      <div style="font-size:11px; color:#e2b041;"><strong>Actividades:</strong></div>
+      <div style="font-size:11px; margin-bottom:6px;">${actividadesHTML}</div>
+      <div style="font-size:11px; color:#ffffff; background-color:#15294a; padding:6px; border-radius:4px;">
+        💡 <strong>Recomendación:</strong> ${lugar.recomendacion}
+      </div>
+    </div>
+  `;
+
+  infoWindow.setContent(contenidoIW);
+  infoWindow.open(map, marker);
+
+  document.getElementById('galloSpeech').innerText = `${personajeActual.nombre}: ¡${lugar.nombre}! ${lugar.info}`;
 }
 
 function toggleMenu() {
