@@ -1,327 +1,258 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quito Tracker - Blaugrana</title>
+<!-- Reemplaza la etiqueta <script> y todo su contenido por este bloque completo -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD7yh3TteD4adDL8pAVXIEGr6RXksDKGLo&callback=initMap" async defer></script>
 
-  <link rel="icon" type="image/jpeg" href="./logotipo.jpg">
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-  
-  <!-- Mapas abiertos Leaflet sin bloqueo de API Key -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script>
+  let map;
+  let infoWindow;
+  let markers = [];
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+  let lugaresPuntos = [
+    {
+      "etiqueta": "PLANES DESTACADOS PARA JÓVENES",
+      "nombre": "Di Pinto (Café & Taller de Arte)",
+      "lat": -0.1785,
+      "lng": -78.4812,
+      "categoria": "HASTA $15 USD",
+      "zona": "NORTE",
+      "tipo": "Plan Jóvenes 1 / Arte & Café",
+      "sticker": "🎨",
+      "info": "Kits de pintura y cerámica desde $12.00 USD.",
+      "descripcion": "Concepto de café-taller súper viral en redes enfocado en liberar el estrés. Puedes tomar café o bebidas frías mientras personalizas cerámica, macetas, lienzos, gorras o bolsas de tela.",
+      "actividades": ["Pintar macetas y piezas de cerámica", "Personalizar tote bags o lienzos", "Disfrutar de café y postres gourmet"],
+      "recomendacion": "Ideal para ir en pareja o con amigos. Reserva con tiempo o ve temprano los fines de semana."
+    },
+    {
+      "etiqueta": "PLANES DESTACADOS PARA JÓVENES",
+      "nombre": "Cafetería Roca Roja",
+      "lat": -0.1812,
+      "lng": -78.4795,
+      "categoria": "HASTA $20 USD",
+      "zona": "NORTE",
+      "tipo": "Plan Jóvenes 2 / Cerámica & Café",
+      "sticker": "🪴",
+      "info": "Kits de arcilla y pintura desde $15.00 hasta $25.00 USD.",
+      "descripcion": "Un espacio con estética acogedora diseñado para amantes del arte en arcilla y la cerámica. Ofrecen kits completos con pinceles y pinturas acrílicas para moldear y pintar macetas, tazas o espejos.",
+      "actividades": ["Moldear arcilla desde cero", "Pintar macetas, tazas y espejos de mesa", "Armar pulseras con charms mientras tomas café"],
+      "recomendacion": "Su kit de regalo con pieza de cerámica es uno de los planes más populares entre jóvenes en TikTok e Instagram."
+    },
+    {
+      "etiqueta": "MUSEOS",
+      "nombre": "Museo de la Ciudad",
+      "lat": -0.2251,
+      "lng": -78.5152,
+      "categoria": "HASTA $10 USD",
+      "zona": "CENTRO",
+      "tipo": "Museo 1 / Historia",
+      "sticker": "📜",
+      "info": "Adultos: $4.00, Estudiantes: $2.00, Niños y Tercera edad: $2.00.",
+      "descripcion": "Ubicado en el antiguo Hospital San Juan de Dios, ofrece un recorrido interactivo sobre la historia de Quito desde la era precolombina.",
+      "actividades": ["Recorrer maquetas de la vida cotidiana en distintas épocas", "Visitar los patios coloniales"],
+      "recomendacion": "Un espacio indispensable para entender la evolución sociocultural de Quito."
+    },
+    {
+      "etiqueta": "PARQUES",
+      "nombre": "Parque La Carolina",
+      "lat": -0.1825,
+      "lng": -78.4845,
+      "categoria": "GRATIS",
+      "zona": "NORTE",
+      "tipo": "Parque 1 / Recreativo",
+      "sticker": "🌳",
+      "info": "Acceso libre para todo público.",
+      "descripcion": "El parque urbano más activo en el corazón financiero de Quito, ideal para deporte y paseo familiar.",
+      "actividades": ["Pasear en barca por la laguna", "Hacer skate o atletismo", "Visitar el Jardín Botánico (de pago)"],
+      "recomendacion": "Cerca de centros comerciales y la línea del Metro de Quito."
     }
+  ];
 
-    body, html {
-      width: 100%;
-      height: 100%;
-      background-color: #050a14;
-      font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
-      color: #ffffff;
-      overflow: hidden;
-    }
+  function initMap() {
+    const quitoCentro = { lat: -0.180653, lng: -78.467838 };
 
-    #main-app {
-      display: flex;
-      flex-direction: column;
-      width: 100vw;
-      height: 100vh;
-      background-color: #081326;
-      position: relative;
-    }
+    map = new google.maps.Map(document.getElementById("map"), {
+      zoom: 12,
+      center: quitoCentro,
+      disableDefaultUI: true,
+      styles: [
+        { elementType: "geometry", stylers: [{ color: "#0d0718" }] },
+        { elementType: "labels.text.stroke", stylers: [{ color: "#0d0718" }] },
+        { elementType: "labels.text.fill", stylers: [{ color: "#00f0ff" }] },
+        {
+          featureType: "administrative.locality",
+          elementType: "labels.text.fill",
+          stylers: [{ color: "#ff007f" }]
+        },
+        {
+          featureType: "poi",
+          elementType: "labels.text.fill",
+          stylers: [{ color: "#00f0ff" }]
+        },
+        {
+          featureType: "road",
+          elementType: "geometry",
+          stylers: [{ color: "#1a0b2e" }]
+        },
+        {
+          featureType: "road",
+          elementType: "geometry.stroke",
+          stylers: [{ color: "#2d0a4e" }]
+        },
+        {
+          featureType: "water",
+          elementType: "geometry",
+          stylers: [{ color: "#05030a" }]
+        }
+      ]
+    });
 
-    /* BARRA SUPERIOR */
-    #top-header {
-      height: 52px;
-      background: linear-gradient(90deg, #0b1d3a 0%, #15294a 50%, #800032 100%);
-      border-bottom: 3px solid #a50044;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 16px;
-      z-index: 50;
-    }
+    infoWindow = new google.maps.InfoWindow();
+    cargarMarcadores(lugaresPuntos);
+    dibujarRadar();
+  }
 
-    #btnMenuToggle {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 3px solid #e2b041;
-      background-color: #0b1d3a;
-      background-image: url('./image_8ff343.png');
-      background-size: cover;
-      background-position: center;
-      cursor: pointer;
-      box-shadow: 0 0 10px rgba(226, 176, 65, 0.5);
-    }
+  function cargarMarcadores(lugares) {
+    limpiarMarcadores();
 
-    #header-title-box {
-      background-color: #a50044;
-      border: 2px solid #e2b041;
-      border-radius: 20px;
-      padding: 6px 20px;
-      color: #ffffff;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 11px;
-    }
+    lugares.forEach(lugar => {
+      const marker = new google.maps.Marker({
+        position: { lat: lugar.lat, lng: lugar.lng },
+        map: map,
+        title: lugar.nombre,
+        label: {
+          text: lugar.sticker || "📍",
+          fontSize: "16px"
+        }
+      });
 
-    /* ÁREA DEL MAPA */
-    #map-container {
-      flex: 1;
-      width: 100%;
-      height: 100%;
-      position: relative;
-      background-color: #0b1320;
-    }
-
-    #map {
-      width: 100%;
-      height: 100%;
-      z-index: 10;
-    }
-
-    /* ESTÁTICA Y CARGA INICIAL */
-    #hackerIntro {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: #050a14;
-      z-index: 100;
-      display: flex;
-      flex-direction: column;
-      padding: 24px;
-    }
-
-    .crt-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%);
-      background-size: 100% 4px;
-      pointer-events: none;
-    }
-
-    #terminalText {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 11px;
-      color: #00f0ff;
-      line-height: 1.8;
-      z-index: 101;
-    }
-
-    /* BARRA INFERIOR */
-    #bottom-header {
-      height: 75px;
-      background-color: #0b1d3a;
-      border-top: 3px solid #a50044;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 16px;
-      z-index: 50;
-    }
-
-    #companion-box {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    #galloVideo {
-      width: 62px;
-      height: 62px;
-      border-radius: 50%;
-      border: 3px solid #e2b041;
-      background-color: #050a14;
-      object-fit: cover;
-      object-position: center top;
-    }
-
-    #galloSpeech {
-      background-color: #15294a;
-      border: 2px solid #a50044;
-      border-radius: 10px;
-      padding: 8px 14px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #ffffff;
-      max-width: 45vw;
-    }
-
-    #status-yellow-text {
-      background-color: #15294a;
-      border: 2px solid #e2b041;
-      border-radius: 20px;
-      padding: 8px 18px;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 9px;
-      color: #ffea00;
-    }
-
-    /* MENÚ LATERAL */
-    #sideMenuModal {
-      position: absolute;
-      top: 52px;
-      left: 0;
-      width: 280px;
-      height: calc(100% - 127px);
-      background-color: rgba(11, 29, 58, 0.96);
-      border-right: 3px solid #a50044;
-      padding: 20px 15px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      z-index: 80;
-      transition: transform 0.3s ease-in-out;
-    }
-
-    #sideMenuModal.hidden {
-      transform: translateX(-100%);
-    }
-
-    .menu-item-btn {
-      background: linear-gradient(90deg, #15294a 0%, #a50044 100%);
-      border: 1px solid #e2b041;
-      color: #ffffff;
-      padding: 12px 14px;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 8px;
-      cursor: pointer;
-      text-align: left;
-      border-radius: 6px;
-    }
-
-    /* MODAL PERSONAJE */
-    #characterModal {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(5, 10, 20, 0.92);
-      z-index: 90;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    #characterModal.hidden {
-      display: none;
-    }
-
-    .character-card-box {
-      background-color: #0b1d3a;
-      border: 3px solid #a50044;
-      border-radius: 12px;
-      padding: 24px;
-      text-align: center;
-    }
-
-    .characters-grid {
-      display: flex;
-      gap: 24px;
-      margin-top: 20px;
-    }
-
-    .char-option {
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .char-video-preview {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      border: 3px solid #e2b041;
-      object-fit: cover;
-    }
-
-    .char-btn-label {
-      margin-top: 10px;
-      background-color: #a50044;
-      color: #ffffff;
-      border: 1px solid #e2b041;
-      padding: 8px 12px;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 9px;
-      border-radius: 4px;
-    }
-  </style>
-</head>
-<body>
-
-  <div id="main-app">
-    <div id="top-header">
-      <div id="btnMenuToggle" onclick="toggleMenu()"></div>
-      <div id="header-title-box">QUITO TRACKER</div>
-      <div></div>
-    </div>
-
-    <div id="map-container">
-      <div id="map"></div>
-
-      <!-- PANTALLA INICIAL DE ESTÁTICA -->
-      <div id="hackerIntro">
-        <div class="crt-overlay"></div>
-        <div id="terminalText"></div>
-      </div>
-
-      <!-- MENÚ DESPLEGABLE DE FILTROS -->
-      <div id="sideMenuModal" class="hidden">
-        <div style="font-family:'Press Start 2P', monospace; font-size:9px; color:#e2b041; margin-bottom:8px;">
-          REGISTRO DE LUGARES
-        </div>
-        <button class="menu-item-btn" onclick="filtrarLugares('TODOS')">🌐 TODOS LOS LUGARES</button>
-        <button class="menu-item-btn" onclick="filtrarLugares('CENTRO HISTÓRICO')">🏛️ CENTRO HISTÓRICO</button>
-        <button class="menu-item-btn" onclick="filtrarLugares('SUR DE QUITO')">🚌 SUR DE QUITO</button>
-        <button class="menu-item-btn" onclick="filtrarLugares('SALIENDO DEL SUR / PERIFERIA')">⛰️ SALIDA SUR / PERIFERIA</button>
-        <button class="menu-item-btn" onclick="filtrarLugares('GRATIS')">🎁 LUGARES GRATUITOS</button>
-        <button class="menu-item-btn" onclick="filtrarLugares('PAID')">🪙 LUGARES DE PAGO</button>
-      </div>
-
-      <!-- MODAL SELECCIÓN GUÍA -->
-      <div id="characterModal" class="hidden">
-        <div class="character-card-box">
-          <div style="font-family:'Press Start 2P', monospace; font-size:10px; color:#e2b041;">
-            ¿CON QUIÉN QUIERES CONOCER QUITO?
+      marker.addListener("click", () => {
+        const contenido = `
+          <div style="color: #00f0ff; font-family: 'Press Start 2P', monospace; font-size: 9px; line-height: 1.5;">
+            <h3 style="color: #ff007f; margin: 0 0 8px 0; font-size: 10px;">${lugar.nombre}</h3>
+            <p><strong>Tipo:</strong> ${lugar.tipo}</p>
+            <p><strong>Costo:</strong> ${lugar.info}</p>
+            <p style="color: #ffffff;">${lugar.descripcion}</p>
           </div>
-          <div class="characters-grid">
-            <div class="char-option" onclick="seleccionarPersonaje('MARCO', './gallo.mp4')">
-              <video class="char-video-preview" src="./gallo.mp4" playsinline muted></video>
-              <button class="char-btn-label">MARCO</button>
-            </div>
-            <div class="char-option" onclick="seleccionarPersonaje('LUCÍA', './gallo_mujer.mp4')">
-              <video class="char-video-preview" src="./gallo_mujer.mp4" playsinline muted></video>
-              <button class="char-btn-label">LUCÍA</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+        `;
+        infoWindow.setContent(contenido);
+        infoWindow.open(map, marker);
+      });
 
-    <div id="bottom-header">
-      <div id="companion-box">
-        <video id="galloVideo" src="./gallo.mp4" playsinline muted loop autoplay></video>
-        <div id="galloSpeech">Iniciando sistema...</div>
-      </div>
+      markers.push(marker);
+    });
+  }
 
-      <div id="status-yellow-text">GUÍA: MARCO O LUCÍA</div>
-    </div>
-  </div>
+  function limpiarMarcadores() {
+    markers.forEach(m => m.setMap(null));
+    markers = [];
+  }
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="./script.js"></script>
-</body>
-</html>
+  function filtrarLugares(categoria) {
+    if (categoria === "TODOS") {
+      cargarMarcadores(lugaresPuntos);
+      return;
+    }
+
+    const filtrados = lugaresPuntos.filter(l => {
+      if (categoria === "GRATIS") return l.categoria === "GRATIS";
+      if (categoria === "PAID") return l.categoria !== "GRATIS";
+      return l.etiqueta === categoria;
+    });
+
+    cargarMarcadores(filtrados);
+  }
+
+  function vistaAmplia() {
+    if (map) map.setZoom(10);
+  }
+
+  function vistaQuito() {
+    if (map) {
+      map.setCenter({ lat: -0.180653, lng: -78.467838 });
+      map.setZoom(13);
+    }
+  }
+
+  function seleccionarPersonaje(nombre, videoSrc) {
+    document.getElementById("characterSelectionModal").classList.add("hidden");
+    const gVideo = document.getElementById("galloVideo");
+    gVideo.src = videoSrc;
+    gVideo.play().catch(e => console.log(e));
+
+    const speech = document.getElementById("galloSpeech");
+    if (nombre === "marco") {
+      speech.innerText = "¡HOLA! SOY MARCO. ¡VAMOS A EXPLORAR QUITO JUNTOS!";
+    } else {
+      speech.innerText = "¡HOLA! SOY ANDREA. ¡LISTA PARA DESCUBRIR LA CIUDAD!";
+    }
+  }
+
+  function dibujarRadar() {
+    const canvas = document.getElementById("radarCanvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    let angle = 0;
+
+    function animar() {
+      ctx.fillStyle = "rgba(26, 11, 46, 0.2)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+      const r = canvas.width / 2 - 4;
+
+      ctx.strokeStyle = "#00f0ff";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, r * 0.5, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + Math.cos(angle) * r, cy + Math.sin(angle) * r);
+      ctx.strokeStyle = "#ff007f";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      angle += 0.04;
+      requestAnimationFrame(animar);
+    }
+
+    animar();
+  }
+
+  /* ESCRITURA HUMANA CON TIEMPOS ALEATORIOS */
+  window.addEventListener("load", () => {
+    const terminal = document.getElementById("hackerTerminal");
+    const texto = "Cargando nodos retro...\nInicializando mapa de Quito 8-Bit...\nConectando datos geográficos...\n¡Sistema listo!";
+    let idx = 0;
+
+    function escribirSimulacionHumana() {
+      if (idx < texto.length) {
+        const char = texto.charAt(idx);
+        terminal.textContent += char;
+        idx++;
+
+        let delay = Math.floor(Math.random() * 70) + 20;
+
+        if (char === "\n") {
+          delay = Math.floor(Math.random() * 200) + 250;
+        } else if (char === "." || char === "!") {
+          delay = Math.floor(Math.random() * 150) + 120;
+        }
+
+        setTimeout(escribirSimulacionHumana, delay);
+      } else {
+        setTimeout(() => {
+          const hackerIntro = document.getElementById("hackerIntro");
+          hackerIntro.classList.add("fade-out");
+          document.getElementById("characterSelectionModal").classList.remove("hidden");
+        }, 800);
+      }
+    }
+
+    escribirSimulacionHumana();
+  });
+</script>
