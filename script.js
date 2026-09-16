@@ -1,5 +1,4 @@
 let map;
-let infoWindow;
 let markersList = [];
 let userLocationMarker = null;
 let personajeActual = { nombre: 'MARCO', video: './gallo.mp4' };
@@ -81,12 +80,11 @@ function initMap() {
     ]
   });
 
-  infoWindow = new google.maps.InfoWindow();
   renderizarMarcadores(lugaresPuntos);
   obtenerUbicacionUsuario();
 }
 
-// OBTENER Y MARCAR LA UBICACIÓN DE LA PERSONA EN PUNTO ROJO
+// OBTENER Y MARCAR LA UBICACIÓN EN PUNTO ROJO
 function obtenerUbicacionUsuario() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
@@ -106,7 +104,7 @@ function obtenerUbicacionUsuario() {
           icon: {
             path: google.maps.SymbolPath.CIRCLE,
             scale: 9,
-            fillColor: "#FF0000", // Punto Rojo
+            fillColor: "#FF0000",
             fillOpacity: 1,
             strokeWeight: 3,
             strokeColor: "#FFFFFF"
@@ -114,16 +112,18 @@ function obtenerUbicacionUsuario() {
         });
 
         userLocationMarker.addListener("click", () => {
-          infoWindow.setContent(`
-            <div style="font-family: Arial, sans-serif; padding: 10px; color: #800020; font-weight: bold; text-align: center;">
-              📍 Estás aquí
-            </div>
-          `);
-          infoWindow.open(map, userLocationMarker);
+          mostrarEnSidebar({
+            sticker: "📍",
+            nombre: "Tu Ubicación Actual",
+            categoria: "GEOLOCALIZACIÓN",
+            zona: "AQUÍ EN QUITO",
+            descripcion: "Te encuentras actualmente en estas coordenadas geográficas.",
+            recomendacion: "¡Usa este punto para calcular tus recorridos por la ciudad!"
+          });
         });
       },
       (error) => {
-        console.warn("No se pudo obtener la geolocalización o el permiso fue denegado.", error);
+        console.warn("No se pudo obtener la geolocalización.", error);
       }
     );
   }
@@ -149,7 +149,7 @@ function renderizarMarcadores(puntos) {
     });
 
     marker.addListener("click", () => {
-      seleccionarLugar(lugar, marker);
+      mostrarEnSidebar(lugar);
     });
 
     markersList.push(marker);
@@ -175,55 +175,48 @@ function limpiarMarcadores() {
   markersList = [];
 }
 
-// TARJETA DE INFORMACIÓN TOTALMENTE LEGIBLE (FONDO CLARO CON ACENTOS BLAUGRANA)
-function seleccionarLugar(lugar, marker) {
-  const contenidoIW = `
-    <div style="
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 13px;
-      line-height: 1.4;
-      background-color: #ffffff;
-      color: #1a1a1a;
-      padding: 14px;
-      border-radius: 8px;
-      max-width: 270px;
-    ">
-      <div style="
-        font-size: 15px;
-        font-weight: bold;
-        color: #800020; /* Color Grana Blaugrana */
-        margin-bottom: 6px;
-        border-bottom: 2px solid #0d1b2a;
-        padding-bottom: 4px;
-      ">
-        ${lugar.sticker || '📍'} ${lugar.nombre}
-      </div>
-      
-      <div style="margin-bottom: 8px;">
-        <span style="background-color: #0d1b2a; color: #ffcc00; padding: 3px 6px; border-radius: 4px; font-weight: bold; font-size: 11px;">
-          ${lugar.categoria}
-        </span>
-        <span style="background-color: #800020; color: #ffffff; padding: 3px 6px; border-radius: 4px; font-weight: bold; font-size: 11px; margin-left: 4px;">
-          ${lugar.zona}
-        </span>
-      </div>
+// MOSTRAR INFORMACIÓN EN EL PANEL LATERAL DERECHO
+function mostrarEnSidebar(lugar) {
+  const sidebar = document.getElementById('infoSidebar');
+  const sidebarContent = document.getElementById('sidebarContent');
 
-      <p style="margin: 6px 0; color: #222222; font-size: 12px; font-weight: 500;">
-        ${lugar.descripcion}
-      </p>
-
-      ${lugar.recomendacion ? `
-        <div style="margin-top: 8px; background-color: #f4f4f9; padding: 6px 8px; border-left: 3px solid #800020; font-size: 11px; color: #333333;">
-          <strong>Tip:</strong> ${lugar.recomendacion}
-        </div>
-      ` : ''}
+  sidebarContent.innerHTML = `
+    <div style="font-size: 16px; font-weight: bold; color: #ffcc00; margin-bottom: 8px; border-bottom: 2px solid #a51c30; padding-bottom: 6px;">
+      ${lugar.sticker || '📍'} ${lugar.nombre}
     </div>
+    
+    <div style="display: flex; gap: 6px; margin-bottom: 10px; font-size: 11px;">
+      <span style="background-color: #a51c30; color: #ffffff; padding: 3px 6px; border-radius: 4px; font-weight: bold;">
+        ${lugar.categoria}
+      </span>
+      <span style="background-color: #003366; color: #ffcc00; padding: 3px 6px; border-radius: 4px; font-weight: bold;">
+        ${lugar.zona}
+      </span>
+    </div>
+
+    <p style="margin: 0 0 10px 0; color: #f0f4f8; font-size: 13px; line-height: 1.4;">
+      ${lugar.descripcion}
+    </p>
+
+    ${lugar.info ? `
+      <div style="margin-bottom: 8px; font-size: 12px; color: #00f0ff;">
+        💵 <strong>Precio/Info:</strong> ${lugar.info}
+      </div>
+    ` : ''}
+
+    ${lugar.recomendacion ? `
+      <div style="background-color: rgba(128, 0, 32, 0.4); padding: 8px; border-left: 3px solid #ffcc00; border-radius: 4px; font-size: 11px; color: #e0e6ed;">
+        💡 <strong>Tip:</strong> ${lugar.recomendacion}
+      </div>
+    ` : ''}
   `;
 
-  infoWindow.setContent(contenidoIW);
-  infoWindow.open(map, marker);
-
+  sidebar.classList.remove('hidden');
   document.getElementById('galloSpeech').innerText = `${personajeActual.nombre}: ${lugar.nombre}`;
+}
+
+function cerrarSidebar() {
+  document.getElementById('infoSidebar').classList.add('hidden');
 }
 
 function filtrarLugares(categoria) {
@@ -240,5 +233,6 @@ function filtrarLugares(categoria) {
 
   renderizarMarcadores(filtrados);
   toggleFiltros();
+  cerrarSidebar();
   document.getElementById('galloSpeech').innerText = `${personajeActual.nombre}: ${filtrados.length} LUGARES`;
 }
