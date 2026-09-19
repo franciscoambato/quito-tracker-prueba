@@ -3,96 +3,260 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quito Tracker</title>
+  <title>Quito Tracker - Blaugrana</title>
 
   <link rel="icon" type="image/jpeg" href="./logotipo.jpg">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  
+  <!-- Mapas abiertos Leaflet sin bloqueo de API Key -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body, html { width: 100%; height: 100%; background: #050a14; font-family: 'Trebuchet MS', sans-serif; color: #fff; overflow: hidden; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-    #main-app { display: flex; flex-direction: column; width: 100vw; height: 100vh; background: #081326; position: relative; }
+    body, html {
+      width: 100%;
+      height: 100%;
+      background-color: #050a14;
+      font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+      color: #ffffff;
+      overflow: hidden;
+    }
 
-    /* Header superior */
+    #main-app {
+      display: flex;
+      flex-direction: column;
+      width: 100vw;
+      height: 100vh;
+      background-color: #081326;
+      position: relative;
+    }
+
+    /* BARRA SUPERIOR */
     #top-header {
       height: 52px;
       background: linear-gradient(90deg, #0b1d3a 0%, #15294a 50%, #800032 100%);
       border-bottom: 3px solid #a50044;
-      display: flex; justify-content: space-between; align-items: center; padding: 0 16px; z-index: 50;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 16px;
+      z-index: 50;
     }
+
     #btnMenuToggle {
-      width: 40px; height: 40px; border-radius: 50%; border: 3px solid #e2b041;
-      background: #0b1d3a url('./image_8ff343.png') center/cover; cursor: pointer;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 3px solid #e2b041;
+      background-color: #0b1d3a;
+      background-image: url('./image_8ff343.png');
+      background-size: cover;
+      background-position: center;
+      cursor: pointer;
       box-shadow: 0 0 10px rgba(226, 176, 65, 0.5);
     }
+
     #header-title-box {
-      background: #a50044; border: 2px solid #e2b041; border-radius: 20px;
-      padding: 6px 20px; font-family: 'Press Start 2P', monospace; font-size: 11px;
+      background-color: #a50044;
+      border: 2px solid #e2b041;
+      border-radius: 20px;
+      padding: 6px 20px;
+      color: #ffffff;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 11px;
     }
 
-    /* Visor del mapa */
-    #map-container { flex: 1; width: 100%; height: 100%; position: relative; background: #0b1320; }
-    #map { width: 100%; height: 100%; z-index: 10; }
+    /* ÁREA DEL MAPA */
+    #map-container {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background-color: #0b1320;
+    }
 
-    /* Pantalla estática intro */
+    #map {
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+    }
+
+    /* ESTÁTICA Y CARGA INICIAL */
     #hackerIntro {
-      position: absolute; inset: 0; background: #050a14; z-index: 100;
-      display: flex; flex-direction: column; padding: 24px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #050a14;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
     }
+
     .crt-overlay {
-      position: absolute; inset: 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%);
-      background-size: 100% 4px; pointer-events: none;
+      background-size: 100% 4px;
+      pointer-events: none;
     }
-    #terminalText { font-family: 'Press Start 2P', monospace; font-size: 11px; color: #00f0ff; line-height: 1.8; z-index: 101; }
 
-    /* Footer / Estado */
+    #terminalText {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 11px;
+      color: #00f0ff;
+      line-height: 1.8;
+      z-index: 101;
+    }
+
+    /* BARRA INFERIOR */
     #bottom-header {
-      height: 75px; background: #0b1d3a; border-top: 3px solid #a50044;
-      display: flex; justify-content: space-between; align-items: center; padding: 0 16px; z-index: 50;
+      height: 75px;
+      background-color: #0b1d3a;
+      border-top: 3px solid #a50044;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 16px;
+      z-index: 50;
     }
-    #companion-box { display: flex; align-items: center; gap: 12px; }
+
+    #companion-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
     #galloVideo {
-      width: 62px; height: 62px; border-radius: 50%; border: 3px solid #e2b041;
-      background: #050a14; object-fit: cover; object-position: center top;
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      border: 3px solid #e2b041;
+      background-color: #050a14;
+      object-fit: cover;
+      object-position: center top;
     }
+
     #galloSpeech {
-      background: #15294a; border: 2px solid #a50044; border-radius: 10px;
-      padding: 8px 14px; font-size: 13px; font-weight: 600; max-width: 45vw;
+      background-color: #15294a;
+      border: 2px solid #a50044;
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #ffffff;
+      max-width: 45vw;
     }
+
     #status-yellow-text {
-      background: #15294a; border: 2px solid #e2b041; border-radius: 20px;
-      padding: 8px 18px; font-family: 'Press Start 2P', monospace; font-size: 9px; color: #ffea00;
+      background-color: #15294a;
+      border: 2px solid #e2b041;
+      border-radius: 20px;
+      padding: 8px 18px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      color: #ffea00;
     }
 
-    /* Menú lateral */
+    /* MENÚ LATERAL */
     #sideMenuModal {
-      position: absolute; top: 52px; left: 0; width: 280px; height: calc(100% - 127px);
-      background: rgba(11, 29, 58, 0.96); border-right: 3px solid #a50044; padding: 20px 15px;
-      display: flex; flex-direction: column; gap: 10px; z-index: 80; transition: transform 0.25s ease;
-    }
-    #sideMenuModal.hidden { transform: translateX(-100%); }
-    .menu-item-btn {
-      background: linear-gradient(90deg, #15294a, #a50044); border: 1px solid #e2b041;
-      color: #fff; padding: 10px; font-family: 'Press Start 2P', monospace; font-size: 8px;
-      cursor: pointer; text-align: left; border-radius: 6px;
+      position: absolute;
+      top: 52px;
+      left: 0;
+      width: 280px;
+      height: calc(100% - 127px);
+      background-color: rgba(11, 29, 58, 0.96);
+      border-right: 3px solid #a50044;
+      padding: 20px 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 80;
+      transition: transform 0.3s ease-in-out;
     }
 
-    /* Selector de personaje */
-    #characterModal {
-      position: absolute; inset: 0; background: rgba(5, 10, 20, 0.92);
-      z-index: 90; display: flex; justify-content: center; align-items: center;
+    #sideMenuModal.hidden {
+      transform: translateX(-100%);
     }
-    #characterModal.hidden { display: none; }
-    .character-card-box { background: #0b1d3a; border: 3px solid #a50044; border-radius: 12px; padding: 24px; text-align: center; }
-    .characters-grid { display: flex; gap: 24px; margin-top: 20px; }
-    .char-option { cursor: pointer; display: flex; flex-direction: column; align-items: center; }
-    .char-video-preview { width: 80px; height: 80px; border-radius: 50%; border: 3px solid #e2b041; object-fit: cover; }
+
+    .menu-item-btn {
+      background: linear-gradient(90deg, #15294a 0%, #a50044 100%);
+      border: 1px solid #e2b041;
+      color: #ffffff;
+      padding: 12px 14px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      cursor: pointer;
+      text-align: left;
+      border-radius: 6px;
+    }
+
+    /* MODAL PERSONAJE */
+    #characterModal {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(5, 10, 20, 0.92);
+      z-index: 90;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #characterModal.hidden {
+      display: none;
+    }
+
+    .character-card-box {
+      background-color: #0b1d3a;
+      border: 3px solid #a50044;
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .characters-grid {
+      display: flex;
+      gap: 24px;
+      margin-top: 20px;
+    }
+
+    .char-option {
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .char-video-preview {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 3px solid #e2b041;
+      object-fit: cover;
+    }
+
     .char-btn-label {
-      margin-top: 10px; background: #a50044; color: #fff; border: 1px solid #e2b041;
-      padding: 8px 12px; font-family: 'Press Start 2P', monospace; font-size: 9px; border-radius: 4px;
+      margin-top: 10px;
+      background-color: #a50044;
+      color: #ffffff;
+      border: 1px solid #e2b041;
+      padding: 8px 12px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      border-radius: 4px;
     }
   </style>
 </head>
@@ -100,7 +264,7 @@
 
   <div id="main-app">
     <div id="top-header">
-      <div id="btnMenuToggle" onclick="abrirMenu()"></div>
+      <div id="btnMenuToggle" onclick="toggleMenu()"></div>
       <div id="header-title-box">QUITO TRACKER</div>
       <div></div>
     </div>
@@ -108,30 +272,37 @@
     <div id="map-container">
       <div id="map"></div>
 
+      <!-- PANTALLA INICIAL DE ESTÁTICA -->
       <div id="hackerIntro">
         <div class="crt-overlay"></div>
         <div id="terminalText"></div>
       </div>
 
+      <!-- MENÚ DESPLEGABLE DE FILTROS -->
       <div id="sideMenuModal" class="hidden">
-        <div style="font-family:'Press Start 2P', monospace; font-size:9px; color:#e2b041; margin-bottom:8px;">REGISTROS</div>
-        <button class="menu-item-btn" onclick="filtrar('TODOS')">🌐 TODOS</button>
-        <button class="menu-item-btn" onclick="filtrar('CENTRO HISTÓRICO')">🏛️ CENTRO HISTÓRICO</button>
-        <button class="menu-item-btn" onclick="filtrar('SUR DE QUITO')">🚌 SUR DE QUITO</button>
-        <button class="menu-item-btn" onclick="filtrar('SALIENDO DEL SUR / PERIFERIA')">⛰️ PERIFERIA SUR</button>
-        <button class="menu-item-btn" onclick="filtrar('GRATIS')">🎁 GRATUITOS</button>
-        <button class="menu-item-btn" onclick="filtrar('PAID')">🪙 DE PAGO</button>
+        <div style="font-family:'Press Start 2P', monospace; font-size:9px; color:#e2b041; margin-bottom:8px;">
+          REGISTRO DE LUGARES
+        </div>
+        <button class="menu-item-btn" onclick="filtrarLugares('TODOS')">🌐 TODOS LOS LUGARES</button>
+        <button class="menu-item-btn" onclick="filtrarLugares('CENTRO HISTÓRICO')">🏛️ CENTRO HISTÓRICO</button>
+        <button class="menu-item-btn" onclick="filtrarLugares('SUR DE QUITO')">🚌 SUR DE QUITO</button>
+        <button class="menu-item-btn" onclick="filtrarLugares('SALIENDO DEL SUR / PERIFERIA')">⛰️ SALIDA SUR / PERIFERIA</button>
+        <button class="menu-item-btn" onclick="filtrarLugares('GRATIS')">🎁 LUGARES GRATUITOS</button>
+        <button class="menu-item-btn" onclick="filtrarLugares('PAID')">🪙 LUGARES DE PAGO</button>
       </div>
 
+      <!-- MODAL SELECCIÓN GUÍA -->
       <div id="characterModal" class="hidden">
         <div class="character-card-box">
-          <div style="font-family:'Press Start 2P', monospace; font-size:10px; color:#e2b041;">ELIGE TU ACOMPAÑANTE</div>
+          <div style="font-family:'Press Start 2P', monospace; font-size:10px; color:#e2b041;">
+            ¿CON QUIÉN QUIERES CONOCER QUITO?
+          </div>
           <div class="characters-grid">
-            <div class="char-option" onclick="setGuia('MARCO', './gallo.mp4')">
+            <div class="char-option" onclick="seleccionarPersonaje('MARCO', './gallo.mp4')">
               <video class="char-video-preview" src="./gallo.mp4" playsinline muted></video>
               <button class="char-btn-label">MARCO</button>
             </div>
-            <div class="char-option" onclick="setGuia('LUCÍA', './gallo_mujer.mp4')">
+            <div class="char-option" onclick="seleccionarPersonaje('LUCÍA', './gallo_mujer.mp4')">
               <video class="char-video-preview" src="./gallo_mujer.mp4" playsinline muted></video>
               <button class="char-btn-label">LUCÍA</button>
             </div>
@@ -143,9 +314,10 @@
     <div id="bottom-header">
       <div id="companion-box">
         <video id="galloVideo" src="./gallo.mp4" playsinline muted loop autoplay></video>
-        <div id="galloSpeech">Cargando mapa...</div>
+        <div id="galloSpeech">Iniciando sistema...</div>
       </div>
-      <div id="status-yellow-text">GUÍA: SIN SELECCIONAR</div>
+
+      <div id="status-yellow-text">GUÍA: MARCO O LUCÍA</div>
     </div>
   </div>
 
