@@ -1,264 +1,185 @@
-let map;
-let markersList = [];
-let userLocationMarker = null;
-let userCoords = null;
-let personajeActual = { nombre: 'MARCO', video: './gallo.mp4' };
-let lugaresPuntos = [];
+// Configuración global del mapa
+const API_KEY_GMAPS = "AIzaSyD7yh3TteD4adDL8pAVXIEGr6RXksDKGLo";
+let mapa_ref = null;
+let capa_puntos = null;
+let google_markers = [];
+let info_pop = null;
 
-const MAP_BOUNDS = {
-  north: -0.0010,
-  south: -0.8000,
-  west: -78.7800,
-  east: -78.3900
+let lugares_quito = [];
+let guia_activa = { nombre: 'MARCO', clip: './gallo.mp4' };
+
+const BOUNDS_QUITO = {
+  north: -0.0010, south: -0.5500,
+  west: -78.7800, east: -78.3900
 };
 
-window.onload = function() {
-  cargarLugaresJSON();
-};
+// Carga inicial
+window.addEventListener('DOMContentLoaded', () => {
+  obtenerLugares();
+  efectoTerminal();
+});
 
-function cargarLugaresJSON() {
+function obtenerLugares() {
   fetch('./lugares.json')
-    .then(response => {
-      if (!response.ok) throw new Error('Error al cargar lugares.json');
-      return response.json();
-    })
-    .then(data => {
-      lugaresPuntos = data;
-      cargarMapaScript();
-    })
-    .catch(error => {
-      console.error('Error cargando los lugares:', error);
-      cargarMapaScript();
-    });
+    .then(res => res.json())
+    .then(data => { lugares_quito = data; })
+    .catch(() => { console.warn('JSON local no cargado, usando buffer.'); });
 }
 
-function seleccionarPersonaje(nombre, videoSrc) {
-  personajeActual = { nombre: nombre, video: videoSrc };
-  document.getElementById('characterSelectionModal').classList.add('hidden');
-  
-  const video = document.getElementById('galloVideo');
-  video.src = videoSrc;
-  video.play().catch(e => console.log("Autoplay controlado:", e));
+function efectoTerminal() {
+  const lineas = [
+    "> INICIALIZANDO QUITO_TRACKER...",
+    "[OK] Nodos geográficos listos.",
+    "[OK] Conectando servicio de mapas..."
+  ];
+  let ix = 0, ch = 0;
+  const term = document.getElementById('terminalText');
 
-  document.getElementById('galloSpeech').innerText = `${personajeActual.nombre}: ¡LISTO PARA VIAJAR!`;
-}
-
-function toggleFiltros() {
-  const menu = document.getElementById('filterMenuModal');
-  menu.classList.toggle('hidden');
-}
-
-function cargarMapaScript() {
-  if (window.google && window.google.maps) {
-    initMap();
-    return;
-  }
-  const script = document.createElement('script');
-  script.src = `https://maps.googleapis.com/maps/api/js?key=&callback=initMap&loading=async`;
-  script.async = true;
-  script.defer = true;
-  document.head.appendChild(script);
-}
-
-function initMap() {
-  const quitoCenter = { lat: -0.2500, lng: -78.5100 };
-
-  map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 10,
-    center: quitoCenter,
-    disableDefaultUI: true,
-    restriction: {
-      latLngBounds: MAP_BOUNDS,
-      strictBounds: false
-    },
-    styles: [
-      { elementType: "geometry", stylers: [{ color: "#1a0b2e" }] },
-      { elementType: "labels.text.stroke", stylers: [{ color: "#1a0b2e" }] },
-      { elementType: "labels.text.fill", stylers: [{ color: "#00f0ff" }] },
-      { featureType: "road", elementType: "geometry", stylers: [{ color: "#2d0a4e" }] },
-      { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#ff007f" }] },
-      { featureType: "water", elementType: "geometry", stylers: [{ color: "#002b36" }] }
-    ]
-  });
-
-  renderizarMarcadores(lugaresPuntos);
-  obtenerUbicacionUsuario();
-}
-
-// OBTENER Y CREAR EL MARCADOR DE UBICACIÓN
-function obtenerUbicacionUsuario() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        userCoords = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        };
-
-        if (userLocationMarker) userLocationMarker.setMap(null);
-
-        userLocationMarker = new google.maps.Marker({
-          position: userCoords,
-          map: map,
-          title: "¡Tu ubicación actual!",
-          zIndex: 999,
-          icon: {
-            path: google.maps.SymbolPath.CIRCLE,
-            scale: 14, // Círculo de tamaño destacado
-            fillColor: "#FF0000",
-            fillOpacity: 1,
-            strokeWeight: 4,
-            strokeColor: "#FFFFFF"
-          }
-        });
-
-        userLocationMarker.addListener("click", () => {
-          mostrarEnFullScreen({
-            sticker: "📍",
-            nombre: "Tu Ubicación Actual",
-            categoria: "GEOLOCALIZACIÓN",
-            zona: "AQUÍ EN QUITO",
-            descripcion: "Te encuentras actualmente en esta posición dentro del mapa.",
-            recomendacion: "Aprovecha este punto para organizar tu ruta hacia los lugares cercanos."
-          });
-        });
-      },
-      (error) => {
-        console.warn("No se pudo obtener la geolocalización.", error);
+  const timer = setInterval(() => {
+    if (ix < lineas.length) {
+      if (ch < lineas[ix].length) {
+        term.innerHTML += lineas[ix][ch++];
+      } else {
+        term.innerHTML += '\n';
+        ix++; ch = 0;
       }
-    );
-  }
+    } else {
+      clearInterval(timer);
+      setTimeout(() => {
+        document.getElementById('hackerIntro').style.display = 'none';
+        document.getElementById('characterModal').classList.remove('hidden');
+      }, 350);
+    }
+  }, 25);
 }
 
-// BOTÓN "TU UBICACIÓN": CENTRA Y HACE AÚN MÁS GRANDE EL CÍRCULO ROJO
-function enfocarTuUbicacion() {
-  if (!userCoords || !userLocationMarker) {
-    alert("Buscando tu ubicación... asegúrate de otorgar los permisos en tu navegador.");
-    obtenerUbicacionUsuario();
+function setGuia(nombre, clip) {
+  guia_activa = { nombre, clip };
+  document.getElementById('characterModal').classList.add('hidden');
+
+  const vid = document.getElementById('galloVideo');
+  vid.src = clip;
+  vid.play().catch(()=>{});
+
+  document.getElementById('status-yellow-text').innerText = `GUÍA: ${nombre}`;
+  document.getElementById('galloSpeech').innerText = `¡Hola! Soy ${nombre}. Vamos a recorrer Quito.`;
+
+  inicializarVisor();
+}
+
+function inicializarVisor() {
+  if (window.google && window.google.maps) {
+    cargarGmaps();
     return;
   }
 
-  cerrarFullScreen();
-  map.setCenter(userCoords);
-  map.setZoom(14);
-
-  // EFECTO DE AGRANDAMIENTO DEL CÍRCULO ROJO
-  userLocationMarker.setIcon({
-    path: google.maps.SymbolPath.CIRCLE,
-    scale: 22, // Tamaño más grande al presionar el botón
-    fillColor: "#FF0000",
-    fillOpacity: 1,
-    strokeWeight: 5,
-    strokeColor: "#FFEA00"
-  });
-
-  document.getElementById('galloSpeech').innerText = `${personajeActual.nombre}: ¡AQUÍ ESTÁS TÚ!`;
+  const tag = document.createElement('script');
+  tag.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY_GMAPS}&callback=cargarGmaps`;
+  tag.async = true;
+  tag.onerror = () => fallbackLeaflet();
+  document.head.appendChild(tag);
 }
 
-function renderizarMarcadores(puntos) {
-  if (!map) return;
-  limpiarMarcadores();
+function cargarGmaps() {
+  try {
+    mapa_ref = new google.maps.Map(document.getElementById("map"), {
+      zoom: 12,
+      center: { lat: -0.2300, lng: -78.5100 },
+      disableDefaultUI: true,
+      restriction: { latLngBounds: BOUNDS_QUITO, strictBounds: true },
+      styles: [
+        { elementType: "geometry", stylers: [{ color: "#0b1d3a" }] },
+        { elementType: "labels.text.stroke", stylers: [{ color: "#0b1d3a" }] },
+        { elementType: "labels.text.fill", stylers: [{ color: "#e2b041" }] },
+        { featureType: "road", elementType: "geometry", stylers: [{ color: "#15294a" }] },
+        { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#a50044" }] },
+        { featureType: "water", elementType: "geometry", stylers: [{ color: "#050a14" }] }
+      ]
+    });
 
-  puntos.forEach(lugar => {
-    const marker = new google.maps.Marker({
-      position: { lat: lugar.lat, lng: lugar.lng },
-      map: map,
-      title: lugar.nombre,
+    info_pop = new google.maps.InfoWindow();
+    dibujarPuntosGoogle(lugares_quito);
+  } catch (e) {
+    fallbackLeaflet();
+  }
+}
+
+function dibujarPuntosGoogle(lista) {
+  google_markers.forEach(m => m.setMap(null));
+  google_markers = [];
+
+  lista.forEach(item => {
+    const m = new google.maps.Marker({
+      position: { lat: item.lat, lng: item.lng },
+      map: mapa_ref,
       icon: {
         path: google.maps.SymbolPath.CIRCLE,
-        scale: 7,
-        fillColor: obtenerColorPorEtiqueta(lugar.etiqueta),
-        fillOpacity: 0.9,
-        strokeWeight: 2,
-        strokeColor: "#ffffff"
+        scale: 8, fillColor: "#a50044", fillOpacity: 0.95,
+        strokeWeight: 2, strokeColor: "#e2b041"
       }
     });
 
-    marker.addListener("click", () => {
-      mostrarEnFullScreen(lugar);
+    m.addListener("click", () => {
+      let act = item.actividades ? `<ul>${item.actividades.map(a => `<li>${a}</li>`).join('')}</ul>` : '';
+      info_pop.setContent(`
+        <div style="color:#fff; font-family:sans-serif; padding:4px;">
+          <b style="color:#e2b041; font-size:14px;">${item.sticker} ${item.nombre}</b><br>
+          <small style="color:#a50044;"><b>${item.categoria}</b> | ${item.zona}</small>
+          <p style="margin:6px 0; font-size:12px;">${item.descripcion}</p>
+          ${act}
+          <div style="background:#15294a; padding:6px; margin-top:6px; border-radius:4px; font-size:11px;">
+            💡 ${item.recomendacion}
+          </div>
+        </div>
+      `);
+      info_pop.open(mapa_ref, m);
+      document.getElementById('galloSpeech').innerText = `${guia_activa.nombre}: ${item.nombre} - ${item.info}`;
     });
 
-    markersList.push(marker);
+    google_markers.push(m);
   });
 }
 
-function obtenerColorPorEtiqueta(etiqueta) {
-  switch (etiqueta) {
-    case 'PLANES DESTACADOS PARA JÓVENES': return '#ffea00';
-    case 'MUSEOS': return '#b537f2';
-    case 'PARQUES': return '#00ff66';
-    case 'LUGARES DE HISTORIAS Y LEYENDAS': return '#ff7700';
-    case 'SUR DE QUITO': return '#ff0055';
-    case 'AMAGUAÑA Y PERIFERIA SUR': return '#00f0ff';
-    case 'MACHACHI Y CANTON MEJÍA': return '#ff00ff';
-    case 'RUTA DE LOS VOLCANES Y ALREDEDORES': return '#ff3300';
-    default: return '#00f0ff';
-  }
+function fallbackLeaflet() {
+  const b = L.latLngBounds([-0.5500, -78.7800], [-0.0010, -78.3900]);
+  const leafMap = L.map('map', { center: [-0.2300, -78.5100], zoom: 12, maxBounds: b });
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(leafMap);
+  capa_puntos = L.layerGroup().addTo(leafMap);
+
+  renderLeaflet(lugares_quito);
 }
 
-function limpiarMarcadores() {
-  markersList.forEach(m => m.setMap(null));
-  markersList = [];
+function renderLeaflet(lista) {
+  if (!capa_puntos) return;
+  capa_puntos.clearLayers();
+
+  lista.forEach(item => {
+    const p = L.circleMarker([item.lat, item.lng], {
+      radius: 8, fillColor: '#a50044', color: '#e2b041', weight: 2, fillOpacity: 0.9
+    });
+
+    p.bindPopup(`<b>${item.sticker} ${item.nombre}</b><br>${item.descripcion}`);
+    p.on('click', () => {
+      document.getElementById('galloSpeech').innerText = `${guia_activa.nombre}: ${item.nombre}`;
+    });
+    capa_puntos.addLayer(p);
+  });
 }
 
-// DESPLEGAR INFORMACIÓN A PANTALLA COMPLETA SOBRE EL MAPA
-function mostrarEnFullScreen(lugar) {
-  const fullScreenModal = document.getElementById('infoFullScreen');
-  const fullScreenCard = document.getElementById('fullScreenCard');
-
-  fullScreenCard.innerHTML = `
-    <div style="font-size: 22px; font-weight: bold; color: #ffea00; margin-bottom: 12px; border-bottom: 3px solid #00f0ff; padding-bottom: 8px;">
-      ${lugar.sticker || '📍'} ${lugar.nombre}
-    </div>
-    
-    <div style="display: flex; gap: 10px; margin-bottom: 16px; font-size: 13px;">
-      <span style="background-color: #800020; color: #ffffff; padding: 6px 12px; border-radius: 6px; font-weight: bold;">
-        ${lugar.categoria}
-      </span>
-      <span style="background-color: #0f4471; color: #00f0ff; padding: 6px 12px; border-radius: 6px; font-weight: bold; border: 1px solid #00f0ff;">
-        ${lugar.zona}
-      </span>
-    </div>
-
-    <p style="margin: 0 0 16px 0; color: #f0f4f8; font-size: 16px; line-height: 1.6;">
-      ${lugar.descripcion}
-    </p>
-
-    ${lugar.info ? `
-      <div style="margin-bottom: 14px; font-size: 15px; color: #00f0ff;">
-        💵 <strong>Detalle / Precio:</strong> ${lugar.info}
-      </div>
-    ` : ''}
-
-    ${lugar.recomendacion ? `
-      <div style="background-color: rgba(128, 0, 32, 0.5); padding: 12px 16px; border-left: 4px solid #ffea00; border-radius: 6px; font-size: 14px; color: #ffffff; margin-top: 10px;">
-        💡 <strong>Recomendación:</strong> ${lugar.recomendacion}
-      </div>
-    ` : ''}
-  `;
-
-  fullScreenModal.classList.remove('hidden');
-  document.getElementById('galloSpeech').innerText = `${personajeActual.nombre}: ${lugar.nombre}`;
+function abrirMenu() {
+  document.getElementById('sideMenuModal').classList.toggle('hidden');
 }
 
-function cerrarFullScreen() {
-  document.getElementById('infoFullScreen').classList.add('hidden');
-}
+function filtrar(cat) {
+  let res = lugares_quito;
+  if (cat === 'GRATIS') res = lugares_quito.filter(x => x.categoria === 'GRATIS');
+  else if (cat === 'PAID') res = lugares_quito.filter(x => x.categoria !== 'GRATIS');
+  else if (cat !== 'TODOS') res = lugares_quito.filter(x => x.etiqueta === cat);
 
-function filtrarLugares(categoria) {
-  let filtrados = [];
-  if (categoria === 'TODOS') {
-    filtrados = lugaresPuntos;
-  } else if (categoria === 'GRATIS') {
-    filtrados = lugaresPuntos.filter(l => l.categoria === 'GRATIS');
-  } else if (categoria === 'PAID') {
-    filtrados = lugaresPuntos.filter(l => l.categoria !== 'GRATIS');
-  } else {
-    filtrados = lugaresPuntos.filter(l => l.etiqueta === categoria);
-  }
+  if (mapa_ref && mapa_ref.getBounds) dibujarPuntosGoogle(res);
+  else renderLeaflet(res);
 
-  renderizarMarcadores(filtrados);
-  toggleFiltros();
-  cerrarFullScreen();
-  document.getElementById('galloSpeech').innerText = `${personajeActual.nombre}: ${filtrados.length} LUGARES`;
+  abrirMenu();
+  document.getElementById('galloSpeech').innerText = `${guia_activa.nombre}: ${res.length} resultados para ${cat}.`;
 }
