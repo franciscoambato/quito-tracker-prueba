@@ -72,7 +72,8 @@ function cargarMapaScript() {
     return;
   }
   const script = document.createElement('script');
-  script.src = `https://maps.googleapis.com/maps/api/js?key=&callback=initMap&loading=async`;
+  // API Key de Google Cloud agregada correctamente
+  script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyD7yh3TteD4adDL8pAVXIEGr6RXksDKGLo&callback=initMap&loading=async`;
   script.async = true;
   script.defer = true;
   document.head.appendChild(script);
