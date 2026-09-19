@@ -34,18 +34,36 @@ function cargarLugaresJSON() {
 
 function seleccionarPersonaje(nombre, videoSrc) {
   personajeActual = { nombre: nombre, video: videoSrc };
-  document.getElementById('characterSelectionModal').classList.add('hidden');
+  
+  // Ocultar modal de selección completamente
+  const modal = document.getElementById('characterSelectionModal');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+  }
   
   const video = document.getElementById('galloVideo');
-  video.src = videoSrc;
-  video.play().catch(e => console.log("Autoplay controlado:", e));
+  if (video) {
+    video.src = videoSrc;
+    video.play().catch(e => console.log("Autoplay controlado:", e));
+  }
 
-  document.getElementById('galloSpeech').innerText = `${personajeActual.nombre}: ¡LISTO PARA VIAJAR!`;
+  const speech = document.getElementById('galloSpeech');
+  if (speech) {
+    speech.innerText = `${personajeActual.nombre}: ¡LISTO PARA VIAJAR!`;
+  }
+
+  // Refrescar el mapa para asegurar que se renderice correctamente en pantalla
+  if (map && window.google && window.google.maps) {
+    google.maps.event.trigger(map, 'resize');
+  }
 }
 
 function toggleFiltros() {
   const menu = document.getElementById('filterMenuModal');
-  menu.classList.toggle('hidden');
+  if (menu) {
+    menu.classList.toggle('hidden');
+  }
 }
 
 function cargarMapaScript() {
@@ -104,7 +122,7 @@ function obtenerUbicacionUsuario() {
           zIndex: 999,
           icon: {
             path: google.maps.SymbolPath.CIRCLE,
-            scale: 14, // Círculo de tamaño destacado
+            scale: 14,
             fillColor: "#FF0000",
             fillOpacity: 1,
             strokeWeight: 4,
@@ -130,7 +148,7 @@ function obtenerUbicacionUsuario() {
   }
 }
 
-// BOTÓN "TU UBICACIÓN": CENTRA Y HACE AÚN MÁS GRANDE EL CÍRCULO ROJO
+// BOTÓN "TU UBICACIÓN": CENTRA Y HACE MÁS GRANDE EL CÍRCULO ROJO
 function enfocarTuUbicacion() {
   if (!userCoords || !userLocationMarker) {
     alert("Buscando tu ubicación... asegúrate de otorgar los permisos en tu navegador.");
@@ -142,17 +160,19 @@ function enfocarTuUbicacion() {
   map.setCenter(userCoords);
   map.setZoom(14);
 
-  // EFECTO DE AGRANDAMIENTO DEL CÍRCULO ROJO
   userLocationMarker.setIcon({
     path: google.maps.SymbolPath.CIRCLE,
-    scale: 22, // Tamaño más grande al presionar el botón
+    scale: 22,
     fillColor: "#FF0000",
     fillOpacity: 1,
     strokeWeight: 5,
     strokeColor: "#FFEA00"
   });
 
-  document.getElementById('galloSpeech').innerText = `${personajeActual.nombre}: ¡AQUÍ ESTÁS TÚ!`;
+  const speech = document.getElementById('galloSpeech');
+  if (speech) {
+    speech.innerText = `${personajeActual.nombre}: ¡AQUÍ ESTÁS TÚ!`;
+  }
 }
 
 function renderizarMarcadores(puntos) {
@@ -206,6 +226,8 @@ function mostrarEnFullScreen(lugar) {
   const fullScreenModal = document.getElementById('infoFullScreen');
   const fullScreenCard = document.getElementById('fullScreenCard');
 
+  if (!fullScreenModal || !fullScreenCard) return;
+
   fullScreenCard.innerHTML = `
     <div style="font-size: 22px; font-weight: bold; color: #ffea00; margin-bottom: 12px; border-bottom: 3px solid #00f0ff; padding-bottom: 8px;">
       ${lugar.sticker || '📍'} ${lugar.nombre}
@@ -238,11 +260,20 @@ function mostrarEnFullScreen(lugar) {
   `;
 
   fullScreenModal.classList.remove('hidden');
-  document.getElementById('galloSpeech').innerText = `${personajeActual.nombre}: ${lugar.nombre}`;
+  fullScreenModal.style.display = 'flex';
+  
+  const speech = document.getElementById('galloSpeech');
+  if (speech) {
+    speech.innerText = `${personajeActual.nombre}: ${lugar.nombre}`;
+  }
 }
 
 function cerrarFullScreen() {
-  document.getElementById('infoFullScreen').classList.add('hidden');
+  const fullScreenModal = document.getElementById('infoFullScreen');
+  if (fullScreenModal) {
+    fullScreenModal.classList.add('hidden');
+    fullScreenModal.style.display = 'none';
+  }
 }
 
 function filtrarLugares(categoria) {
@@ -260,5 +291,9 @@ function filtrarLugares(categoria) {
   renderizarMarcadores(filtrados);
   toggleFiltros();
   cerrarFullScreen();
-  document.getElementById('galloSpeech').innerText = `${personajeActual.nombre}: ${filtrados.length} LUGARES`;
+  
+  const speech = document.getElementById('galloSpeech');
+  if (speech) {
+    speech.innerText = `${personajeActual.nombre}: ${filtrados.length} LUGARES`;
+  }
 }
